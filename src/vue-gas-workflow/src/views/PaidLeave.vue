@@ -1,15 +1,30 @@
 <template>
   <v-card>
-    <!-- 検索フォーム -->
-    <v-col cols="12">
-      <v-text-field
-        v-model="search"
-        append-icon="mdi-magnify"
-        label="Search"
-        single-line
-        hide-details
-      />
-    </v-col>
+    <v-card-title>
+      <!-- 申請書タイトル -->
+      <v-col cols="8">
+        <div class="text-h3">
+          {{ title }}
+        </div>
+      </v-col>
+      <v-spacer/>
+      <!-- 追加ボタン -->
+      <v-col class="text-right" cols="4">
+        <v-btn dark color="green">
+          <v-icon>mdi-plus</v-icon>
+        </v-btn>
+      </v-col>
+      <!-- 検索フォーム -->
+      <v-col cols="12">
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Search"
+          single-line
+          hide-details
+        />
+      </v-col>
+    </v-card-title>
 
     <!-- テーブル -->
     <v-data-table
@@ -19,7 +34,7 @@
       :search="search"
       :footer-props="footerProps"
       :loading="loading"
-      :sort-by="'date'"
+      :sort-by="'id'"
       :sort-desc="true"
       :items-per-page="30"
       mobile-breakpoint="0"
@@ -35,6 +50,8 @@ export default {
 
   data() {
     return {
+      /* 申請書タイトル */
+      title: '休暇申請フォーム',
       /** ローディング状態 */
       loading: false,
       /** 検索文字 */
