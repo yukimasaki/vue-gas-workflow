@@ -4,7 +4,8 @@
         <v-card
           class="mb-2"
           v-for="form in forms"
-            :key="form">
+            :key="form.name"
+            :to="form.link">
           <v-list-item>
             <v-list-item-content>
               <v-list-item-title>{{ form.name }}</v-list-item-title>
