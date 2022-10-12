@@ -21,7 +21,11 @@
         <router-view></router-view>
       </v-container>
     </v-main>
+
+    <!-- スナックバー -->
+    <v-snackbar v-model="snackbar" color="error">{{ errorMessage }}</v-snackbar>
   </v-app>
+
 </template>
 
 <script>
@@ -29,6 +33,13 @@ import { mapState } from 'vuex'
 
 export default {
   name: 'App',
+
+  data () {
+    return {
+      snackbar: false
+    }
+  },
+
   // ミューテーション経由でstateの設定を読み込む
   // beforeCreate()は［Appインスタンスは生成後 かつ データ初期化前］に実行される
   // 参考：https://qiita.com/ksh-fthr/items/2a9f173c706ef6939f93
@@ -37,8 +48,15 @@ export default {
   },
 
   computed: mapState({
-    appName: state => state.settings.appName
+    appName: state => state.settings.appName,
+    errorMessage: state => state.errorMessage
   }),
+
+  watch: {
+    errorMessage () {
+      this.snackbar = true
+    }
+  },
 
 }
 </script>
