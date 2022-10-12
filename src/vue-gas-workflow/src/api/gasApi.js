@@ -38,13 +38,14 @@ const setAuthToken = token => {
  * @param {String} yearMonth
  * @returns {Promise}
  */
-const fetch = yearMonth => {
+const fetch = () => {
   return gasApi.post('', {
     method: 'GET',
     authToken,
-    params: {
-      yearMonth
-    }
+    // ↓ paramsを記述しなくても良いか検証 ↓
+    // params: {
+    //   yearMonth
+    // }
   })
 }
 
