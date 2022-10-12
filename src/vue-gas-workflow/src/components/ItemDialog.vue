@@ -105,6 +105,11 @@ export default {
   },
 
   computed: {
+    ...mapState({
+      /** ローディング状態 */
+      loading: state => state.loading.add || state.loading.update
+    }),
+
     /** ダイアログのタイトル */
     titleText () {
       return this.actionType === 'add' ? 'データ追加' : 'データ編集'
@@ -125,14 +130,31 @@ export default {
       this.actionType = actionType
       this.resetForm(item)
     },
+
     /** キャンセルがクリックされたとき */
     onClickClose () {
       this.show = false
     },
+
     /** 追加／更新がクリックされたとき */
-    onClickAction () {
-      // あとで実装
+    async onClickAction () {
+      const item = {
+        id: 1,                  // 既存レコードをもとに連番を生成する処理を追加する
+        recipient_name: 'テストイチロウ',  // ログイン情報をもとに氏名を取得する処理を追加する
+        department: 'テスト部',           // 同上
+        reason: this.reason,
+        date_between: this.date_between,
+        contact: this.contact,
+        memo: this.memo,
+        status: '承認中',                  // 作成時は［承認中］をセットする
+        created_at: '',
+      }
+
+      await this.addAbData({ item })
+
+      this.show = false
     },
+
     /** フォームの内容を初期化します */
     resetForm (item = {}) {
       this.id = item.id || ''

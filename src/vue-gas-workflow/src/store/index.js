@@ -113,7 +113,7 @@ const actions = {
     }
   },
 
-  /** 申請記録を追加する */
+  /** 申請記録を作成する */
   async addPaidLeaveData ({ commit }, { item }) {
     const type = 'add'
     commit('setLoading', { type, v: true })
