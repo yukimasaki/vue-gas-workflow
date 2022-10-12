@@ -68,8 +68,6 @@ export default {
       loading: false,
       /** 検索文字 */
       search: '',
-      /** テーブルに表示させるデータ */
-      // tableData: [],
     }
   },
 
