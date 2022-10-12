@@ -86,7 +86,6 @@ export default {
         { text: '部署', value: 'department', sortable: false },
         { text: '事由', value: 'reason', sortable: false },
         { text: '予定日時', value: 'date_between', sortable: false },
-        { text: '1日もしくは半休', value: 'full_or_half', sortable: false },
         { text: '緊急連絡先', value: 'contact', sortable: false },
         { text: '備考', value: 'memo', sortable: false },
         { text: 'ステータス', value: 'status', sortable: false },
