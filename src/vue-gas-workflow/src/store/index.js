@@ -37,21 +37,21 @@ const state = {
 
 /**
  * Mutations
- * ActionsからStateを更新するときに呼ばれます
+ * ActionsからStateを更新するときに呼ばれる
  */
 const mutations = {
 
-  /** ローディング状態をセットします */
+  /** ローディング状態をセットする */
   setLoading (state, { type, v }) {
     state.loading[type] = v
   },
 
-  /** エラーメッセージをセットします */
+  /** エラーメッセージをセットする */
   setErrorMessage (state, { message }) {
     state.errorMessage = message
   },
 
-  /** 設定を保存します */
+  /** 設定を保存する */
   saveSettings (state, { settings }) {
     state.settings = { ...settings }
     const { appName, apiUrl, authToken } = state.settings
@@ -64,7 +64,7 @@ const mutations = {
     localStorage.setItem('settings', JSON.stringify(settings))
   },
 
-  /** 設定を読み込みます */
+  /** 設定を読み込む */
   loadSettings (state) {
     const settings = JSON.parse(localStorage.getItem('settings'))
     if (settings) {
@@ -76,8 +76,8 @@ const mutations = {
     gasApi.setAuthToken(authToken)
   },
 
-  /** 指定年月の家計簿データをセットします */
-  setAbData (state, list) {
+  /** 申請記録をセットする */
+  setAbData (state, { list }) {
     state.abData = list
   },
 
@@ -85,20 +85,20 @@ const mutations = {
 
 /**
  * Actions
- * 画面から呼ばれ、Mutationをコミットします
+ * 画面から呼ばれ、Mutationをコミットする
  */
 const actions = {
-  /** 設定を保存します */
+  /** 設定を保存する */
   saveSettings ({ commit }, { settings }) {
     commit('saveSettings', { settings })
   },
 
-  /** 設定を読み込みます */
+  /** 設定を読み込む */
   loadSettings ({ commit }) {
     commit('loadSettings')
   },
 
-  /** ワークフローAPIからテストレコードを取得する */
+  /** 申請記録を取得する */
   async fetchAbData ({ commit }) {
     const type = 'fetch'
     commit('setLoading', { type, v: true })
@@ -114,12 +114,12 @@ const actions = {
   },
 }
 
-/** カンマ区切りの文字をトリミングして配列にします */
+/** カンマ区切りの文字をトリミングして配列にする */
 const createItems = v => v.split(',').map(v => v.trim()).filter(v => v.length !== 0)
 
 /**
  * Getters
- * 画面から取得され、Stateを加工して渡します
+ * 画面から取得され、Stateを加工して渡する
  */
 const getters = {
   /** 収入カテゴリ（配列） */

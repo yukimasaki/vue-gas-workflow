@@ -17,7 +17,7 @@ gasApi.interceptors.response.use(res => {
 })
 
 /**
- * APIのURLを設定します
+ * APIのURLを設定する
  * @param {String} url
  */
 let apiUrl = ''
@@ -26,7 +26,7 @@ const setUrl = url => {
 }
 
 /**
- * authTokenを設定します
+ * authTokenを設定する
  * @param {String} token
  */
 let authToken = ''
@@ -46,20 +46,20 @@ const fetch = () => {
 }
 
 /**
- * データを追加します
+ * データを追加する
  * @param {Object} item
  * @returns {Promise}
  */
 
 /**
- * 指定年月&idのデータを削除します
+ * 指定年月&idのデータを削除する
  * @param {String} yearMonth
  * @param {String} id
  * @returns {Promise}
  */
 
 /**
- * データを更新します
+ * データを更新する
  * @param {String} beforeYM
  * @param {Object} item
  * @returns {Promise}
