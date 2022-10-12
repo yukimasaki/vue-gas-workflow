@@ -12,87 +12,33 @@
       <v-divider/>
       <v-card-text>
         <v-form ref="form" v-model="valid">
-          <!-- 日付選択 -->
-          <v-menu
-            ref="menu"
-            v-model="menu"
-            :close-on-content-click="false"
-            :return-value.sync="date"
-            transition="scale-transition"
-            offset-y
-            max-width="290px"
-            min-width="290px"
-          >
-            <template v-slot:activator="{ on }">
-              <v-text-field
-                v-model="date"
-                prepend-icon="mdi-calendar"
-                readonly
-                v-on="on"
-                hide-details
-              />
-            </template>
-            <v-date-picker
-              v-model="date"
-              color="green"
-              locale="ja-jp"
-              :day-format="date => new Date(date).getDate()"
-              no-title
-              scrollable
-            >
-              <v-spacer/>
-              <v-btn text color="grey" @click="menu = false">キャンセル</v-btn>
-              <v-btn text color="primary" @click="$refs.menu.save(date)">選択</v-btn>
-            </v-date-picker>
-          </v-menu>
-          <!-- タイトル -->
+          <!-- 事由 -->
+          <v-textarea
+            label="事由"
+            v-model="reason"
+            :reles="[reasonRules]"
+          />
+
+          <!-- 予定日時 -->
+          <v-textarea
+            label="予定日時"
+            v-model="date_between"
+            :reles="[dateBetweenRules]"
+          />
+
+          <!-- 緊急連絡先 -->
           <v-text-field
-            label="タイトル"
-            v-model.trim="title"
-            :counter="20"
-            :rules="titleRules"
+            label="緊急連絡先"
+            v-model="contact"
+            :rules="[contactRule]"
           />
-          <!-- 収支 -->
-          <v-radio-group
-            row
-            v-model="inout"
-            hide-details
-            @change="onChangeInout"
-          >
-            <v-radio label="収入" value="income"/>
-            <v-radio label="支出" value="outgo"/>
-          </v-radio-group>
-          <!-- カテゴリ -->
-          <v-select
-            label="カテゴリ"
-            v-model="category"
-            :items="categoryItems"
-            hide-details
-          />
-          <!-- タグ -->
-          <v-select
-            label="タグ"
-            v-model="tags"
-            :items="tagItems"
-            multiple
-            chips
-            :rules="[tagRule]"
-          />
-          <!-- 金額 -->
-          <v-text-field
-            label="金額"
-            v-model.number="amount"
-            prefix="￥"
-            pattern="[0-9]*"
-            :rules="amountRules"
-          />
-          <!-- メモ -->
-          <v-text-field
-            label="メモ"
+
+          <!-- 備考 -->
+          <v-textarea
+            label="備考"
             v-model="memo"
-            :counter="50"
-            :rules="[memoRule]"
           />
+
         </v-form>
       </v-card-text>
       <v-divider/>
@@ -134,47 +80,27 @@ export default {
       menu: false,
       /** ローディング状態 */
       loading: false,
-
       /** 操作タイプ 'add' or 'edit' */
       actionType: 'add',
-      /** id */
-      id: '',
-      /** 日付 */
-      date: '',
-      /** タイトル */
-      title: '',
-      /** 収支 'income' or 'outgo' */
-      inout: '',
-      /** カテゴリ */
-      category: '',
-      /** タグ */
-      tags: [],
-      /** 金額 */
-      amount: 0,
-      /** メモ */
+      /** 事由 */
+      reason: '',
+      /** 予定日時 */
+      date_between: '',
+      /** 緊急連絡先 */
+      contact: '',
+      /** 備考 */
       memo: '',
 
-      /** 収支カテゴリ一覧 */
-      incomeItems: ['カテ1', 'カテ2'],
-      outgoItems: ['カテ3', 'カテ4'],
-      /** 選択カテゴリ一覧 */
-      categoryItems: [],
-      /** タグリスト */
-      tagItems: ['タグ1', 'タグ2'],
-      /** 編集前の年月（編集時に使う） */
-      beforeYM: '',
-
       /** バリデーションルール */
-      titleRules: [
-        v => v.trim().length > 0 || 'タイトルは必須です',
-        v => v.length <= 20 || '20文字以内で入力してください'
+      reasonRules: [
+        v => v.trim().length > 0 || '事由は必須です',
       ],
-      tagRule: v => v.length <= 5 || 'タグは5種類以内で選択してください',
-      amountRules: [
-        v => v >= 0 || '金額は0以上で入力してください',
-        v => Number.isInteger(v) || '整数で入力してください'
+      dateBetweenRules: [
+        v => v.trim().length > 0 || '予定日時は必須です',
       ],
-      memoRule: v => v.length <= 50 || 'メモは50文字以内で入力してください'
+      contactRules: [
+        v => v.trim().length > 0 || '緊急連絡先は必須です',
+      ],
     }
   },
 
@@ -198,10 +124,6 @@ export default {
       this.show = true
       this.actionType = actionType
       this.resetForm(item)
-
-      if (actionType === 'edit') {
-        this.beforeYM = item.date.slice(0, 7)
-      }
     },
     /** キャンセルがクリックされたとき */
     onClickClose () {
@@ -211,37 +133,12 @@ export default {
     onClickAction () {
       // あとで実装
     },
-    /** 収支が切り替わったとき */
-    onChangeInout () {
-      if (this.inout === 'income') {
-        this.categoryItems = this.incomeItems
-      } else {
-        this.categoryItems = this.outgoItems
-      }
-      this.category = this.categoryItems[0]
-    },
     /** フォームの内容を初期化します */
     resetForm (item = {}) {
-      const today = new Date()
-      const year = today.getFullYear()
-      const month = ('0' + (today.getMonth() + 1)).slice(-2)
-      const date = ('0' + today.getDate()).slice(-2)
-
       this.id = item.id || ''
-      this.date = item.date || `${year}-${month}-${date}`
-      this.title = item.title || ''
-      this.inout = item.income != null ? 'income' : 'outgo'
-
-      if (this.inout === 'income') {
-        this.categoryItems = this.incomeItems
-        this.amount = item.income || 0
-      } else {
-        this.categoryItems = this.outgoItems
-        this.amount = item.outgo || 0
-      }
-
-      this.category = item.category || this.categoryItems[0]
-      this.tags = item.tags ? item.tags.split(',') : []
+      this.reason = item.reason || ''
+      this.date_between = item.date_between || ''
+      this.contact = item.contact || ''
       this.memo = item.memo || ''
 
       this.$refs.form.resetValidation()
