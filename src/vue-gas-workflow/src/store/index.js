@@ -112,6 +112,21 @@ const actions = {
       commit('setLoading', { type, v: false})
     }
   },
+
+  /** 申請記録を追加する */
+  async addPaidLeaveData ({ commit }, { item }) {
+    const type = 'add'
+    commit('setLoading', { type, v: true })
+    try {
+      const res = await gasApi.add(item)
+      commit('addPaidLeaveData', { item: res.data })
+    } catch (e) {
+      commit('setErrorMessage', { message: e })
+    } finally {
+      commit('setLoading', { type, v: false })
+    }
+  },
+
 }
 
 /** カンマ区切りの文字をトリミングして配列にする */
