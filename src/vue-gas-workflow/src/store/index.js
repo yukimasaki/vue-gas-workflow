@@ -20,11 +20,6 @@ const state = {
   },
 
   /** 休暇申請データ */
-  // tableData: [
-  //   /** サンプルデータ */
-  //   { id: '1', recipient_name: '鈴木一郎', department: 'SS', reason: '私用のため', date_between: '2022年10月13日', full_or_half: '1日', contact: '080-1111-2222', memo: 'よろしくお願いします。', status: '承認中', created_at: '2022-10-01'},
-  //   { id: '2', recipient_name: '田中花子', department: 'CS', reason: '旅行のため', date_between: '2022年12月24日', full_or_half: '1日', contact: '080-3333-4444', memo: 'よろしくお願いします。', status: '承認中', created_at: '2022-10-02'},
-  // ],
   abData: {},
 
   /** ローディング状態 */
