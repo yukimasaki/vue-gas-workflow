@@ -2,7 +2,7 @@ import axios from 'axios'
 
 // 共通のヘッダーを設定したaxiosのインスタンス作成
 const gasApi = axios.create({
-  headers: { 'content-type': 'application/x-www-form-urlencoded' }
+  headers: { 'content-type': 'text/plain' }
 })
 
 // response共通処理
@@ -20,8 +20,9 @@ gasApi.interceptors.response.use(res => {
  * APIのURLを設定します
  * @param {String} url
  */
+let apiUrl = ''
 const setUrl = url => {
-  gasApi.defaults.baseURL = url
+  apiUrl = url
 }
 
 /**
@@ -38,7 +39,7 @@ const setAuthToken = token => {
  * @returns {Promise}
  */
 const fetch = () => {
-  return gasApi.post('', {
+  return gasApi.post(apiUrl, {
     method: 'GET',
     authToken,
   })
