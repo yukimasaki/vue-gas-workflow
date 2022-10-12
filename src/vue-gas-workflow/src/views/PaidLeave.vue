@@ -52,6 +52,7 @@
 <script>
 import { mapState } from 'vuex'
 import ItemDialog from '../components/ItemDialog.vue'
+import axios from 'axios'
 
 export default {
   name: 'PaidLeave',
@@ -64,16 +65,17 @@ export default {
     return {
       /* 申請書タイトル */
       title: '休暇申請フォーム',
-      /** ローディング状態 */
-      loading: false,
       /** 検索文字 */
       search: '',
+      /** テーブルに表示させるデータ */
+      tableData: [],
     }
   },
 
   computed: {
     ...mapState({
-      tableData: state => state.tableData,
+      abData: state => state.abData,
+      loading: state => state.loading.fetch,
     }),
 
     /** テーブルのヘッダー設定 */
@@ -98,11 +100,35 @@ export default {
     }
   },
 
+  async mounted() {
+    await this.getRecords()
+  },
+
   methods: {
     /** 追加ボタンがクリックされたとき */
     onClickAdd () {
       this.$refs.itemDialog.open('add')
     },
+
+    getRecords() {
+      const url = 'https://script.google.com/macros/s/AKfycby00LpQE72Mp3f5kAzXU7rzQeBSbLa9mWpjv8HjeltxSCVUQBgKHFy_soIiqvbJjPdKOA/exec'
+      const authToken = '5da7a87c-49e8-11ed-b878-0242ac120002'
+      const apiClient = axios.create({
+        headers: { 'content-type': 'text/plain' }
+      })
+      apiClient.post(url, {
+        method: 'GET',
+        authToken,
+      })
+      .then(res => {
+        this.tableData = res.data
+        console.log(res.data)
+      })
+      .catch(error => {
+        console.log(error)
+      })
+    }
   },
+
 }
 </script>

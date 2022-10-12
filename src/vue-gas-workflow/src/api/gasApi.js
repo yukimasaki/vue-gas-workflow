@@ -34,18 +34,13 @@ const setAuthToken = token => {
 }
 
 /**
- * 指定年月のデータを取得します
- * @param {String} yearMonth
+ * 全データを取得する
  * @returns {Promise}
  */
 const fetch = () => {
   return gasApi.post('', {
     method: 'GET',
     authToken,
-    // ↓ paramsを記述しなくても良いか検証 ↓
-    // params: {
-    //   yearMonth
-    // }
   })
 }
 

@@ -20,11 +20,12 @@ const state = {
   },
 
   /** 休暇申請データ */
-  tableData: [
-    /** サンプルデータ */
-    { id: '1', recipient_name: '鈴木一郎', department: 'SS', reason: '私用のため', date_between: '2022年10月13日', full_or_half: '1日', contact: '080-1111-2222', memo: 'よろしくお願いします。', status: '承認中', created_at: '2022-10-01'},
-    { id: '2', recipient_name: '田中花子', department: 'CS', reason: '旅行のため', date_between: '2022年12月24日', full_or_half: '1日', contact: '080-3333-4444', memo: 'よろしくお願いします。', status: '承認中', created_at: '2022-10-02'},
-  ],
+  // tableData: [
+  //   /** サンプルデータ */
+  //   { id: '1', recipient_name: '鈴木一郎', department: 'SS', reason: '私用のため', date_between: '2022年10月13日', full_or_half: '1日', contact: '080-1111-2222', memo: 'よろしくお願いします。', status: '承認中', created_at: '2022-10-01'},
+  //   { id: '2', recipient_name: '田中花子', department: 'CS', reason: '旅行のため', date_between: '2022年12月24日', full_or_half: '1日', contact: '080-3333-4444', memo: 'よろしくお願いします。', status: '承認中', created_at: '2022-10-02'},
+  // ],
+  abData: {},
 
   /** ローディング状態 */
   loading: {
@@ -81,35 +82,8 @@ const mutations = {
   },
 
   /** 指定年月の家計簿データをセットします */
-  setAbData (state, { yearMonth, list }) {
-    state.abData[yearMonth] = list
-  },
-
-  /** データを追加します */
-  addAbData (state, { item }) {
-    const yearMonth = item.date.slice(0, 7)
-    const list = state.abData[yearMonth]
-    if (list) {
-      list.push(item)
-    }
-  },
-
-  /** 指定年月のデータを更新します */
-  updateAbData (state, { yearMonth, item }) {
-    const list = state.abData[yearMonth]
-    if (list) {
-      const index = list.findIndex(v => v.id === item.id)
-      list.splice(index, 1, item)
-    }
-  },
-
-  /** 指定年月&IDのデータを削除します */
-  deleteAbData (state, { yearMonth, id }) {
-    const list = state.abData[yearMonth]
-    if (list) {
-      const index = list.findIndex(v => v.id === id)
-      list.splice(index, 1)
-    }
+  setAbData (state, list) {
+    state.abData = list
   },
 
 }
@@ -129,45 +103,20 @@ const actions = {
     commit('loadSettings')
   },
 
-  /** 指定年月の家計簿データを取得します */
-  async fetchAbData ({ commit }, { yearMonth }) {
+  /** ワークフローAPIからテストレコードを取得する */
+  async fetchAbData ({ commit }) {
     const type = 'fetch'
     commit('setLoading', { type, v: true })
     try {
-      const res = await gasApi.fetch(yearMonth)
-      commit('setAbData', { yearMonth, list: res.data })
-    } catch (e) {
+      const res = await gasApi.fetch()
+      commit('setAbData', { list: res.data })
+    } catch(e) {
       commit('setErrorMessage', { message: e })
-      commit('setAbData', { yearMonth, list: [] })
+      commit('setAbData', { list: [] })
     } finally {
-      commit('setLoading', { type, v: false })
+      commit('setLoading', { type, v: false})
     }
   },
-
-  /** データを追加します */
-  addAbData ({ commit }, { item }) {
-    commit('addAbData', { item })
-  },
-
-  /** データを更新します */
-  updateAbData ({ commit }, { beforeYM, item }) {
-    const yearMonth = item.date.slice(0, 7)
-    if (yearMonth === beforeYM) {
-      commit('updateAbData', { yearMonth, item })
-      return
-    }
-    const id = item.id
-    commit('deleteAbData', { yearMonth: beforeYM, id })
-    commit('addAbData', { item })
-  },
-
-  /** データを削除します */
-  deleteAbData ({ commit }, { item }) {
-    const yearMonth = item.date.slice(0, 7)
-    const id = item.id
-    commit('deleteAbData', { yearMonth, id })
-  },
-
 }
 
 /** カンマ区切りの文字をトリミングして配列にします */
