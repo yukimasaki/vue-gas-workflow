@@ -50,6 +50,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import ItemDialog from '../components/ItemDialog.vue'
 
 export default {
@@ -68,15 +69,15 @@ export default {
       /** 検索文字 */
       search: '',
       /** テーブルに表示させるデータ */
-      tableData: [
-        /** サンプルデータ */
-        { id: '1', recipient_name: '鈴木一郎', department: 'SS', reason: '私用のため', date_between: '2022年10月13日', full_or_half: '1日', contact: '080-1111-2222', memo: 'よろしくお願いします。', status: '承認中', created_at: '2022-10-01'},
-        { id: '2', recipient_name: '田中花子', department: 'CS', reason: '旅行のため', date_between: '2022年12月24日', full_or_half: '1日', contact: '080-3333-4444', memo: 'よろしくお願いします。', status: '承認中', created_at: '2022-10-02'},
-      ],
+      // tableData: [],
     }
   },
 
   computed: {
+    ...mapState({
+      tableData: state => state.tableData,
+    }),
+
     /** テーブルのヘッダー設定 */
     tableHeaders () {
       return [
@@ -104,6 +105,6 @@ export default {
     onClickAdd () {
       this.$refs.itemDialog.open('add')
     },
-  }
+  },
 }
 </script>
