@@ -20,7 +20,7 @@ const state = {
   },
 
   /** 休暇申請データ */
-  abData: {},
+  paidLeaveData: {},
 
   /** ローディング状態 */
   loading: {
@@ -59,7 +59,7 @@ const mutations = {
     gasApi.setUrl(apiUrl)
     gasApi.setAuthToken(authToken)
     // 家計簿データを初期化
-    state.abData = {}
+    state.paidLeaveData = {}
 
     localStorage.setItem('settings', JSON.stringify(settings))
   },
@@ -77,8 +77,8 @@ const mutations = {
   },
 
   /** 申請記録をセットする */
-  setAbData (state, { list }) {
-    state.abData = list
+  setPaidLeaveData (state, { list }) {
+    state.paidLeaveData = list
   },
 
 }
@@ -99,15 +99,15 @@ const actions = {
   },
 
   /** 申請記録を取得する */
-  async fetchAbData ({ commit }) {
+  async fetchPaidLeaveData ({ commit }) {
     const type = 'fetch'
     commit('setLoading', { type, v: true })
     try {
       const res = await gasApi.fetch()
-      commit('setAbData', { list: res.data })
+      commit('setPaidLeaveData', { list: res.data })
     } catch(e) {
       commit('setErrorMessage', { message: e })
-      commit('setAbData', { list: [] })
+      commit('setPaidLeaveData', { list: [] })
     } finally {
       commit('setLoading', { type, v: false})
     }

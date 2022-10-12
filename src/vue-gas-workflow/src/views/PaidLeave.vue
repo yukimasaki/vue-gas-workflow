@@ -74,7 +74,7 @@ export default {
 
   computed: {
     ...mapState({
-      abData: state => state.abData,
+      paidLeaveData: state => state.paidLeaveData,
       loading: state => state.loading.fetch,
     }),
 
@@ -107,7 +107,7 @@ export default {
   methods: {
     ...mapActions([
       /** 申請記録を取得 */
-      'fetchAbData'
+      'fetchPaidLeaveData'
     ]),
 
     /** 追加ボタンがクリックされたとき */
@@ -116,8 +116,8 @@ export default {
     },
 
     async getRecords() {
-      await this.fetchAbData()
-      this.tableData = this.abData
+      await this.fetchPaidLeaveData()
+      this.tableData = this.paidLeaveData
     }
   },
 
