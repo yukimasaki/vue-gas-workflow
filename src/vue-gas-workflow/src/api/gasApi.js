@@ -73,7 +73,7 @@ export default {
   setUrl,
   setAuthToken,
   fetch,
-  add,
-  delete: $delete,
-  update
+  // add,
+  // delete: $delete,
+  // update
 }

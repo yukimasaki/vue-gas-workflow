@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import gasApi from '../api/gasApi'
 
 Vue.use(Vuex)
 
@@ -24,6 +25,18 @@ const state = {
     { id: '1', recipient_name: '鈴木一郎', department: 'SS', reason: '私用のため', date_between: '2022年10月13日', full_or_half: '1日', contact: '080-1111-2222', memo: 'よろしくお願いします。', status: '承認中', created_at: '2022-10-01'},
     { id: '2', recipient_name: '田中花子', department: 'CS', reason: '旅行のため', date_between: '2022年12月24日', full_or_half: '1日', contact: '080-3333-4444', memo: 'よろしくお願いします。', status: '承認中', created_at: '2022-10-02'},
   ],
+
+  /** ローディング状態 */
+  loading: {
+    fetch: false,
+    add: false,
+    update: false,
+    delete: false
+  },
+
+  /** エラーメッセージ */
+  errorMessage: '',
+
 }
 
 /**
@@ -31,10 +44,26 @@ const state = {
  * ActionsからStateを更新するときに呼ばれます
  */
 const mutations = {
+
+  /** ローディング状態をセットします */
+  setLoading (state, { type, v }) {
+    state.loading[type] = v
+  },
+
+  /** エラーメッセージをセットします */
+  setErrorMessage (state, { message }) {
+    state.errorMessage = message
+  },
+
   /** 設定を保存します */
   saveSettings (state, { settings }) {
     state.settings = { ...settings }
-    document.title = state.settings.appName
+    const { appName, apiUrl, authToken } = state.settings
+    document.title = appName
+    gasApi.setUrl(apiUrl)
+    gasApi.setAuthToken(authToken)
+    // 家計簿データを初期化
+    state.abData = {}
 
     localStorage.setItem('settings', JSON.stringify(settings))
   },
@@ -45,7 +74,10 @@ const mutations = {
     if (settings) {
       state.settings = Object.assign(state.settings, settings)
     }
-    document.title = state.settings.appName
+    const { appName, apiUrl, authToken } = state.settings
+    document.title = appName
+    gasApi.setUrl(apiUrl)
+    gasApi.setAuthToken(authToken)
   },
 
   /** 指定年月の家計簿データをセットします */
@@ -98,13 +130,18 @@ const actions = {
   },
 
   /** 指定年月の家計簿データを取得します */
-  fetchAbData ({ commit }, { yearMonth }) {
-    // サンプルデータを初期値として入れる
-    const list = [
-      { id: 'a34109ed', date: `${yearMonth}-01`, title: '支出サンプル', category: '買い物', tags: 'タグ1', income: null, outgo: 2000, memo: 'メモ' },
-      { id: '7c8fa764', date: `${yearMonth}-02`, title: '収入サンプル', category: '給料', tags:'タグ1,タグ2', income: 2000, outgo: null, memo: 'メモ' }
-    ]
-    commit('setAbData', { yearMonth, list })
+  async fetchAbData ({ commit }, { yearMonth }) {
+    const type = 'fetch'
+    commit('setLoading', { type, v: true })
+    try {
+      const res = await gasApi.fetch(yearMonth)
+      commit('setAbData', { yearMonth, list: res.data })
+    } catch (e) {
+      commit('setErrorMessage', { message: e })
+      commit('setAbData', { yearMonth, list: [] })
+    } finally {
+      commit('setLoading', { type, v: false })
+    }
   },
 
   /** データを追加します */
