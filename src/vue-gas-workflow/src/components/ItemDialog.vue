@@ -30,7 +30,7 @@
           <v-text-field
             label="緊急連絡先"
             v-model="contact"
-            :rules="[contactRule]"
+            :rules="[contactRules]"
           />
 
           <!-- 備考 -->
