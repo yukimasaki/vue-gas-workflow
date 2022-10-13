@@ -50,6 +50,15 @@ const fetch = () => {
  * @param {Object} item
  * @returns {Promise}
  */
+ const add = item => {
+  return gasApi.post(apiUrl, {
+    method: 'POST',
+    authToken,
+    params: {
+      item
+    }
+  })
+}
 
 /**
  * 指定年月&idのデータを削除する
@@ -69,7 +78,7 @@ export default {
   setUrl,
   setAuthToken,
   fetch,
-  // add,
+  add,
   // delete: $delete,
   // update
 }
