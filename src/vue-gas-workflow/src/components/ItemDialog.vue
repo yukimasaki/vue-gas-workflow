@@ -144,15 +144,10 @@ export default {
     /** 追加／更新がクリックされたとき */
     async onClickAction () {
       const item = {
-        id: 1,                  // 既存レコードをもとに連番を生成する処理を追加する
-        recipient_name: 'テストイチロウ',  // ログイン情報をもとに氏名を取得する処理を追加する
-        department: 'テスト部',           // 同上
         reason: this.reason,
         date_between: this.date_between,
         contact: this.contact,
         memo: this.memo,
-        status: '承認中',                  // 作成時は［承認中］をセットする
-        created_at: '',
       }
 
       await this.addPaidLeaveData({ item })
