@@ -67,7 +67,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   name: 'ItemDialog',
@@ -121,6 +121,11 @@ export default {
   },
 
   methods: {
+    ...mapActions([
+      /** 申請記録を作成 */
+      'addPaidLeaveData'
+    ]),
+
     /**
      * ダイアログを表示します。
      * このメソッドは親から呼び出されます。
