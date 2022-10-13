@@ -16,21 +16,21 @@
           <v-textarea
             label="事由"
             v-model="reason"
-            :reles="[reasonRules]"
+            :reles="reasonRules"
           />
 
           <!-- 予定日時 -->
           <v-textarea
             label="予定日時"
             v-model="date_between"
-            :reles="[dateBetweenRules]"
+            :reles="dateBetweenRules"
           />
 
           <!-- 緊急連絡先 -->
           <v-text-field
             label="緊急連絡先"
             v-model="contact"
-            :rules="[contactRules]"
+            :rules="contactRules"
           />
 
           <!-- 備考 -->
@@ -80,8 +80,6 @@ export default {
       valid: false,
       /** 日付選択メニューの表示状態 */
       menu: false,
-      /** ローディング状態 */
-      loading: false,
       /** 操作タイプ 'add' or 'edit' */
       actionType: 'add',
       /** 事由 */
@@ -152,7 +150,7 @@ export default {
         created_at: '',
       }
 
-      await this.addAbData({ item })
+      await this.addPaidLeaveData({ item })
 
       this.show = false
     },
