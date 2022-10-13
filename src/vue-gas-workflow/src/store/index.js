@@ -81,6 +81,14 @@ const mutations = {
     state.paidLeaveData = list
   },
 
+  /** データを追加します */
+  addPaidLeaveData (state, { item }) {
+    const list = state.paidLeaveData
+    if (list) {
+      list.push(item)
+    }
+  },
+
 }
 
 /**
