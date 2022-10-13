@@ -52,7 +52,6 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import ItemDialog from '../components/ItemDialog.vue'
-// import axios from 'axios'
 
 export default {
   name: 'PaidLeave',
