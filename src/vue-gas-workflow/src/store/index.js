@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import gasApi from '../api/gasApi'
+import firebase from '@/store/firebase.js'
 
 Vue.use(Vuex)
 
@@ -166,4 +167,6 @@ const store = new Vuex.Store({
   getters
 })
 
-export default store
+export default store ({
+  modules: { firebase }
+})
