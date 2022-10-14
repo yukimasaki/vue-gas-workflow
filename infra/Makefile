@@ -4,5 +4,5 @@ build:
 	docker-compose build
 vue:
 	docker-compose exec vue sh
-destroy
+destroy:
 	docker-compose down --rmi all --volumes --remove-orphans
