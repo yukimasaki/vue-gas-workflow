@@ -8,6 +8,6 @@ const firebaseConfig = {
   messagingSenderId: process.env.VUE_APP_MESSAGESENDER,
   appId: process.env.VUE_APP_APPID
 }
-const firebase = initializeApp(firebaseConfig)
+const firebaseApp = initializeApp(firebaseConfig)
 
-export default firebase
+export default firebaseApp
