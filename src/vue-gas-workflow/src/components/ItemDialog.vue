@@ -107,7 +107,7 @@ export default {
   computed: {
     ...mapState({
       /** ローディング状態 */
-      loading: state => state.loading.add || state.loading.update
+      loading: state => state.workflow.loading.add || state.workflow.loading.update
     }),
 
     /** ダイアログのタイトル */
@@ -121,10 +121,10 @@ export default {
   },
 
   methods: {
-    ...mapActions([
+    ...mapActions(
       /** 申請記録を作成 */
-      'addPaidLeaveData'
-    ]),
+      'workflow', ['addPaidLeaveData']
+    ),
 
     /**
      * ダイアログを表示します。
