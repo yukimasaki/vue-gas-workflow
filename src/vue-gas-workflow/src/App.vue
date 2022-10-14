@@ -2,22 +2,25 @@
   <v-app>
     <!-- ツールバー -->
     <v-app-bar app color="green" dark>
+
       <!-- タイトル -->
       <v-toolbar-title>{{ appName }}</v-toolbar-title>
+
       <v-spacer></v-spacer>
-      <!-- テーブルアイコンのボタン -->
-      <v-btn icon to="/">
-        <v-icon>mdi-file-table-outline</v-icon>
-      </v-btn>
-      <!-- ユーザーアイコンのボタン -->
-      <v-btn icon to="/login">
-        <v-icon>mdi-account</v-icon>
-      </v-btn>
-      <!-- 歯車アイコンのボタン -->
-      <v-btn icon to="/settings">
-        <v-icon>mdi-cog</v-icon>
-      </v-btn>
+
+      <v-toolbar-items>
+        <!-- テーブルアイコンのボタン -->
+        <v-btn text to="/">トップ</v-btn>
+
+        <!-- ユーザーアイコンのボタン -->
+        <v-btn text to="/login">user_name</v-btn>
+
+        <!-- 歯車アイコンのボタン -->
+        <v-btn text to="/settings">設定</v-btn>
+      </v-toolbar-items>
+
     </v-app-bar>
+
     <!-- メインコンテンツ -->
     <v-main>
       <v-container fluid>
