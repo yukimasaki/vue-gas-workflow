@@ -5,11 +5,13 @@
     </button>
     <p class="h5">
       {{ data.email_address }}
+      {{ user.email_address }}
     </p>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import firebaseApp from '../firebase/firebaseConfig'
 import {
   getAuth, signInWithPopup, GoogleAuthProvider, setPersistence, browserLocalPersistence
@@ -22,6 +24,12 @@ export default {
     return {
       data: { email_address: ''}
     }
+  },
+
+  computed: {
+    ...mapState({
+      user: state => state.firebase.user
+    }),
   },
 
   methods: {
@@ -42,7 +50,7 @@ export default {
         const email = error.email
         console.log('errorCode: ' + errorCode + '/errorMessage: ' + errorMessage + '/email: '+ email)
       })
-    },
+    }
   },
 }
 </script>
