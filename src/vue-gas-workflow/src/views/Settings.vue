@@ -56,19 +56,28 @@
 </template>
 
 <script>
+// import { mapState } from 'vuex'
 export default {
   name: 'Settings',
 
   data () {
+
     const createItems = v => v.split(',').map(v => v.trim()).filter(v => v.length !== 0)
     const itemMaxLength = v => createItems(v).reduce((a, c) => Math.max(a, c.length), 0)
 
     return {
+
+      /** 設定 */
+      // ↓ mapState表記だとなぜかエラーになる
+      // ...mapState({
+      //   settings: state => state.workflow.settings
+      // }),
+      settings: { ...this.$store.state.workflow.settings},
+
       /** 入力したデータが有効かどうか */
       valid: false,
-      /** 設定 */
-      settings: { ...this.$store.state.settings },
 
+      //test
       /** バリデーションルール */
       appNameRule: v => v.length <= 30 || '30文字以内で入力してください',
       stringRule: v => v.length <= 150 || '150文字以内で入力してください',
@@ -82,8 +91,13 @@ export default {
 
   methods: {
     onClickSave () {
-      this.$store.dispatch('saveSettings', { settings: this.settings })
+      this.$store.dispatch('workflow/saveSettings', { settings: this.settings })
     }
+  },
+
+  //test
+  created() {
+    console.log(this.settings.apiUrl)
   }
 }
 </script>
