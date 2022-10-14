@@ -51,12 +51,12 @@ export default {
   // beforeCreate()は［Appインスタンスは生成後 かつ データ初期化前］に実行される
   // 参考：https://qiita.com/ksh-fthr/items/2a9f173c706ef6939f93
   beforeCreate () {
-    this.$store.dispatch('loadSettings')
+    this.$store.dispatch('workflow/loadSettings')
   },
 
   computed: mapState({
-    appName: state => state.settings.appName,
-    errorMessage: state => state.errorMessage
+    appName: state => state.workflow.settings.appName,
+    errorMessage: state => state.workflow.errorMessage
   }),
 
   watch: {
