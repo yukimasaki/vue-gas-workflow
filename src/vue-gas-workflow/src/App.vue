@@ -9,6 +9,10 @@
       <v-btn icon to="/">
         <v-icon>mdi-file-table-outline</v-icon>
       </v-btn>
+      <!-- ユーザーアイコンのボタン -->
+      <v-btn icon to="/login">
+        <v-icon>mdi-account</v-icon>
+      </v-btn>
       <!-- 歯車アイコンのボタン -->
       <v-btn icon to="/settings">
         <v-icon>mdi-cog</v-icon>
