@@ -94,11 +94,6 @@ export default {
       this.$store.dispatch('workflow/saveSettings', { settings: this.settings })
     }
   },
-
-  //test
-  created() {
-    console.log(this.settings.apiUrl)
-  }
 }
 </script>
 
