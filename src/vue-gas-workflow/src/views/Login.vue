@@ -4,17 +4,17 @@
       認証
     </button>
     <p class="h5">
-      {{ data.email_address }}
-      {{ user.email_address }}
+      <!-- stateの値を取得したい -->
+      {{ user }}
     </p>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import firebaseApp from '../firebase/firebaseConfig'
 import {
-  getAuth, signInWithPopup, GoogleAuthProvider, setPersistence, browserLocalPersistence
+  getAuth, signInWithPopup, GoogleAuthProvider
 } from "firebase/auth";
 
 export default {
@@ -22,17 +22,22 @@ export default {
 
   data() {
     return {
-      data: { email_address: ''}
+      data: {}
     }
   },
 
   computed: {
     ...mapState({
+      // ↓は正常に動作している
       user: state => state.firebase.user
     }),
   },
 
   methods: {
+    ...mapActions(
+      'firebase', ['saveUser']
+    ),
+
     authMethod() {
       // 初期化
       firebaseApp
@@ -40,17 +45,18 @@ export default {
       const provider = new GoogleAuthProvider()
       const auth = getAuth();
       signInWithPopup(auth, provider).then((result) => {
-        const user = result.user
-        this.data.email_address = user.email
-        setPersistence(auth, browserLocalPersistence)
-        console.log(this.data.email_address)
+        // const user = result.user
+        const user = 'hoge'
+        // ↓は正常に動作している
+        this.saveUser(user)
+        console.log(result.user.email)
       }).catch((error) => {
         const errorCode = error.code
         const errorMessage = error.message
         const email = error.email
         console.log('errorCode: ' + errorCode + '/errorMessage: ' + errorMessage + '/email: '+ email)
       })
-    }
+    },
   },
 }
 </script>
