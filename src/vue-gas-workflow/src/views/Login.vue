@@ -11,14 +11,16 @@
 
 <script>
 import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import {
+  getAuth, signInWithPopup, GoogleAuthProvider, setPersistence, browserLocalPersistence
+} from "firebase/auth";
 
 export default {
   name: 'Login',
 
   data() {
     return {
-      data: {}
+      data: { email_address: ''}
     }
   },
 
@@ -38,8 +40,9 @@ export default {
       const auth = getAuth();
       signInWithPopup(auth, provider).then((result) => {
         const user = result.user
-        const data = { email_address: user.email}
-        return data
+        this.data.email_address = user.email
+        setPersistence(auth, browserLocalPersistence)
+        console.log(this.data.email_address)
       }).catch((error) => {
         const errorCode = error.code
         const errorMessage = error.message
