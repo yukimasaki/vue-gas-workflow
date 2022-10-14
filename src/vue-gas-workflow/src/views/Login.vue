@@ -25,12 +25,12 @@ export default {
   methods: {
     authMethod() {
       const firebaseConfig = {
-        apiKey: "AIzaSyCsCctH0r0gfALLZhQrLC4Y6ywaELOY5pA",
-        authDomain: "vue-auth-e5641.firebaseapp.com",
-        projectId: "vue-auth-e5641",
-        storageBucket: "vue-auth-e5641.appspot.com",
-        messagingSenderId: "37975153108",
-        appId: "1:37975153108:web:c88e0a974a1b751e4d9e41"
+        apiKey: process.env.VUE_APP_APIKEY,
+        authDomain: process.env.VUE_APP_AUTHDOMAIN,
+        projectId: process.env.VUE_APP_PROJECTID,
+        storageBucket: process.env.VUE_APP_STORAGEBUCKET,
+        messagingSenderId: process.env.VUE_APP_MESSAGESENDER,
+        appId: process.env.VUE_APP_APPID
       }
       initializeApp(firebaseConfig)
 
