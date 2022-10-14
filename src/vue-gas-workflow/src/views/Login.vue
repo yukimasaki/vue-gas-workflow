@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { initializeApp } from 'firebase/app';
+import firebaseApp from '../firebase/firebaseConfig'
 import {
   getAuth, signInWithPopup, GoogleAuthProvider, setPersistence, browserLocalPersistence
 } from "firebase/auth";
@@ -26,15 +26,8 @@ export default {
 
   methods: {
     authMethod() {
-      const firebaseConfig = {
-        apiKey: process.env.VUE_APP_APIKEY,
-        authDomain: process.env.VUE_APP_AUTHDOMAIN,
-        projectId: process.env.VUE_APP_PROJECTID,
-        storageBucket: process.env.VUE_APP_STORAGEBUCKET,
-        messagingSenderId: process.env.VUE_APP_MESSAGESENDER,
-        appId: process.env.VUE_APP_APPID
-      }
-      initializeApp(firebaseConfig)
+      // 初期化
+      firebaseApp
 
       const provider = new GoogleAuthProvider()
       const auth = getAuth();
