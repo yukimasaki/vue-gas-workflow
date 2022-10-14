@@ -73,8 +73,8 @@ export default {
 
   computed: {
     ...mapState({
-      paidLeaveData: state => state.paidLeaveData,
-      loading: state => state.loading.fetch,
+      paidLeaveData: state => state.workflow.paidLeaveData,
+      loading: state => state.workflow.loading.fetch,
     }),
 
     /** テーブルのヘッダー設定 */
@@ -103,10 +103,10 @@ export default {
   },
 
   methods: {
-    ...mapActions([
+    ...mapActions(
       /** 申請記録を取得 */
-      'fetchPaidLeaveData'
-    ]),
+      'workflow', ['fetchPaidLeaveData']
+    ),
 
     /** 追加ボタンがクリックされたとき */
     onClickAdd () {
