@@ -12,8 +12,27 @@
         <!-- テーブルアイコンのボタン -->
         <v-btn text to="/">トップ</v-btn>
 
-        <!-- ユーザーアイコンのボタン -->
-        <v-btn text to="/login">{{ userName }}</v-btn>
+        <!-- ログインメニュー -->
+        <v-menu
+          offset-y
+          open-on-hover>
+          <template v-slot:activator="{on}">
+            <!-- ログイン時はGoogleアカウントの表示名を表示する -->
+            <v-btn v-if="loginStatus" text v-on="on">{{ userName }}</v-btn>
+            <!-- 非ログイン時はログインボタンとして機能する -->
+            <v-btn v-else text v-on="on" @click="loginWithGoogle">{{ userName }}</v-btn>
+          </template>
+          <!-- ログイン時はドロップダウンメニューを表示する -->
+          <div v-if="loginStatus">
+            <v-list>
+              <v-list-item link>
+                <v-list-item-content>
+                  <v-list-item-title @click="logout">ログアウト</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </div>
+        </v-menu>
 
         <!-- 歯車アイコンのボタン -->
         <v-btn text to="/settings">設定</v-btn>
@@ -36,7 +55,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import firebaseApp from './firebase/firebaseConfig'
 
 export default {
@@ -52,9 +71,12 @@ export default {
     ...mapState({
       appName: state => state.workflow.settings.appName,
       errorMessage: state => state.workflow.errorMessage,
-      userName: state => state.firebase.userName
     }),
 
+    ...mapGetters({
+      userName: 'firebase/getUserName',
+      loginStatus: 'firebase/getLoginStatus'
+    })
   },
 
   beforeCreate () {
