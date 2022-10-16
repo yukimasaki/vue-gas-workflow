@@ -69,7 +69,11 @@ const actions = {
   onAuth({ commit }) {
     const auth = getAuth()
     onAuthStateChanged(auth, (user) => {
-      user = user ? user : {}
+      const blankUser = {
+        uid: '',
+        displayName: 'ログイン'
+      }
+      user = user ? user : blankUser
       commit('setUserUid', user.uid)
       commit('setUserName', user.displayName)
       commit('setLoginStatus', user.uid ? true : false)
