@@ -1,4 +1,11 @@
-import { GoogleAuthProvider, getAuth, signInWithPopup, setPersistence, browserSessionPersistence, onAuthStateChanged, signOut } from "firebase/auth"
+import {
+  GoogleAuthProvider,
+  getAuth,
+  signInWithPopup,
+  setPersistence,
+  browserSessionPersistence,
+  onAuthStateChanged, signOut
+} from "firebase/auth"
 
 const state = {
   loggedIn: false,
@@ -83,6 +90,9 @@ const actions = {
 }
 
 const getters = {
+  getLoginStatus(state) {
+    return state.loggedIn
+  },
   getUserUid(state) {
     return state.userUid
   },
