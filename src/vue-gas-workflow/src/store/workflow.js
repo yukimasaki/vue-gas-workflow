@@ -10,9 +10,6 @@ const state = {
     appName: 'GAS 家計簿',
     apiUrl: '',
     authToken: '',
-    strIncomeItems: '給料, ボーナス, 繰越',
-    strOutgoItems: '食費, 趣味, 交通費, 買い物, 交際費, 生活費, 住宅, 通信, 車, 税金',
-    strTagItems: '固定費, カード'
   },
 
   /** 休暇申請データ */
@@ -77,7 +74,7 @@ const mutations = {
     state.paidLeaveData = list
   },
 
-  /** データを追加します */
+  /** データを追加する */
   addPaidLeaveData (state, { item }) {
     const list = state.paidLeaveData
     if (list) {
@@ -133,26 +130,11 @@ const actions = {
 
 }
 
-/** カンマ区切りの文字をトリミングして配列にする */
-const createItems = v => v.split(',').map(v => v.trim()).filter(v => v.length !== 0)
-
 /**
  * Getters
  * 画面から取得され、Stateを加工して渡する
  */
 const getters = {
-  /** 収入カテゴリ（配列） */
-  incomeItems (state) {
-    return createItems(state.settings.strIncomeItems)
-  },
-  /** 支出カテゴリ（配列） */
-  outgoItems (state) {
-    return createItems(state.settings.strOutgoItems)
-  },
-  /** タグ（配列） */
-  tagItems (state) {
-    return createItems(state.settings.strTagItems)
-  }
 }
 
 export default {
