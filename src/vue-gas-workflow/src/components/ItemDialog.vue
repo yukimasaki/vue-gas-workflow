@@ -144,6 +144,7 @@ export default {
     /** 追加／更新がクリックされたとき */
     async onClickAction () {
       const item = {
+        recipient_email: this.$store.getters['firebase/getUserEmail'],
         reason: this.reason,
         date_between: this.date_between,
         contact: this.contact,
