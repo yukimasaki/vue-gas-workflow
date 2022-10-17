@@ -11,10 +11,9 @@
 
       <v-spacer></v-spacer>
 
-      <v-toolbar-items>
+      <v-toolbar-items v-if="loginStatus">
         <!-- ログインメニュー -->
         <v-menu
-          v-if="loginStatus"
           offset-y
           open-on-hover>
           <template v-slot:activator="{on}">
