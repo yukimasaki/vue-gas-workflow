@@ -4,21 +4,21 @@
     <v-app-bar app color="green" dark>
 
       <!-- タイトル -->
-      <v-toolbar-title>{{ appName }}</v-toolbar-title>
+      <v-toolbar-title
+        @click="$router.push('/')"
+        style="cursor: pointer"
+      >{{ appName }}</v-toolbar-title>
 
       <v-spacer></v-spacer>
 
       <v-toolbar-items>
-        <!-- テーブルアイコンのボタン -->
-        <v-btn text to="/">トップ</v-btn>
-
         <!-- ログインメニュー -->
         <v-menu
           offset-y
           open-on-hover>
           <template v-slot:activator="{on}">
             <!-- ログイン時はGoogleアカウントの表示名を表示する -->
-            <v-btn v-if="loginStatus" text v-on="on">{{ userName }}</v-btn>
+            <v-btn v-if="loginStatus" text v-on="on"><v-avatar size="40" class="mr-3"><img :src="userIcon"></v-avatar>{{ userName }}</v-btn>
             <!-- 非ログイン時はログインボタンとして機能する -->
             <v-btn v-else text v-on="on" @click="loginWithGoogle">{{ userName }}</v-btn>
           </template>
@@ -75,6 +75,7 @@ export default {
 
     ...mapGetters({
       userName: 'firebase/getUserName',
+      userIcon: 'firebase/getUserIcon',
       loginStatus: 'firebase/getLoginStatus'
     })
   },
