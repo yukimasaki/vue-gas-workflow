@@ -1,7 +1,6 @@
 // ライブラリ
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import store from '@/store'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
 // コンポーネント
@@ -23,15 +22,17 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login,
-    meta: {requiresAuth: false},
     beforeEnter(to, from, next) {
-      if(store.getters['firebase/getLoginStatus']) {
-        // ログイン時はトップページにリダイレクト
-        next('/')
-      } else {
-        // 未ログイン時はログインページを表示
-        next()
-      }
+      const auth = getAuth()
+      onAuthStateChanged(auth, (user) => {
+        if(user) {
+          // 認証済みの場合はトップページへ遷移
+          next('/')
+        } else {
+          // 未認証の場合はログインページへ遷移
+          next()
+        }
+      })
     }
   },
   {
