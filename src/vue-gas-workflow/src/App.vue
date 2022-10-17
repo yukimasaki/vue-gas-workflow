@@ -89,8 +89,9 @@ export default {
 
   methods: {
     // Googleアカウントでログイン
-    loginWithGoogle() {
-      this.$store.dispatch('firebase/login')
+    async loginWithGoogle() {
+      await this.$store.dispatch('firebase/login')
+      this.$router.push('/')
     },
 
     // ログアウト
