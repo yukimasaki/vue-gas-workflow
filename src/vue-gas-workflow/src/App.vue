@@ -56,7 +56,7 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
-import firebaseApp from './firebase/firebaseConfig'
+// import initFirebase from './firebase/firebaseConfig'
 
 export default {
   name: 'App',
@@ -90,20 +90,13 @@ export default {
   methods: {
     // Googleアカウントでログイン
     loginWithGoogle() {
-      // 初期化
-      firebaseApp
-
       this.$store.dispatch('firebase/login')
     },
 
     // ログアウト
     async logout(){
-      // 初期化
-      firebaseApp
-
       await this.$store.dispatch('firebase/logout')
-
-      this.$router.push('/login')
+      // this.$router.push('/login')
     }
   },
 
