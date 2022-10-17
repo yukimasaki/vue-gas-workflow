@@ -10,6 +10,7 @@
 
         <v-card-actions class="justify-center">
           <v-btn
+            @click="loginWithGoogle"
             style="text-transform: none"
             width="80%"
           >
@@ -22,4 +23,15 @@
 
 
 <script>
+export default {
+  name: 'Login',
+
+  methods: {
+    // Googleアカウントでログイン
+    async loginWithGoogle() {
+      await this.$store.dispatch('firebase/login')
+      this.$router.push('/')
+    }
+  }
+}
 </script>
