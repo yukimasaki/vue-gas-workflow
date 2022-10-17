@@ -89,8 +89,8 @@ const actions = {
       user = user ? user : blankUser
       commit('setUserUid', user.uid)
       commit('setUserName', user.displayName)
-      commit('setUserIcon', user.photoURL)
       commit('setLoginStatus', user.uid ? true : false)
+      commit('setUserIcon', user.photoURL)
       console.log('onAuth')
     })
   }
