@@ -85,9 +85,6 @@ export default {
     // beforeCreate()は［Appインスタンスは生成後 かつ データ初期化前］に実行される
     // 参考：https://qiita.com/ksh-fthr/items/2a9f173c706ef6939f93
     this.$store.dispatch('workflow/loadSettings')
-
-    // 認証状態を取得
-    this.$store.dispatch('firebase/onAuth')
   },
 
   methods: {
@@ -100,11 +97,13 @@ export default {
     },
 
     // ログアウト
-    logout(){
+    async logout(){
       // 初期化
       firebaseApp
 
-      this.$store.dispatch('firebase/logout')
+      await this.$store.dispatch('firebase/logout')
+
+      this.$router.push('/login')
     }
   },
 
