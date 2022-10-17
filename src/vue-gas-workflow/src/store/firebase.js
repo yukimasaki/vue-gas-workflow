@@ -10,7 +10,8 @@ import {
 const state = {
   loggedIn: false,
   userUid: '',
-  userName: ''
+  userName: '',
+  userIcon: ''
 }
 
 const mutations = {
@@ -22,6 +23,9 @@ const mutations = {
   },
   setUserName(state, userName) {
     state.userName = userName
+  },
+  setUserIcon(state, userIcon) {
+    state.userIcon = userIcon
   }
 }
 
@@ -40,6 +44,7 @@ const actions = {
         const user = result.user
         commit('setUserUid', user.uid)
         commit('setUserName', user.displayName)
+        commit('setUserIcon', user.photoURL)
 
         console.log('login success')
       }).catch((error) => {
@@ -78,11 +83,13 @@ const actions = {
     onAuthStateChanged(auth, (user) => {
       const blankUser = {
         uid: '',
-        displayName: 'ログイン'
+        displayName: 'ログイン',
+        photoURL: ''
       }
       user = user ? user : blankUser
       commit('setUserUid', user.uid)
       commit('setUserName', user.displayName)
+      commit('setUserIcon', user.photoURL)
       commit('setLoginStatus', user.uid ? true : false)
       console.log('onAuth')
     })
@@ -98,6 +105,9 @@ const getters = {
   },
   getUserName(state) {
     return state.userName
+  },
+  getUserIcon(state) {
+    return state.userIcon
   }
 }
 
