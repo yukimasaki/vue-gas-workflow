@@ -14,24 +14,21 @@
       <v-toolbar-items>
         <!-- ログインメニュー -->
         <v-menu
+          v-if="loginStatus"
           offset-y
           open-on-hover>
           <template v-slot:activator="{on}">
             <!-- ログイン時はGoogleアカウントの表示名を表示する -->
-            <v-btn v-if="loginStatus" text v-on="on"><v-avatar size="40" class="mr-3"><img :src="userIcon"></v-avatar>{{ userName }}</v-btn>
-            <!-- 非ログイン時はログインボタンとして機能する -->
-            <v-btn v-else text v-on="on" @click="loginWithGoogle">{{ userName }}</v-btn>
+            <v-btn text v-on="on"><v-avatar size="40" class="mr-3"><img :src="userIcon"></v-avatar>{{ userName }}</v-btn>
           </template>
           <!-- ログイン時はドロップダウンメニューを表示する -->
-          <div v-if="loginStatus">
-            <v-list>
-              <v-list-item link>
-                <v-list-item-content>
-                  <v-list-item-title @click="logout">ログアウト</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </div>
+          <v-list>
+            <v-list-item link>
+              <v-list-item-content>
+                <v-list-item-title @click="logout">ログアウト</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
         </v-menu>
 
         <!-- 歯車アイコンのボタン -->
@@ -88,12 +85,6 @@ export default {
   },
 
   methods: {
-    // Googleアカウントでログイン
-    async loginWithGoogle() {
-      await this.$store.dispatch('firebase/login')
-      this.$router.push('/')
-    },
-
     // ログアウト
     async logout(){
       await this.$store.dispatch('firebase/logout')
