@@ -4,7 +4,7 @@
       <v-card-title>
         <!-- 申請書タイトル -->
         <v-col cols="8">
-          <div class="text-h3">
+          <div class="h5">
             {{ title }}
           </div>
         </v-col>
