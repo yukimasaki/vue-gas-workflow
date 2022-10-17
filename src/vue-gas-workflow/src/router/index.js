@@ -1,7 +1,10 @@
+// ライブラリ
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '@/store'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
+// コンポーネント
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
 import Settings from '../views/Settings.vue'
@@ -50,23 +53,24 @@ const router = new VueRouter({
   routes
 })
 
-// ログイン状態をチェック（Boolean: true/false）
-function isLogin() {
-  return store.getters['firebase/getLoginStatus']
-}
+// 認証状態をチェック
+router.beforeEach( (to, from, next) => {
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
 
-// 未認証の場合はログイン画面('/login')へリダイレクト
-router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    // requiresAuthがtrueなら評価
-    if (!isLogin()) {
-      // 未ログイン時はログインページへリダイレクト
-      next('/login')
-    } else {
-      next()  // スルー
-    }
+  if (requiresAuth) {
+    // 認証状態を取得
+    const auth = getAuth()
+    onAuthStateChanged(auth, (user) => {
+      if(user) {
+        // 認証済の場合はページへ遷移する
+        next()
+      } else {
+        // 未認証の場合はログインページへ遷移する
+        next('/login')
+      }
+    })
   } else {
-    next()  // スルー
+    next()
   }
 })
 
