@@ -4,7 +4,8 @@ import {
   signInWithPopup,
   setPersistence,
   browserSessionPersistence,
-  onAuthStateChanged, signOut
+  onAuthStateChanged,
+  signOut
 } from "firebase/auth"
 
 const state = {
