@@ -7,7 +7,7 @@ import gasApi from '../api/gasApi'
 const state = {
   /** 設定 */
   settings: {
-    appName: 'GAS 家計簿',
+    appName: 'ワークフロー',
     apiUrl: '',
     authToken: '',
   },
