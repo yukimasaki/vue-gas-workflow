@@ -3,25 +3,13 @@
 </template>
 
 <script>
-import db from '@/firebase/firebaseConfig'
-import {
-  collection,
-  addDoc
-} from 'firebase/firestore'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'FirestoreTest',
 
   methods: {
-    async addDocTest() {
-      const colRef = collection(db, "cities")
-      const data = {
-        name: "Los Angeles",
-        state: "CA",
-        country: "USA"
-      }
-      await addDoc(colRef, data)
-    }
+    ...mapActions('firestore', ['addDocTest'])
   }
 }
 </script>
