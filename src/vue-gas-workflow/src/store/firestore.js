@@ -1,11 +1,12 @@
-import {
-  collection,
-  addDoc
-} from 'firebase/firestore'
+// import db from '@/firebase/firebaseConfig.js'
 
 const state = {}
+
 const mutations = {}
-const actions = {}
+
+const actions = {
+}
+
 const getters = {}
 
 export default {
