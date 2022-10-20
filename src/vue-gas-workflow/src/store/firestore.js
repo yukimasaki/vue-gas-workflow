@@ -57,7 +57,7 @@ const actions = {
       const querySnapshot = await getDocs(q)
       const collections = []
       querySnapshot.forEach(doc => {
-        collections.push(doc.data())
+        collections.push({...doc.data(), id: doc.id})
       })
 
       commit('setAllCollections', { collections })
