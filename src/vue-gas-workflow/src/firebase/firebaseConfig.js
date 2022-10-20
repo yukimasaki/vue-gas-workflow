@@ -14,8 +14,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig)
 
 //Firestoreの初期化
-const initFirebase = () => {
-  getFirestore(app)
-}
+const db = getFirestore(app)
 
-export default initFirebase
+export default db
