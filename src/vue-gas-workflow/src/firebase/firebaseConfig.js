@@ -1,4 +1,5 @@
 import { initializeApp } from 'firebase/app'
+import { getFirestore } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: process.env.VUE_APP_APIKEY,
@@ -8,6 +9,13 @@ const firebaseConfig = {
   messagingSenderId: process.env.VUE_APP_MESSAGESENDER,
   appId: process.env.VUE_APP_APPID
 }
-const initFirebase = initializeApp(firebaseConfig)
+
+// Firebaseの初期化
+const app = initializeApp(firebaseConfig)
+
+//Firestoreの初期化
+const initFirebase = () => {
+  getFirestore(app)
+}
 
 export default initFirebase
