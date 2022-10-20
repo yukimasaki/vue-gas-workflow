@@ -8,6 +8,7 @@ import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
 import Settings from '../views/Settings.vue'
 import PaidLeave from '../views/PaidLeave.vue'
+import FirestoreTest from '../views/FirestoreTest.vue'
 
 Vue.use(VueRouter)
 
@@ -45,6 +46,12 @@ const routes = [
     path: '/paid_leave',
     name: 'PaidLeave',
     component: PaidLeave,
+    meta: {requiresAuth: true}
+  },
+  {
+    path: '/firestore_test',
+    name: 'FirestoreTest',
+    component: FirestoreTest,
     meta: {requiresAuth: true}
   },
 ]
