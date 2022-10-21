@@ -35,8 +35,8 @@
         :search="search"
         :footer-props="footerProps"
         :loading="loading"
-        :sort-by="'id'"
-        :sort-desc="true"
+        :sort-by="'department'"
+        :sort-desc="false"
         :items-per-page="30"
         mobile-breakpoint="0"
       >
@@ -94,9 +94,9 @@ export default {
     /** テーブルのヘッダー設定 */
     tableHeaders () {
       return [
+        { text: '部署', value: 'department', sortable: true },
         { text: 'メールアドレス', value: 'email', sortable: false },
         { text: '氏名', value: 'name', sortable: false },
-        { text: '部署', value: 'department', sortable: true },
         { text: '操作', value: 'actions', sortable: false },
       ]
     },

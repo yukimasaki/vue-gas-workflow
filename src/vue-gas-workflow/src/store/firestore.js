@@ -1,11 +1,12 @@
 import db from '@/firebase/firebaseConfig'
 import {
   collection,
-  addDoc,
+  doc,
   query,
   getDocs,
-  doc,
-  updateDoc
+  addDoc,
+  updateDoc,
+  deleteDoc
 } from 'firebase/firestore'
 
 const state = {
@@ -51,6 +52,13 @@ const mutations = {
     const list = state[tableName]
     const index = list.findIndex(v => v.id === item.id)
     list.splice(index, 1, item)
+  },
+
+  /** データを削除する */
+  deleteCollection(state, { tableName, id }) {
+    const list = state[tableName]
+    const index = list.findIndex(v => v.id === id)
+    list.splice(index, 1)
   }
 }
 
@@ -107,6 +115,20 @@ const actions = {
   },
 
   // データを削除する
+  async deleteCollection({ commit }, { tableName, item }) {
+    const type = 'delete'
+    const id = item.id
+    commit('setLoading', { type, v: true })
+    try {
+      const docRef = doc(db, tableName, item.id)
+      await deleteDoc(docRef, item)
+      commit('deleteCollection', { tableName, id })
+    } catch (e) {
+      commit('setErrorMessage', { message: e })
+    } finally {
+      commit('setLoading', { type, v: false })
+    }
+  },
 
 }
 
