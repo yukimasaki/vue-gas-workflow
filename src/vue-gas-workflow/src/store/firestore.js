@@ -36,8 +36,8 @@ const mutations = {
   },
 
   /** 取得したデータをセットする */
-  setAllCollections(state, { collections }) {
-    state.employees = collections
+  setAllCollections(state, { tableName, collections }) {
+    state[`${tableName}`] = collections
   },
 
   /** データを追加する */
@@ -56,21 +56,21 @@ const mutations = {
 
 const actions = {
   // データを取得する
-  async fetchAllCollections({ commit }) {
+  async fetchAllCollections({ commit }, { tableName }) {
     const type = 'fetch'
     commit('setLoading', { type, v: true })
     try {
-      const q = query(collection(db, 'employees'))
+      const q = query(collection(db, tableName))
       const querySnapshot = await getDocs(q)
       const collections = []
       querySnapshot.forEach(doc => {
         collections.push({...doc.data(), id: doc.id})
       })
 
-      commit('setAllCollections', { collections })
+      commit('setAllCollections', { tableName, collections })
     } catch(e) {
       commit('setErrorMessage', { message: e })
-      commit('setAllCollections', { collections: [] })
+      commit('setAllCollections', { tableName, collections: [] })
     } finally {
       commit('setLoading', { type, v: false})
     }

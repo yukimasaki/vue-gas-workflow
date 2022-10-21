@@ -80,6 +80,8 @@ export default {
       search: '',
       /** テーブルに表示させるデータ */
       tableData: [],
+      /** テーブル名を指定 */
+      tableName: 'employees'
     }
   },
 
@@ -122,12 +124,12 @@ export default {
 
     /** 削除ボタンがクリックされたとき */
     onClickDelete (item) {
-      this.$refs.deleteDialog.open('employee', item)
+      this.$refs.deleteDialog.open(this.tableName, item)
     },
 
     /** テーブルに表示させるデータを取得する */
     async getRecords() {
-      await this.fetchAllCollections()
+      await this.fetchAllCollections({ tableName: this.tableName })
       this.tableData = this.employees
     },
 
