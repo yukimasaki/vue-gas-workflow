@@ -8,7 +8,7 @@
     <v-card>
       <v-card-title/>
       <v-card-text class="black--text">
-        「{{ item.name }}」を削除しますか？
+        削除しますか？
       </v-card-text>
       <v-card-actions>
         <v-spacer/>

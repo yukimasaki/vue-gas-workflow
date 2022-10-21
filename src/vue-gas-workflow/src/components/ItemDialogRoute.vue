@@ -19,6 +19,13 @@
             :rules="departmentRules"
           />
 
+          <!-- 順序 -->
+          <v-text-field
+            label="順序"
+            v-model="order"
+            :reles="orderRules"
+          />
+
           <!-- メールアドレス -->
           <v-text-field
             label="メールアドレス"
@@ -26,11 +33,11 @@
             :reles="emailRules"
           />
 
-          <!-- 氏名 -->
+          <!-- 役割 -->
           <v-text-field
-            label="氏名"
-            v-model="name"
-            :reles="nameRules"
+            label="役割"
+            v-model="role"
+            :reles="roleRules"
           />
 
         </v-form>
@@ -80,20 +87,25 @@ export default {
       id: '',
       /** 部署 */
       department: '',
+      /** 順序 */
+      order: '',
       /** メールアドレス */
       email: '',
-      /** 氏名 */
-      name: '',
+      /** 役割 */
+      role: '',
 
       /** バリデーションルール */
       departmentRules: [
         v => v.trim().length > 0 || '部署は必須です',
       ],
+      orderRules: [
+        v => v.trim().length > 0 || '順序は必須です',
+      ],
       emailRules: [
         v => v.trim().length > 0 || 'メールアドレスは必須です',
       ],
-      nameRules: [
-        v => v.trim().length > 0 || '氏名は必須です',
+      roleRules: [
+        v => v.trim().length > 0 || '役割は必須です',
       ],
     }
   },
@@ -139,19 +151,18 @@ export default {
 
     /** 追加／更新がクリックされたとき */
     async onClickAction () {
-      const tableName = 'employees'
-
       const item = {
         id: this.id,
         department: this.department,
+        order: this.order,
         email: this.email,
-        name: this.name,
+        role: this.role,
       }
 
       if (this.actionType === 'add') {
-        await this.addCollection({ tableName, item })
+        await this.addCollection({ item })
       } else {
-        await this.updateCollection({ tableName, item })
+        await this.updateCollection({ item })
       }
 
       this.show = false
@@ -161,8 +172,9 @@ export default {
     resetForm (item = {}) {
       this.id = item.id || ''
       this.department = item.department || ''
+      this.order = item.order || ''
       this.email = item.email || ''
-      this.name = item.name || ''
+      this.role = item.role || ''
 
       this.$refs.form.resetValidation()
     }

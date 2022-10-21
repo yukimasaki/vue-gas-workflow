@@ -80,8 +80,6 @@ export default {
       search: '',
       /** テーブルに表示させるデータ */
       tableData: [],
-      /** テーブル名を指定 */
-      tableName: ''
     }
   },
 
@@ -126,7 +124,7 @@ export default {
 
     /** 削除ボタンがクリックされたとき */
     onClickDelete (item) {
-      this.$refs.deleteDialog.open(this.tableName, item)
+      this.$refs.deleteDialog.open(item)
     },
 
     /** テーブルに表示させるデータを取得する */
