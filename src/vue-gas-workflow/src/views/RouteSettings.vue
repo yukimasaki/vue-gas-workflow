@@ -89,6 +89,7 @@ export default {
     ...mapState({
       paid_leave_routes: state => state.firestore.paid_leave_routes,
       loading: state => state.workflow.loading.fetch,
+      useTableName: state => state.firestore.useTableName
     }),
 
     /** テーブルのヘッダー設定 */
