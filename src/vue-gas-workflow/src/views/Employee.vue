@@ -94,7 +94,6 @@ export default {
 
   methods: {
     ...mapActions({
-      addDocTest: 'firestore/addDocTest',
       fetchAllCollections: 'firestore/fetchAllCollections',
     }),
 
