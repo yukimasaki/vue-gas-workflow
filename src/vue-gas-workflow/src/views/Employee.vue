@@ -40,24 +40,36 @@
         :items-per-page="30"
         mobile-breakpoint="0"
       >
+
+        <!-- 操作列 -->
+        <template v-slot:[`item.actions`]="{ item }">
+          <v-icon class="mr-2" @click="onClickEdit(item)">mdi-pencil</v-icon>
+          <v-icon @click="onClickDelete(item)">mdi-delete</v-icon>
+        </template>
+
       </v-data-table>
     </v-card>
 
     <!-- 追加／編集ダイアログ -->
     <ItemDialogEmployee ref="ItemDialogEmployee"/>
 
+    <!-- 削除ダイアログ -->
+    <DeleteDialog ref="deleteDialog"/>
+
   </div>
 </template>
 
 <script>
 import ItemDialogEmployee from '../components/ItemDialogEmployee.vue'
+import DeleteDialog from '../components/DeleteDialog.vue'
 import { mapActions, mapState } from 'vuex'
 
 export default {
   name: 'Employee',
 
   components: {
-    ItemDialogEmployee
+    ItemDialogEmployee,
+    DeleteDialog
   },
 
   data() {
@@ -83,6 +95,7 @@ export default {
         { text: 'メールアドレス', value: 'email', sortable: false },
         { text: '氏名', value: 'name', sortable: false },
         { text: '部署', value: 'department', sortable: true },
+        { text: '操作', value: 'actions', sortable: false },
       ]
     },
 
@@ -100,6 +113,16 @@ export default {
     /** 追加ボタンがクリックされたとき */
     onClickAdd () {
       this.$refs.ItemDialogEmployee.open('add')
+    },
+
+    /** 編集ボタンがクリックされたとき */
+    onClickEdit (item) {
+      this.$refs.ItemDialogEmployee.open('edit', item)
+    },
+
+    /** 削除ボタンがクリックされたとき */
+    onClickDelete (item) {
+      this.$refs.deleteDialog.open('employee', item)
     },
 
     /** テーブルに表示させるデータを取得する */
