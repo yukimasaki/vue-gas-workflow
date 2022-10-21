@@ -74,14 +74,12 @@ export default {
 
   data() {
     return {
-      /* 申請書タイトル */
+      /** 申請書タイトル */
       title: '従業員一覧',
       /** 検索文字 */
       search: '',
       /** テーブルに表示させるデータ */
       tableData: [],
-      /** テーブル名を指定 */
-      tableName: 'employees'
     }
   },
 
@@ -110,6 +108,7 @@ export default {
   methods: {
     ...mapActions({
       fetchAllCollections: 'firestore/fetchAllCollections',
+      setUseTableName: 'firestore/setUseTableName',
     }),
 
     /** 追加ボタンがクリックされたとき */
@@ -124,19 +123,24 @@ export default {
 
     /** 削除ボタンがクリックされたとき */
     onClickDelete (item) {
-      this.$refs.deleteDialog.open(this.tableName, item)
+      this.$refs.deleteDialog.open(item)
     },
 
     /** テーブルに表示させるデータを取得する */
     async getRecords() {
-      await this.fetchAllCollections({ tableName: this.tableName })
+      await this.fetchAllCollections()
       this.tableData = this.employees
     },
 
   },
 
   async created() {
+    /** データ変更対象のテーブル名をセットする */
+    await this.setUseTableName({ tableName: 'employees' })
+
+    /** テーブルにデータをセットする */
     await this.getRecords()
+
   },
 
 }

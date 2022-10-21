@@ -139,8 +139,6 @@ export default {
 
     /** 追加／更新がクリックされたとき */
     async onClickAction () {
-      const tableName = 'employees'
-
       const item = {
         id: this.id,
         department: this.department,
@@ -149,9 +147,9 @@ export default {
       }
 
       if (this.actionType === 'add') {
-        await this.addCollection({ tableName, item })
+        await this.addCollection({ item })
       } else {
-        await this.updateCollection({ tableName, item })
+        await this.updateCollection({ item })
       }
 
       this.show = false

@@ -21,6 +21,9 @@ const state = {
   /** エラーメッセージ */
   errorMessage: '',
 
+  /** データ変更対象のテーブル名をセットする */
+  useTableName: '',
+
   /** 従業員のコレクション */
   employees: []
 }
@@ -37,61 +40,70 @@ const mutations = {
   },
 
   /** 取得したデータをセットする */
-  setAllCollections(state, { tableName, collections }) {
+  setAllCollections(state, { collections }) {
+    const tableName = state.useTableName
     state[tableName] = collections
   },
 
   /** データを追加する */
-  addCollection(state, { tableName, item }) {
+  addCollection(state, { item }) {
+    const tableName = state.useTableName
     const list = state[tableName]
     list.push(item)
   },
 
   /** データを更新する */
-  updateCollection(state, { tableName, item }) {
+  updateCollection(state, {  item }) {
+    const tableName = state.useTableName
     const list = state[tableName]
     const index = list.findIndex(v => v.id === item.id)
     list.splice(index, 1, item)
   },
 
   /** データを削除する */
-  deleteCollection(state, { tableName, id }) {
+  deleteCollection(state, { id }) {
+    const tableName = state.useTableName
     const list = state[tableName]
     const index = list.findIndex(v => v.id === id)
     list.splice(index, 1)
+  },
+
+  /** テーブル名をセットする */
+  setUseTableName(state, { tableName }) {
+    state.useTableName = tableName
   }
 }
 
 const actions = {
-  // データを取得する
-  async fetchAllCollections({ commit }, { tableName }) {
+  /** データを取得する */
+  async fetchAllCollections({ commit }) {
     const type = 'fetch'
     commit('setLoading', { type, v: true })
     try {
-      const q = query(collection(db, tableName))
+      const q = query(collection(db, state.useTableName))
       const querySnapshot = await getDocs(q)
       const collections = []
       querySnapshot.forEach(doc => {
         collections.push({...doc.data(), id: doc.id})
       })
 
-      commit('setAllCollections', { tableName, collections })
+      commit('setAllCollections', { collections })
     } catch(e) {
       commit('setErrorMessage', { message: e })
-      commit('setAllCollections', { tableName, collections: [] })
+      commit('setAllCollections', { collections: [] })
     } finally {
       commit('setLoading', { type, v: false})
     }
   },
 
-  // データを作成する
-  async addCollection({ commit }, { tableName, item }) {
+  /** データを作成する */
+  async addCollection({ commit }, { item }) {
     const type = 'add'
     commit('setLoading', { type, v: true })
     try {
-      const colRef = collection(db, tableName)
+      const colRef = collection(db, state.useTableName)
       await addDoc(colRef, item)
-      commit('addCollection', { tableName, item })
+      commit('addCollection', { item })
     } catch (e) {
       commit('setErrorMessage', { message: e })
     } finally {
@@ -99,14 +111,14 @@ const actions = {
     }
   },
 
-  // データを更新する
-  async updateCollection({ commit }, { tableName, item }) {
+  /** データを更新する */
+  async updateCollection({ commit }, { item }) {
     const type = 'update'
     commit('setLoading', { type, v: true })
     try {
-      const docRef = doc(db, tableName, item.id)
+      const docRef = doc(db, state.useTableName, item.id)
       await updateDoc(docRef, item)
-      commit('updateCollection', { tableName, item })
+      commit('updateCollection', { item })
     } catch (e) {
       commit('setErrorMessage', { message: e })
     } finally {
@@ -114,21 +126,26 @@ const actions = {
     }
   },
 
-  // データを削除する
-  async deleteCollection({ commit }, { tableName, item }) {
+  /** データを削除する */
+  async deleteCollection({ commit }, { item }) {
     const type = 'delete'
     const id = item.id
     commit('setLoading', { type, v: true })
     try {
-      const docRef = doc(db, tableName, item.id)
+      const docRef = doc(db, state.useTableName, item.id)
       await deleteDoc(docRef, item)
-      commit('deleteCollection', { tableName, id })
+      commit('deleteCollection', { id })
     } catch (e) {
       commit('setErrorMessage', { message: e })
     } finally {
       commit('setLoading', { type, v: false })
     }
   },
+
+  /** テーブル名をセットする */
+  setUseTableName({ commit }, { tableName }) {
+    commit('setUseTableName', { tableName })
+  }
 
 }
 
