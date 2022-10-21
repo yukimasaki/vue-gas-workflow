@@ -151,7 +151,7 @@ export default {
       if (this.actionType === 'add') {
         await this.addCollection({ tableName, item })
       } else {
-        await this.updateCollection({ item })
+        await this.updateCollection({ tableName, item })
       }
 
       this.show = false

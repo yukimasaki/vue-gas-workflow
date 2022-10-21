@@ -47,8 +47,8 @@ const mutations = {
   },
 
   /** データを更新する */
-  updateCollection(state, { item }) {
-    const list = state.employees
+  updateCollection(state, { tableName, item }) {
+    const list = state[`${tableName}`]
     const index = list.findIndex(v => v.id === item.id)
     list.splice(index, 1, item)
   }
@@ -92,13 +92,13 @@ const actions = {
   },
 
   // データを更新する
-  async updateCollection({ commit }, { item }) {
+  async updateCollection({ commit }, { tableName, item }) {
     const type = 'update'
     commit('setLoading', { type, v: true })
     try {
-      const docRef = doc(db, 'employees', item.id)
+      const docRef = doc(db, tableName, item.id)
       await updateDoc(docRef, item)
-      commit('updateCollection', { item })
+      commit('updateCollection', { tableName, item })
     } catch (e) {
       commit('setErrorMessage', { message: e })
     } finally {
