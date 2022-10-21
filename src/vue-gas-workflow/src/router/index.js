@@ -9,6 +9,7 @@ import Login from '../views/Login.vue'
 import Settings from '../views/Settings.vue'
 import PaidLeave from '../views/PaidLeave.vue'
 import Employee from '../views/Employee.vue'
+import RouteList from '../views/RouteList.vue'
 import RouteSettings from '../views/RouteSettings.vue'
 
 Vue.use(VueRouter)
@@ -53,6 +54,12 @@ const routes = [
     path: '/employee',
     name: 'Employee',
     component: Employee,
+    meta: {requiresAuth: true}
+  },
+  {
+    path: '/route_list',
+    name: 'RouteList',
+    component: RouteList,
     meta: {requiresAuth: true}
   },
   {
