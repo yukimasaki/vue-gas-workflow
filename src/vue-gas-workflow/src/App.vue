@@ -11,27 +11,52 @@
 
       <v-spacer></v-spacer>
 
+      <!-- ログイン時のみ、メニューを表示する -->
       <v-toolbar-items v-if="loginStatus">
-        <!-- ログインメニュー -->
+        <!-- ユーザー関連のメニュー -->
         <v-menu
           offset-y
           open-on-hover>
           <template v-slot:activator="{on}">
-            <!-- ログイン時はGoogleアカウントの表示名を表示する -->
-            <v-btn text v-on="on"><v-avatar size="40" class="mr-3"><img :src="userIcon"></v-avatar>{{ userName }}</v-btn>
+            <!-- Googleアカウントの表示名を表示する -->
+            <v-btn text v-on="on" style="cursor: default"><v-avatar size="40" class="mr-3"><img :src="userIcon"></v-avatar>{{ userName }}</v-btn>
           </template>
-          <!-- ログイン時はドロップダウンメニューを表示する -->
           <v-list>
+
             <v-list-item link>
               <v-list-item-content>
                 <v-list-item-title @click="logout">ログアウト</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
+
           </v-list>
         </v-menu>
 
-        <!-- 歯車アイコンのボタン -->
-        <v-btn text to="/settings">設定</v-btn>
+        <!-- 設定関連のメニュー -->
+        <v-menu
+          offset-y
+          open-on-hover>
+          <template v-slot:activator="{on}">
+            <v-btn text v-on="on" style="cursor: default">設定</v-btn>
+          </template>
+          <v-list>
+            <!-- 従業員マスタ -->
+            <v-list-item link to="/employee">
+              <v-list-item-content>
+                <v-list-item-title>従業員マスタ</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+
+            <!-- アプリ設定 -->
+            <v-list-item link to="/settings">
+              <v-list-item-content>
+                <v-list-item-title>アプリ設定</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+
+          </v-list>
+        </v-menu>
+
       </v-toolbar-items>
 
     </v-app-bar>
