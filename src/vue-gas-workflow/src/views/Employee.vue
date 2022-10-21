@@ -44,13 +44,13 @@
     </v-card>
 
     <!-- 追加／編集ダイアログ -->
-    <ItemDialogTest ref="itemDialogTest"/>
+    <ItemDialogEmployee ref="ItemDialogEmployee"/>
 
   </div>
 </template>
 
 <script>
-import ItemDialogTest from '../components/ItemDialogEmployee.vue'
+import ItemDialogEmployee from '../components/ItemDialogEmployee.vue'
 import { mapActions, mapState } from 'vuex'
 
 export default {
@@ -100,7 +100,7 @@ export default {
 
     /** 追加ボタンがクリックされたとき */
     onClickAdd () {
-      this.$refs.itemDialogTest.open('add')
+      this.$refs.ItemDialogEmployee.open('add')
     },
 
     /** テーブルに表示させるデータを取得する */
