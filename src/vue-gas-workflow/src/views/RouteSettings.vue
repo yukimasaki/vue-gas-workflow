@@ -6,7 +6,7 @@
         <!-- 申請ルートタイトル -->
         <v-col cols="8">
           <div class="h5">
-            {{ title }}
+            {{ titleTableName + ': ' + title }}
           </div>
         </v-col>
         <v-spacer/>
@@ -74,7 +74,10 @@ export default {
 
   data() {
     return {
-      /* 申請書タイトル */
+      /** state.useTableNameの値によってタイトル名を変更する */
+      titleTableName: '',
+
+      /** 申請書タイトル */
       title: '申請ルート設定',
       /** 検索文字 */
       search: '',
@@ -110,6 +113,7 @@ export default {
   methods: {
     ...mapActions({
       fetchAllCollections: 'firestore/fetchAllCollections',
+      setUseTableName: 'firestore/setUseTableName',
     }),
 
     /** 追加ボタンがクリックされたとき */
@@ -133,10 +137,34 @@ export default {
       this.tableData = this.paid_leave_routes
     },
 
+    /** state.useTableNameの値によってタイトル名を変更する */
+    setTitleTableName() {
+      switch (this.useTableName) {
+        case 'paid_leave_routes':
+          this.titleTableName = '休暇申請'
+          break
+        case 'equipment_routes':
+          this.titleTableName = '備品申請'
+          break
+        default:
+          this.titleTableName = ''
+      }
+    }
+
   },
 
   async created() {
+    /** 画面リロードなどでstate.useTableNameが空になってしまった場合は初期値をセットしておく */
+    if (!this.useTableName) {
+      this.setUseTableName({ tableName: 'paid_leave_routes'})
+    }
+
+    /** state.useTableNameの値によってタイトル名を変更する */
+    this.setTitleTableName()
+
+    /** テーブルにデータをセットする */
     await this.getRecords()
+
   },
 
 }
