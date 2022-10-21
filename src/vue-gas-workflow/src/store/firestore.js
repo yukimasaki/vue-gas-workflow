@@ -3,7 +3,9 @@ import {
   collection,
   addDoc,
   query,
-  getDocs
+  getDocs,
+  doc,
+  updateDoc
 } from 'firebase/firestore'
 
 const state = {
@@ -41,10 +43,15 @@ const mutations = {
   /** データを追加する */
   addCollection(state, { item }) {
     const list = state.employees
-    if (list) {
-      list.push(item)
-    }
+    list.push(item)
   },
+
+  /** データを更新する */
+  updateCollection(state, { item }) {
+    const list = state.employees
+    const index = list.findIndex(v => v.id === item.id)
+    list.splice(index, 1, item)
+  }
 }
 
 const actions = {
@@ -83,6 +90,24 @@ const actions = {
       commit('setLoading', { type, v: false })
     }
   },
+
+  // データを更新する
+  async updateCollection({ commit }, { item }) {
+    const type = 'update'
+    commit('setLoading', { type, v: true })
+    try {
+      const docRef = doc(db, 'employees', item.id)
+      await updateDoc(docRef, item)
+      commit('updateCollection', { item })
+    } catch (e) {
+      commit('setErrorMessage', { message: e })
+    } finally {
+      commit('setLoading', { type, v: false })
+    }
+  },
+
+  // データを削除する
+
 }
 
 const getters = {}

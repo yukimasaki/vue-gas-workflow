@@ -76,6 +76,8 @@ export default {
       menu: false,
       /** 操作タイプ 'add' or 'edit' */
       actionType: 'add',
+      /** ID */
+      id: '',
       /** メールアドレス */
       email: '',
       /** 氏名 */
@@ -114,7 +116,10 @@ export default {
 
   methods: {
     ...mapActions(
-      {addCollection: 'firestore/addCollection'}
+      {
+        addCollection: 'firestore/addCollection',
+        updateCollection: 'firestore/updateCollection'
+      }
     ),
 
     /**
@@ -135,18 +140,24 @@ export default {
     /** 追加／更新がクリックされたとき */
     async onClickAction () {
       const item = {
+        id: this.id,
         email: this.email,
         name: this.name,
         department: this.department,
       }
 
-      await this.addCollection({ item })
+      if (this.actionType === 'add') {
+        await this.addCollection({ item })
+      } else {
+        await this.updateCollection({ item })
+      }
 
       this.show = false
     },
 
     /** フォームの内容を初期化します */
     resetForm (item = {}) {
+      this.id = item.id || ''
       this.email = item.email || ''
       this.name = item.name || ''
       this.department = item.department || ''
