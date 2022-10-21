@@ -40,10 +40,17 @@
             <v-btn text v-on="on" style="cursor: default">設定</v-btn>
           </template>
           <v-list>
-            <!-- 従業員マスタ -->
+            <!-- 従業員設定 -->
             <v-list-item link to="/employee">
               <v-list-item-content>
-                <v-list-item-title>従業員マスタ</v-list-item-title>
+                <v-list-item-title>従業員設定</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+
+            <!-- 申請ルート設定 -->
+            <v-list-item link to="/route_settings">
+              <v-list-item-content>
+                <v-list-item-title>申請ルート設定</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
 
