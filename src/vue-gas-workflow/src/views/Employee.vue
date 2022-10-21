@@ -50,14 +50,14 @@
 </template>
 
 <script>
-import ItemDialogTest from '../components/ItemDialogTest.vue'
+import ItemDialogTest from '../components/ItemDialogEmployee.vue'
 import { mapActions, mapState } from 'vuex'
 
 export default {
-  name: 'FirestoreTest',
+  name: 'Employee',
 
   components: {
-    ItemDialogTest
+    ItemDialogEmployee
   },
 
   data() {
