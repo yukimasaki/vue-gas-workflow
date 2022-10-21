@@ -12,6 +12,13 @@
       <v-divider/>
       <v-card-text>
         <v-form ref="form" v-model="valid">
+          <!-- 部署 -->
+          <v-text-field
+            label="部署"
+            v-model="department"
+            :rules="departmentRules"
+          />
+
           <!-- メールアドレス -->
           <v-text-field
             label="メールアドレス"
@@ -24,13 +31,6 @@
             label="氏名"
             v-model="name"
             :reles="nameRules"
-          />
-
-          <!-- 部署 -->
-          <v-text-field
-            label="部署"
-            v-model="department"
-            :rules="departmentRules"
           />
 
         </v-form>
@@ -78,22 +78,22 @@ export default {
       actionType: 'add',
       /** ID */
       id: '',
+      /** 部署 */
+      department: '',
       /** メールアドレス */
       email: '',
       /** 氏名 */
       name: '',
-      /** 部署 */
-      department: '',
 
       /** バリデーションルール */
+      departmentRules: [
+        v => v.trim().length > 0 || '部署は必須です',
+      ],
       emailRules: [
         v => v.trim().length > 0 || 'メールアドレスは必須です',
       ],
       nameRules: [
         v => v.trim().length > 0 || '氏名は必須です',
-      ],
-      departmentRules: [
-        v => v.trim().length > 0 || '部署は必須です',
       ],
     }
   },
@@ -143,9 +143,9 @@ export default {
 
       const item = {
         id: this.id,
+        department: this.department,
         email: this.email,
         name: this.name,
-        department: this.department,
       }
 
       if (this.actionType === 'add') {
@@ -160,9 +160,9 @@ export default {
     /** フォームの内容を初期化します */
     resetForm (item = {}) {
       this.id = item.id || ''
+      this.department = item.department || ''
       this.email = item.email || ''
       this.name = item.name || ''
-      this.department = item.department || ''
 
       this.$refs.form.resetValidation()
     }
