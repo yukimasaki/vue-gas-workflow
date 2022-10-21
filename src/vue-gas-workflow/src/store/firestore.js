@@ -41,8 +41,8 @@ const mutations = {
   },
 
   /** データを追加する */
-  addCollection(state, { item }) {
-    const list = state.employees
+  addCollection(state, { tableName, item }) {
+    const list = state[`${tableName}`]
     list.push(item)
   },
 
@@ -77,13 +77,13 @@ const actions = {
   },
 
   // データを作成する
-  async addCollection({ commit }, { item }) {
+  async addCollection({ commit }, { tableName, item }) {
     const type = 'add'
     commit('setLoading', { type, v: true })
     try {
-      const colRef = collection(db, 'employees')
+      const colRef = collection(db, tableName)
       await addDoc(colRef, item)
-      commit('addCollection', { item })
+      commit('addCollection', { tableName, item })
     } catch (e) {
       commit('setErrorMessage', { message: e })
     } finally {
