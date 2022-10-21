@@ -135,7 +135,6 @@ export default {
 
   async created() {
     await this.getRecords()
-    console.log(this.tableData)
   },
 
 }
