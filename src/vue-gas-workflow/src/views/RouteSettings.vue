@@ -1,35 +1,144 @@
 <template>
-    <v-row justify="center">
-      <v-col cols="12" sm="12" md="4">
-        <h3 class="mb-3">{{ title }}</h3>
-        <v-card
-          class="mb-2"
-          v-for="form in forms"
-            :key="form.name"
-            :to="form.link">
-          <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title>{{ form.name }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-card>
-      </v-col>
-    </v-row>
-  </template>
+  <div>
+    <!-- 申請ルートテーブルを表示させる -->
+    <v-card>
+      <v-card-title>
+        <!-- 申請ルートタイトル -->
+        <v-col cols="8">
+          <div class="h5">
+            {{ title }}
+          </div>
+        </v-col>
+        <v-spacer/>
+        <!-- 追加ボタン -->
+        <v-col class="text-right" cols="4">
+          <v-btn dark color="green" @click="onClickAdd">
+            <v-icon>mdi-plus</v-icon>
+          </v-btn>
+        </v-col>
+        <!-- 検索フォーム -->
+        <v-col cols="12">
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="Search"
+            single-line
+            hide-details
+          />
+        </v-col>
+      </v-card-title>
+      <!-- テーブル -->
+      <v-data-table
+        class="text-no-wrap"
+        :headers="tableHeaders"
+        :items="tableData"
+        :search="search"
+        :footer-props="footerProps"
+        :loading="loading"
+        :sort-by="'department'"
+        :sort-desc="false"
+        :items-per-page="30"
+        mobile-breakpoint="0"
+      >
+
+        <!-- 操作列 -->
+        <template v-slot:[`item.actions`]="{ item }">
+          <v-icon class="mr-2" @click="onClickEdit(item)">mdi-pencil</v-icon>
+          <v-icon @click="onClickDelete(item)">mdi-delete</v-icon>
+        </template>
+
+      </v-data-table>
+    </v-card>
+
+    <!-- 追加／編集ダイアログ -->
+    <ItemDialogRoute ref="ItemDialogRoute"/>
+
+    <!-- 削除ダイアログ -->
+    <DeleteDialog ref="deleteDialog"/>
+
+  </div>
+</template>
 
 <script>
+import ItemDialogRoute from '../components/ItemDialogRoute.vue'
+import DeleteDialog from '../components/DeleteDialog.vue'
+import { mapActions, mapState } from 'vuex'
+
 export default {
   name: 'RouteSettings',
 
+  components: {
+    ItemDialogRoute,
+    DeleteDialog
+  },
+
   data() {
     return {
+      /* 申請書タイトル */
       title: '申請ルート設定',
-
-      forms: [
-        {name: '休暇申請', link: '/paid_leave_routes'},
-        {name: '備品申請', link: '/equipment_routes'},
-      ],
+      /** 検索文字 */
+      search: '',
+      /** テーブルに表示させるデータ */
+      tableData: [],
+      /** テーブル名を指定 */
+      tableName: ''
     }
-  }
+  },
+
+  computed: {
+    ...mapState({
+      paid_leave_routes: state => state.firestore.paid_leave_routes,
+      loading: state => state.workflow.loading.fetch,
+    }),
+
+    /** テーブルのヘッダー設定 */
+    tableHeaders () {
+      return [
+        { text: '部署', value: 'department', sortable: true },
+        { text: '順序', value: 'order', sortable: false },
+        { text: 'メールアドレス', value: 'email', sortable: false },
+        { text: '役割', value: 'role', sortable: false },
+        { text: '操作', value: 'actions', sortable: false },
+      ]
+    },
+
+    /** テーブルのフッター設定 */
+    footerProps () {
+      return { itemsPerPageText: '', itemsPerPageOptions: [] }
+    },
+  },
+
+  methods: {
+    ...mapActions({
+      fetchAllCollections: 'firestore/fetchAllCollections',
+    }),
+
+    /** 追加ボタンがクリックされたとき */
+    onClickAdd () {
+      this.$refs.ItemDialogRoute.open('add')
+    },
+
+    /** 編集ボタンがクリックされたとき */
+    onClickEdit (item) {
+      this.$refs.ItemDialogRoute.open('edit', item)
+    },
+
+    /** 削除ボタンがクリックされたとき */
+    onClickDelete (item) {
+      this.$refs.deleteDialog.open(this.tableName, item)
+    },
+
+    /** テーブルに表示させるデータを取得する */
+    async getRecords() {
+      await this.fetchAllCollections({ tableName: this.tableName })
+      this.tableData = this.paid_leave_routes
+    },
+
+  },
+
+  async created() {
+    await this.getRecords()
+  },
+
 }
 </script>
