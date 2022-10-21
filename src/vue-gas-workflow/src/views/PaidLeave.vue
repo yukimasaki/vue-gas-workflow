@@ -43,7 +43,7 @@
     </v-card>
 
     <!-- 追加／編集ダイアログ -->
-    <ItemDialog ref="itemDialog"/>
+    <ItemDialogPaidLeave ref="ItemDialogPaidLeave"/>
 
   </div>
 
@@ -51,13 +51,13 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import ItemDialog from '../components/ItemDialog.vue'
+import ItemDialogPaidLeave from '../components/ItemDialogPaidLeave.vue'
 
 export default {
   name: 'PaidLeave',
 
   components: {
-    ItemDialog
+    ItemDialogPaidLeave
   },
 
   data() {
@@ -110,7 +110,7 @@ export default {
 
     /** 追加ボタンがクリックされたとき */
     onClickAdd () {
-      this.$refs.itemDialog.open('add')
+      this.$refs.ItemDialogPaidLeave.open('add')
     },
 
     async getRecords() {
