@@ -61,7 +61,8 @@ export default {
     /** 削除がクリックされたとき */
     async onClickDelete () {
       const item = this.item
-      await this.deleteCollection(this.tableName, { item })
+      const tableName = this.tableName
+      await this.deleteCollection({ tableName, item })
       this.show = false
     }
   }

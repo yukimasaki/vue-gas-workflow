@@ -37,18 +37,18 @@ const mutations = {
 
   /** 取得したデータをセットする */
   setAllCollections(state, { tableName, collections }) {
-    state[`${tableName}`] = collections
+    state[tableName] = collections
   },
 
   /** データを追加する */
   addCollection(state, { tableName, item }) {
-    const list = state[`${tableName}`]
+    const list = state[tableName]
     list.push(item)
   },
 
   /** データを更新する */
   updateCollection(state, { tableName, item }) {
-    const list = state[`${tableName}`]
+    const list = state[tableName]
     const index = list.findIndex(v => v.id === item.id)
     list.splice(index, 1, item)
   }
