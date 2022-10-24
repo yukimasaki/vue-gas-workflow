@@ -8,7 +8,7 @@
           :key="form.name"
           :to="form.link"
         >
-          <v-list-item @click="setUseTableName({ tableName: form.useTableName})">
+          <v-list-item>
             <v-list-item-content>
               <v-list-item-title>{{ form.name }}</v-list-item-title>
             </v-list-item-content>
@@ -19,8 +19,6 @@
   </template>
 
 <script>
-import { mapActions } from 'vuex'
-
 export default {
   name: 'RouteSettings',
 
@@ -29,16 +27,11 @@ export default {
       title: '申請ルート設定',
 
       forms: [
-        {name: '休暇申請', link: '/route_settings', useTableName: 'paid_leave_routes'},
-        {name: '備品申請', link: '/route_settings', useTableName: 'equipment_routes'},
+        {name: '休暇申請', link: '/route_settings'},
+        {name: '備品申請', link: '/route_settings'},
       ],
     }
   },
 
-  methods: {
-    ...mapActions({
-      setUseTableName: 'firestore/setUseTableName',
-    }),
-  }
 }
 </script>
