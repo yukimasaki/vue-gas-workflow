@@ -27,7 +27,7 @@ export default {
       title: '申請ルート設定',
 
       forms: [
-        {name: '休暇申請', link: '/route_settings'},
+        {name: '休暇申請', link: '/paid_leave_route'},
         {name: '備品申請', link: '/route_settings'},
       ],
     }

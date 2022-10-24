@@ -70,6 +70,10 @@ const mutations = {
     list.splice(index, 1)
   },
 
+  /** テーブル名をセットする */
+  setUseTableName(state, { tableName }) {
+    state.useTableName = tableName
+  }
 }
 
 const actions = {
@@ -139,6 +143,11 @@ const actions = {
       commit('setLoading', { type, v: false })
     }
   },
+
+  /** テーブル名をセットする */
+  setUseTableName({ commit }, { tableName }) {
+    commit('setUseTableName', { tableName })
+  }
 
 }
 

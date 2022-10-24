@@ -6,7 +6,7 @@
         <!-- 申請ルートタイトル -->
         <v-col cols="8">
           <div class="h5">
-            {{ titleTableName + ': ' + title }}
+            {{ title }}
           </div>
         </v-col>
         <v-spacer/>
@@ -65,7 +65,7 @@ import DeleteDialog from '../components/DeleteDialog.vue'
 import { mapActions, mapState } from 'vuex'
 
 export default {
-  name: 'RouteSettings',
+  name: 'PaidLeaveRoute',
 
   components: {
     ItemDialogRoute,
@@ -74,9 +74,6 @@ export default {
 
   data() {
     return {
-      /** state.useTableNameの値によってタイトル名を変更する */
-      titleTableName: '',
-
       /** 申請書タイトル */
       title: '申請ルート設定',
       /** 検索文字 */
@@ -88,8 +85,8 @@ export default {
 
   computed: {
     ...mapState({
+      paid_leave_routes: state => state.firestore.paid_leave_routes,
       loading: state => state.workflow.loading.fetch,
-      useTableName: state => state.firestore.useTableName
     }),
 
     /** テーブルのヘッダー設定 */
@@ -132,39 +129,15 @@ export default {
 
     /** テーブルに表示させるデータを取得する */
     async getRecords() {
-      await this.fetchAllCollections({ tableName: this.tableName })
-      console.log(this.tableName)
-      // TODO: 下記は正常に動作しない
-      this.tableData = this.useTableName
+      await this.fetchAllCollections()
+      this.tableData = this.paid_leave_routes
     },
-
-    /** state.useTableNameの値によってタイトル名を変更する */
-    setTitleTableName() {
-      switch (this.useTableName) {
-        case 'paid_leave_routes':
-          this.titleTableName = '休暇申請'
-          break
-        case 'equipment_routes':
-          this.titleTableName = '備品申請'
-          break
-        default:
-          this.titleTableName = ''
-      }
-    }
 
   },
 
   async created() {
-    /** 画面リロードなどでstate.useTableNameが空になってしまった場合は初期値をセットしておく */
-    if (!this.useTableName) {
-      this.setUseTableName({ tableName: 'paid_leave_routes'})
-    }
-
-    /** state.useTableNameの値によってタイトル名を変更する */
-    this.setTitleTableName()
-
-    /** テーブルにデータをセットする */
-    await this.getRecords()
+    await this.setUseTableName({ tableName: 'paid_leave_routes' })
+    this.getRecords()
 
   },
 
