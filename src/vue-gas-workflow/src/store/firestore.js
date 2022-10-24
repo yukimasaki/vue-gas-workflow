@@ -21,6 +21,9 @@ const state = {
   /** エラーメッセージ */
   errorMessage: '',
 
+  /** データ変更対象のテーブル名をセットする */
+  useTableName: '',
+
   /** コレクション */
   employees: [],
   paid_leave_routes: [],
