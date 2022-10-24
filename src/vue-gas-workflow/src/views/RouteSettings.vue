@@ -88,7 +88,6 @@ export default {
 
   computed: {
     ...mapState({
-      paid_leave_routes: state => state.firestore.paid_leave_routes,
       loading: state => state.workflow.loading.fetch,
       useTableName: state => state.firestore.useTableName
     }),
@@ -134,7 +133,9 @@ export default {
     /** テーブルに表示させるデータを取得する */
     async getRecords() {
       await this.fetchAllCollections({ tableName: this.tableName })
-      this.tableData = this.paid_leave_routes
+      console.log(this.tableName)
+      // TODO: 下記は正常に動作しない
+      this.tableData = this.useTableName
     },
 
     /** state.useTableNameの値によってタイトル名を変更する */

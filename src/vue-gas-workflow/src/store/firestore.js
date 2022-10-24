@@ -21,11 +21,10 @@ const state = {
   /** エラーメッセージ */
   errorMessage: '',
 
-  /** データ変更対象のテーブル名をセットする */
-  useTableName: '',
-
-  /** 従業員のコレクション */
-  employees: []
+  /** コレクション */
+  employees: [],
+  paid_leave_routes: [],
+  equipment_routes: [],
 }
 
 const mutations = {
@@ -68,10 +67,6 @@ const mutations = {
     list.splice(index, 1)
   },
 
-  /** テーブル名をセットする */
-  setUseTableName(state, { tableName }) {
-    state.useTableName = tableName
-  }
 }
 
 const actions = {
@@ -141,11 +136,6 @@ const actions = {
       commit('setLoading', { type, v: false })
     }
   },
-
-  /** テーブル名をセットする */
-  setUseTableName({ commit }, { tableName }) {
-    commit('setUseTableName', { tableName })
-  }
 
 }
 
