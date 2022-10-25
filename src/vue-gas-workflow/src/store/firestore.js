@@ -3,6 +3,7 @@ import {
   collection,
   doc,
   query,
+  where,
   getDocs,
   addDoc,
   updateDoc,
@@ -26,6 +27,9 @@ const state = {
   employees: [],
   paid_leave_routes: [],
   equipment_routes: [],
+
+  /** サブコレクション */
+  sub_employee: [],
 }
 
 const mutations = {
@@ -65,8 +69,8 @@ const mutations = {
   },
 
   /** 従業員情報を取得する */
-  setEmployee(state) {
-    state.employee
+  setSubCollectionEmployee(state, { employee }) {
+    state.sub_employee = employee
   }
 }
 
@@ -138,29 +142,32 @@ const actions = {
     }
   },
 
-  /** 従業員情報を取得する */
-  async getEmployee({ commit }) {
-    const type = 'fetch'
-    commit('setLoading', { type, v: true })
-    try {
-      const q = query(collection(db, state.useTableName))
-      const querySnapshot = await getDocs(q)
-      const collections = []
-      querySnapshot.forEach(doc => {
-        collections.push({...doc.data(), id: doc.id})
-      })
+  /** サブコレクションを作成する（employee） */
+  async createSubCollectionEmployee({ commit }, { userEmail }) {
+    const employee = await getEmployee(userEmail)
+    commit('setSubCollectionEmployee', { employee })
+  },
 
-      commit('setAllCollections', { collections })
-    } catch(e) {
-      commit('setErrorMessage', { message: e })
-      commit('setAllCollections', { collections: [] })
-    } finally {
-      commit('setLoading', { type, v: false})
-    }
-  }
 }
 
-const getters = {}
+/** メールアドレスから従業員情報を取得する */
+async function getEmployee(userEmail) {
+  const currentTable = 'employees'
+  const q = query(collection(db, currentTable), where('email', '==', userEmail))
+  const querySnapshot = await getDocs(q)
+  const collections = []
+  querySnapshot.forEach(doc => {
+    collections.push({...doc.data(), id: doc.id})
+  })
+
+  return collections
+}
+
+const getters = {
+  getSubCollectionEmployee(state) {
+    return state.sub_employee
+  },
+}
 
 export default {
   namespaced: true,

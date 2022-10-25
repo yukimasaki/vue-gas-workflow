@@ -74,6 +74,8 @@ export default {
 
   data () {
     return {
+      /** 操作対象のテーブル */
+      currentTable: 'paid_leave_requests',
       /** ダイアログの表示状態 */
       show: false,
       /** 入力したデータが有効かどうか */
@@ -123,12 +125,13 @@ export default {
   methods: {
     ...mapGetters({
       getUserEmail: 'firebase/getUserEmail',
+      getSubCollectionEmployee: 'firestore/getSubCollectionEmployee',
     }),
 
-    ...mapActions(
-      /** 申請記録を作成 */
-      'workflow', ['addPaidLeaveData']
-    ),
+    ...mapActions({
+      addCollection: 'firestore/addCollection',
+      createSubCollectionEmployee: 'firestore/createSubCollectionEmployee',
+    }),
 
     /**
      * ダイアログを表示します。
@@ -147,17 +150,19 @@ export default {
 
     /** 追加／更新がクリックされたとき */
     async onClickAction () {
-      // const item = {
-      //   recipient_email: this.$store.getters['firebase/getUserEmail'],
-      //   reason: this.reason,
-      //   date_between: this.date_between,
-      //   contact: this.contact,
-      //   memo: this.memo,
-      // }
+      if (this.actionType === 'add') {
+        //createSubCollectionEmployeeを呼び出し (作成したサブコレクションはstateに格納)
+        const userEmail = this.getUserEmail()
+        await this.createSubCollectionEmployee({ userEmail })
+        const employee = this.getSubCollectionEmployee()
+        console.log(employee[0].name)
+        //createSubCollectionRouteを呼び出し (作成したサブコレクションはstateに格納)
+        //compositeItemを呼び出し
+        // await this.addCollection({ item, currentTable })
+      } else {
+        // await this.updateCollection({ item, currentTable })
+      }
 
-      // await this.addPaidLeaveData({ item })
-
-      // this.show = false
     },
 
     /** フォームの内容を初期化します */
