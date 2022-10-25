@@ -8,6 +8,7 @@ import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
 import Settings from '../views/Settings.vue'
 import PaidLeave from '../views/PaidLeave.vue'
+import PaidLeaveFirestore from '../views/PaidLeaveFirestore.vue'
 import Employee from '../views/Employee.vue'
 import RouteList from '../views/RouteList.vue'
 import PaidLeaveRoute from '../views/PaidLeaveRoute.vue'
@@ -48,6 +49,12 @@ const routes = [
     path: '/paid_leave',
     name: 'PaidLeave',
     component: PaidLeave,
+    meta: {requiresAuth: true}
+  },
+  {
+    path: '/paid_leave_firestore',
+    name: 'PaidLeaveFirestore',
+    component: PaidLeaveFirestore,
     meta: {requiresAuth: true}
   },
   {
