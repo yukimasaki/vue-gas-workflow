@@ -25,6 +25,7 @@ const state = {
   useTableName: '',
 
   /** コレクション */
+  paid_leave_requests: [],
   employees: [],
   paid_leave_routes: [],
   equipment_routes: [],

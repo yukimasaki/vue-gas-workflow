@@ -43,7 +43,7 @@
     </v-card>
 
     <!-- 追加／編集ダイアログ -->
-    <ItemDialogPaidLeave ref="ItemDialogPaidLeave"/>
+    <ItemDialogPaidLeaveFirestore ref="ItemDialogPaidLeaveFirestore"/>
 
   </div>
 
@@ -51,19 +51,19 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import ItemDialogPaidLeave from '../components/ItemDialogPaidLeave.vue'
+import ItemDialogPaidLeaveFirestore from '../components/ItemDialogPaidLeaveFirestore.vue'
 
 export default {
   name: 'PaidLeaveFirestore',
 
   components: {
-    ItemDialogPaidLeave
+    ItemDialogPaidLeaveFirestore
   },
 
   data() {
     return {
       /* 申請書タイトル */
-      title: '休暇申請フォーム',
+      title: '休暇申請フォーム(Firestore)',
       /** 検索文字 */
       search: '',
       /** テーブルに表示させるデータ */
@@ -73,14 +73,13 @@ export default {
 
   computed: {
     ...mapState({
-      paidLeaveData: state => state.workflow.paidLeaveData,
+      paid_leave_requests: state => state.firestore.paid_leave_requests,
       loading: state => state.workflow.loading.fetch,
     }),
 
     /** テーブルのヘッダー設定 */
     tableHeaders () {
       return [
-        { text: 'ID', value: 'id' },
         { text: '申請者', value: 'recipient_name', sortable: false },
         { text: '部署', value: 'department', sortable: false },
         { text: '事由', value: 'reason', sortable: false },
@@ -98,25 +97,27 @@ export default {
     }
   },
 
-  created() {
-    this.getRecords()
-  },
 
   methods: {
-    ...mapActions(
-      /** 申請記録を取得 */
-      'workflow', ['fetchPaidLeaveData']
-    ),
+    ...mapActions({
+      setUseTableName: 'firestore/setUseTableName',
+      fetchAllCollections: 'firestore/fetchAllCollections',
+    }),
 
     /** 追加ボタンがクリックされたとき */
     onClickAdd () {
-      this.$refs.ItemDialogPaidLeave.open('add')
+      this.$refs.ItemDialogPaidLeaveFirestore.open('add')
     },
 
     async getRecords() {
-      await this.fetchPaidLeaveData()
-      this.tableData = this.paidLeaveData
+      await this.fetchAllCollections()
+      this.tableData = this.paid_leave_requests
     }
+  },
+
+  async created() {
+    await this.setUseTableName({ tableName: 'paid_leave_requests' })
+    this.getRecords()
   },
 
 }
