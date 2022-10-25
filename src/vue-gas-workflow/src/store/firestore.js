@@ -21,9 +21,6 @@ const state = {
   /** エラーメッセージ */
   errorMessage: '',
 
-  /** データ変更対象のテーブル名をセットする */
-  useTableName: '',
-
   /** コレクション */
   paid_leave_requests: [],
   employees: [],
@@ -65,11 +62,6 @@ const mutations = {
     const list = state[currentTable]
     const index = list.findIndex(v => v.id === id)
     list.splice(index, 1)
-  },
-
-  /** テーブル名をセットする */
-  setUseTableName(state, { tableName }) {
-    state.useTableName = tableName
   },
 
   /** 従業員情報を取得する */
@@ -144,11 +136,6 @@ const actions = {
     } finally {
       commit('setLoading', { type, v: false })
     }
-  },
-
-  /** テーブル名をセットする */
-  setUseTableName({ commit }, { tableName }) {
-    commit('setUseTableName', { tableName })
   },
 
   /** 従業員情報を取得する */
