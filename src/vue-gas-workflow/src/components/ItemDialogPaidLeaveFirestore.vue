@@ -126,11 +126,13 @@ export default {
     ...mapGetters({
       getUserEmail: 'firebase/getUserEmail',
       getSubCollectionEmployee: 'firestore/getSubCollectionEmployee',
+      getSubCollectionRoute: 'firestore/getSubCollectionRoute',
     }),
 
     ...mapActions({
       addCollection: 'firestore/addCollection',
       createSubCollectionEmployee: 'firestore/createSubCollectionEmployee',
+      createSubCollectionRoute: 'firestore/createSubCollectionRoute',
     }),
 
     /**
@@ -151,13 +153,21 @@ export default {
     /** 追加／更新がクリックされたとき */
     async onClickAction () {
       if (this.actionType === 'add') {
+
         //createSubCollectionEmployeeを呼び出し (作成したサブコレクションはstateに格納)
         const userEmail = this.getUserEmail()
         await this.createSubCollectionEmployee({ userEmail })
         const employee = this.getSubCollectionEmployee()
         console.log(employee[0].name)
+
         //createSubCollectionRouteを呼び出し (作成したサブコレクションはstateに格納)
+        const department = employee[0].department
+        await this.createSubCollectionRoute({ department })
+        const route = this.getSubCollectionRoute()
+        console.log(route)
+
         //compositeItemを呼び出し
+
         // await this.addCollection({ item, currentTable })
       } else {
         // await this.updateCollection({ item, currentTable })

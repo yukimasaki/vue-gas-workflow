@@ -4,10 +4,11 @@ import {
   doc,
   query,
   where,
+  orderBy,
   getDocs,
   addDoc,
   updateDoc,
-  deleteDoc
+  deleteDoc,
 } from 'firebase/firestore'
 
 const state = {
@@ -30,6 +31,7 @@ const state = {
 
   /** サブコレクション */
   sub_employee: [],
+  sub_route: [],
 }
 
 const mutations = {
@@ -68,9 +70,14 @@ const mutations = {
     list.splice(index, 1)
   },
 
-  /** 従業員情報を取得する */
+  /** 従業員情報をセットする */
   setSubCollectionEmployee(state, { employee }) {
     state.sub_employee = employee
+  },
+
+  /** 申請ルート情報をセットする */
+  setSubCollectionRoute(state, { route }) {
+    state.sub_route = route
   }
 }
 
@@ -148,6 +155,12 @@ const actions = {
     commit('setSubCollectionEmployee', { employee })
   },
 
+  /** サブコレクションを作成する（route） */
+  async createSubCollectionRoute({ commit }, { department }) {
+    const route = await getRoute(department)
+    commit('setSubCollectionRoute', { route })
+  },
+
 }
 
 /** メールアドレスから従業員情報を取得する */
@@ -163,9 +176,30 @@ async function getEmployee(userEmail) {
   return collections
 }
 
+/** 部署から申請ルート情報を取得する */
+async function getRoute(department) {
+  const currentTable = 'paid_leave_routes'
+  const q = query(
+    collection(db, currentTable),
+    where('department', '==', department),
+    orderBy('order', 'asc')
+  )
+  const querySnapshot = await getDocs(q)
+  const collections = []
+  querySnapshot.forEach(doc => {
+    collections.push({...doc.data(), id: doc.id})
+  })
+
+  return collections
+}
+
 const getters = {
   getSubCollectionEmployee(state) {
     return state.sub_employee
+  },
+
+  getSubCollectionRoute(state) {
+    return state.sub_route
   },
 }
 
