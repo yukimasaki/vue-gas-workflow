@@ -74,6 +74,8 @@ export default {
 
   data() {
     return {
+      /** 操作対象のテーブル */
+      currentTable: 'paid_leave_routes',
       /** 申請書タイトル */
       title: '申請ルート設定',
       /** 検索文字 */
@@ -109,7 +111,6 @@ export default {
   methods: {
     ...mapActions({
       fetchAllCollections: 'firestore/fetchAllCollections',
-      setUseTableName: 'firestore/setUseTableName',
     }),
 
     /** 追加ボタンがクリックされたとき */
@@ -124,21 +125,21 @@ export default {
 
     /** 削除ボタンがクリックされたとき */
     onClickDelete (item) {
-      this.$refs.deleteDialog.open(item)
+      const currentTable = this.currentTable
+      this.$refs.deleteDialog.open(item, currentTable)
     },
 
     /** テーブルに表示させるデータを取得する */
     async getRecords() {
-      await this.fetchAllCollections()
+      const currentTable = 'paid_leave_routes'
+      await this.fetchAllCollections({ currentTable })
       this.tableData = this.paid_leave_routes
     },
 
   },
 
   async created() {
-    await this.setUseTableName({ tableName: 'paid_leave_routes' })
     this.getRecords()
-
   },
 
 }

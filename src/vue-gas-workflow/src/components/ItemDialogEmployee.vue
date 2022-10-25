@@ -68,6 +68,8 @@ export default {
 
   data () {
     return {
+      /** 操作対象のテーブル */
+      currentTable: 'employees',
       /** ダイアログの表示状態 */
       show: false,
       /** 入力したデータが有効かどうか */
@@ -145,11 +147,12 @@ export default {
         email: this.email,
         name: this.name,
       }
+      const currentTable = this.currentTable
 
       if (this.actionType === 'add') {
-        await this.addCollection({ item })
+        await this.addCollection({ item, currentTable })
       } else {
-        await this.updateCollection({ item })
+        await this.updateCollection({ item, currentTable })
       }
 
       this.show = false

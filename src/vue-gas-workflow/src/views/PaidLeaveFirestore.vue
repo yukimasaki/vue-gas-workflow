@@ -62,6 +62,8 @@ export default {
 
   data() {
     return {
+      /** 操作対象のテーブル */
+      currentTable: 'paid_leave_requests',
       /* 申請書タイトル */
       title: '休暇申請フォーム(Firestore)',
       /** 検索文字 */
@@ -100,7 +102,6 @@ export default {
 
   methods: {
     ...mapActions({
-      setUseTableName: 'firestore/setUseTableName',
       fetchAllCollections: 'firestore/fetchAllCollections',
     }),
 
@@ -110,13 +111,13 @@ export default {
     },
 
     async getRecords() {
-      await this.fetchAllCollections()
+      const currentTable = this.currentTable
+      await this.fetchAllCollections({ currentTable })
       this.tableData = this.paid_leave_requests
     }
   },
 
   async created() {
-    await this.setUseTableName({ tableName: 'paid_leave_requests' })
     this.getRecords()
   },
 

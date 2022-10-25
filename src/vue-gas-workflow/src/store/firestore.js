@@ -43,30 +43,26 @@ const mutations = {
   },
 
   /** 取得したデータをセットする */
-  setAllCollections(state, { collections }) {
-    const tableName = state.useTableName
-    state[tableName] = collections
+  setAllCollections(state, { collections, currentTable }) {
+    state[currentTable] = collections
   },
 
   /** データを追加する */
-  addCollection(state, { item }) {
-    const tableName = state.useTableName
-    const list = state[tableName]
+  addCollection(state, { item, currentTable }) {
+    const list = state[currentTable]
     list.push(item)
   },
 
   /** データを更新する */
-  updateCollection(state, {  item }) {
-    const tableName = state.useTableName
-    const list = state[tableName]
+  updateCollection(state, { item, currentTable }) {
+    const list = state[currentTable]
     const index = list.findIndex(v => v.id === item.id)
     list.splice(index, 1, item)
   },
 
   /** データを削除する */
-  deleteCollection(state, { id }) {
-    const tableName = state.useTableName
-    const list = state[tableName]
+  deleteCollection(state, { id, currentTable }) {
+    const list = state[currentTable]
     const index = list.findIndex(v => v.id === id)
     list.splice(index, 1)
   },
@@ -74,12 +70,89 @@ const mutations = {
   /** テーブル名をセットする */
   setUseTableName(state, { tableName }) {
     state.useTableName = tableName
+  },
+
+  /** 従業員情報を取得する */
+  setEmployee(state) {
+    state.employee
   }
 }
 
 const actions = {
   /** データを取得する */
-  async fetchAllCollections({ commit }) {
+  async fetchAllCollections({ commit }, { currentTable }) {
+    const type = 'fetch'
+    commit('setLoading', { type, v: true })
+    try {
+      const q = query(collection(db, currentTable))
+      const querySnapshot = await getDocs(q)
+      const collections = []
+      querySnapshot.forEach(doc => {
+        collections.push({...doc.data(), id: doc.id})
+      })
+
+      commit('setAllCollections', { collections, currentTable })
+    } catch(e) {
+      commit('setErrorMessage', { message: e })
+      commit('setAllCollections', { collections: [] })
+    } finally {
+      commit('setLoading', { type, v: false})
+    }
+  },
+
+  /** データを作成する */
+  async addCollection({ commit }, { item, currentTable }) {
+    const type = 'add'
+    commit('setLoading', { type, v: true })
+    try {
+      const colRef = collection(db, currentTable)
+      await addDoc(colRef, item)
+      commit('addCollection', { item, currentTable })
+    } catch (e) {
+      commit('setErrorMessage', { message: e })
+    } finally {
+      commit('setLoading', { type, v: false })
+    }
+  },
+
+  /** データを更新する */
+  async updateCollection({ commit }, { item, currentTable }) {
+    const type = 'update'
+    commit('setLoading', { type, v: true })
+    try {
+      const docRef = doc(db, currentTable, item.id)
+      await updateDoc(docRef, item)
+      commit('updateCollection', { item, currentTable })
+    } catch (e) {
+      commit('setErrorMessage', { message: e })
+    } finally {
+      commit('setLoading', { type, v: false })
+    }
+  },
+
+  /** データを削除する */
+  async deleteCollection({ commit }, { item, currentTable }) {
+    const type = 'delete'
+    const id = item.id
+    commit('setLoading', { type, v: true })
+    try {
+      const docRef = doc(db, currentTable, item.id)
+      await deleteDoc(docRef, item)
+      commit('deleteCollection', { id, currentTable })
+    } catch (e) {
+      commit('setErrorMessage', { message: e })
+    } finally {
+      commit('setLoading', { type, v: false })
+    }
+  },
+
+  /** テーブル名をセットする */
+  setUseTableName({ commit }, { tableName }) {
+    commit('setUseTableName', { tableName })
+  },
+
+  /** 従業員情報を取得する */
+  async getEmployee({ commit }) {
     const type = 'fetch'
     commit('setLoading', { type, v: true })
     try {
@@ -97,59 +170,7 @@ const actions = {
     } finally {
       commit('setLoading', { type, v: false})
     }
-  },
-
-  /** データを作成する */
-  async addCollection({ commit }, { item }) {
-    const type = 'add'
-    commit('setLoading', { type, v: true })
-    try {
-      const colRef = collection(db, state.useTableName)
-      await addDoc(colRef, item)
-      commit('addCollection', { item })
-    } catch (e) {
-      commit('setErrorMessage', { message: e })
-    } finally {
-      commit('setLoading', { type, v: false })
-    }
-  },
-
-  /** データを更新する */
-  async updateCollection({ commit }, { item }) {
-    const type = 'update'
-    commit('setLoading', { type, v: true })
-    try {
-      const docRef = doc(db, state.useTableName, item.id)
-      await updateDoc(docRef, item)
-      commit('updateCollection', { item })
-    } catch (e) {
-      commit('setErrorMessage', { message: e })
-    } finally {
-      commit('setLoading', { type, v: false })
-    }
-  },
-
-  /** データを削除する */
-  async deleteCollection({ commit }, { item }) {
-    const type = 'delete'
-    const id = item.id
-    commit('setLoading', { type, v: true })
-    try {
-      const docRef = doc(db, state.useTableName, item.id)
-      await deleteDoc(docRef, item)
-      commit('deleteCollection', { id })
-    } catch (e) {
-      commit('setErrorMessage', { message: e })
-    } finally {
-      commit('setLoading', { type, v: false })
-    }
-  },
-
-  /** テーブル名をセットする */
-  setUseTableName({ commit }, { tableName }) {
-    commit('setUseTableName', { tableName })
   }
-
 }
 
 const getters = {}

@@ -31,6 +31,7 @@ export default {
       show: false,
       /** 受け取ったデータ */
       item: {},
+      currentTable: ''
     }
   },
 
@@ -48,9 +49,10 @@ export default {
      * ダイアログを表示します。
      * このメソッドは親から呼び出されます。
      */
-    open (item) {
+    open (item, currentTable) {
       this.show = true
       this.item = item
+      this.currentTable = currentTable
     },
     /** キャンセルがクリックされたとき */
     onClickClose () {
@@ -59,7 +61,9 @@ export default {
     /** 削除がクリックされたとき */
     async onClickDelete () {
       const item = this.item
-      await this.deleteCollection({ item })
+      const currentTable = this.currentTable
+
+      await this.deleteCollection({ item, currentTable })
       this.show = false
     }
   }
