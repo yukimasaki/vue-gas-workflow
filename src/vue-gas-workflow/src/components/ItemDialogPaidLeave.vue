@@ -67,13 +67,16 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { serverTimestamp } from '@firebase/firestore'
+import { mapState, mapActions, mapGetters } from 'vuex'
 
 export default {
-  name: 'ItemDialogPaidLeave',
+  name: 'ItemDialogPaidLeaveFirestore',
 
   data () {
     return {
+      /** 操作対象のテーブル */
+      currentTable: 'paid_leave_requests',
       /** ダイアログの表示状態 */
       show: false,
       /** 入力したデータが有効かどうか */
@@ -121,10 +124,17 @@ export default {
   },
 
   methods: {
-    ...mapActions(
-      /** 申請記録を作成 */
-      'workflow', ['addPaidLeaveData']
-    ),
+    ...mapGetters({
+      getUserEmail: 'firebase/getUserEmail',
+      getSubCollectionEmployee: 'firestore/getSubCollectionEmployee',
+      getSubCollectionRoute: 'firestore/getSubCollectionRoute',
+    }),
+
+    ...mapActions({
+      addCollection: 'firestore/addCollection',
+      createSubCollectionEmployee: 'firestore/createSubCollectionEmployee',
+      createSubCollectionRoute: 'firestore/createSubCollectionRoute',
+    }),
 
     /**
      * ダイアログを表示します。
@@ -143,17 +153,35 @@ export default {
 
     /** 追加／更新がクリックされたとき */
     async onClickAction () {
-      const item = {
-        recipient_email: this.$store.getters['firebase/getUserEmail'],
-        reason: this.reason,
-        date_between: this.date_between,
-        contact: this.contact,
-        memo: this.memo,
+      if (this.actionType === 'add') {
+        // 操作対象のテーブル
+        const currentTable = this.currentTable
+
+        // createSubCollectionEmployeeを呼び出し (作成したサブコレクションはstateに格納)
+        const userEmail = this.getUserEmail()
+        await this.createSubCollectionEmployee({ userEmail })
+        const sub_employee = this.getSubCollectionEmployee()
+
+        // createSubCollectionRouteを呼び出し (作成したサブコレクションはstateに格納)
+        const department = sub_employee[0].department
+        await this.createSubCollectionRoute({ department })
+        const sub_route = this.getSubCollectionRoute()
+
+        // フォームに入力された内容をitemに代入する
+        const item = {
+          recipient: sub_employee[0],
+          route: sub_route,
+          reason: this.reason,
+          date_between: this.date_between,
+          contact: this.contact,
+          memo: this.memo,
+          status: '承認中',
+          created_at: await serverTimestamp()
+        }
+
+        await this.addCollection({ item, currentTable })
+        this.show = false
       }
-
-      await this.addPaidLeaveData({ item })
-
-      this.show = false
     },
 
     /** フォームの内容を初期化します */
@@ -165,7 +193,8 @@ export default {
       this.memo = item.memo || ''
 
       this.$refs.form.resetValidation()
-    }
+    },
+
   }
 }
 </script>

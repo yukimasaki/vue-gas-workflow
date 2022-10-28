@@ -24,7 +24,6 @@ export default {
     return {
       forms: [
         {name: '休暇申請', link: '/paid_leave'},
-        {name: '休暇申請(Firestore)', link: '/paid_leave_firestore'},
         {name: '備品申請', link: '/equipment'},
       ],
     }

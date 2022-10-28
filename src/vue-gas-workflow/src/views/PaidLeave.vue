@@ -30,15 +30,16 @@
       <v-data-table
         class="text-no-wrap"
         :headers="tableHeaders"
-        :items="tableData"
+        :items="formattedTableData"
         :search="search"
         :footer-props="footerProps"
         :loading="loading"
-        :sort-by="'id'"
+        :sort-by="'created_at'"
         :sort-desc="true"
         :items-per-page="30"
         mobile-breakpoint="0"
       >
+
       </v-data-table>
     </v-card>
 
@@ -54,7 +55,7 @@ import { mapState, mapActions } from 'vuex'
 import ItemDialogPaidLeave from '../components/ItemDialogPaidLeave.vue'
 
 export default {
-  name: 'PaidLeave',
+  name: 'PaidLeaveFirestore',
 
   components: {
     ItemDialogPaidLeave
@@ -62,8 +63,10 @@ export default {
 
   data() {
     return {
+      /** 操作対象のテーブル */
+      currentTable: 'paid_leave_requests',
       /* 申請書タイトル */
-      title: '休暇申請フォーム',
+      title: '休暇申請フォーム(Firestore)',
       /** 検索文字 */
       search: '',
       /** テーブルに表示させるデータ */
@@ -73,16 +76,28 @@ export default {
 
   computed: {
     ...mapState({
-      paidLeaveData: state => state.workflow.paidLeaveData,
+      paid_leave_requests: state => state.firestore.paid_leave_requests,
       loading: state => state.workflow.loading.fetch,
     }),
+
+    /** 申請日の表示形式をフォーマット */
+    formattedTableData () {
+      return this.tableData.map((item) => ({
+        ...item,
+        created_at:
+          item.created_at.toDate().getFullYear() + '/' +
+          item.created_at.toDate().getMonth() + '/' +
+          item.created_at.toDate().getDate() + ' ' +
+          item.created_at.toDate().getHours() + ':' +
+          item.created_at.toDate().getMinutes()
+      }))
+    },
 
     /** テーブルのヘッダー設定 */
     tableHeaders () {
       return [
-        { text: 'ID', value: 'id' },
-        { text: '申請者', value: 'recipient_name', sortable: false },
-        { text: '部署', value: 'department', sortable: false },
+        { text: '申請者', value: 'recipient.name', sortable: false },
+        { text: '部署', value: 'recipient.department', sortable: false },
         { text: '事由', value: 'reason', sortable: false },
         { text: '予定日時', value: 'date_between', sortable: false },
         { text: '緊急連絡先', value: 'contact', sortable: false },
@@ -95,18 +110,15 @@ export default {
     /** テーブルのフッター設定 */
     footerProps () {
       return { itemsPerPageText: '', itemsPerPageOptions: [] }
-    }
-  },
+    },
 
-  created() {
-    this.getRecords()
+    /** item.created_atを［yyyy/MM/dd HH:mm］形式で表示する */
   },
 
   methods: {
-    ...mapActions(
-      /** 申請記録を取得 */
-      'workflow', ['fetchPaidLeaveData']
-    ),
+    ...mapActions({
+      fetchAllCollections: 'firestore/fetchAllCollections',
+    }),
 
     /** 追加ボタンがクリックされたとき */
     onClickAdd () {
@@ -114,9 +126,14 @@ export default {
     },
 
     async getRecords() {
-      await this.fetchPaidLeaveData()
-      this.tableData = this.paidLeaveData
+      const currentTable = this.currentTable
+      await this.fetchAllCollections({ currentTable })
+      this.tableData = this.paid_leave_requests
     }
+  },
+
+  async created() {
+    this.getRecords()
   },
 
 }
