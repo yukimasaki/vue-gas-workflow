@@ -5,7 +5,7 @@
         <!-- 申請書タイトル -->
         <v-col cols="8">
           <div class="h5">
-            {{ title }}
+            {{ title }}<br>
           </div>
         </v-col>
         <v-spacer/>
@@ -40,10 +40,10 @@
         mobile-breakpoint="0"
       >
 
-      <!-- <template v-slot:[`item.created_at`]="{ item }">
-        {{`${item.created_at.toDate().getFullYear()}年${item.created_at.toDate().getMonth()}月${item.created_at.toDate().getDate()}日
-        ${item.created_at.toDate().getHours()}:${item.created_at.toDate().getMinutes()}`}}
-      </template> -->
+      <!-- 申請日列 -->
+      <template v-slot:[`item.created_at`]="{ item }">
+        {{ item.created_at.toDate() }}
+      </template>
 
       </v-data-table>
     </v-card>
@@ -102,9 +102,10 @@ export default {
     /** テーブルのフッター設定 */
     footerProps () {
       return { itemsPerPageText: '', itemsPerPageOptions: [] }
-    }
-  },
+    },
 
+    /** item.created_atを［yyyy/MM/dd HH:mm］形式で表示する */
+  },
 
   methods: {
     ...mapActions({

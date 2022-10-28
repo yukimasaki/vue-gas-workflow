@@ -9,6 +9,7 @@ import {
   addDoc,
   updateDoc,
   deleteDoc,
+  getDoc,
 } from 'firebase/firestore'
 
 const state = {
@@ -109,8 +110,13 @@ const actions = {
     commit('setLoading', { type, v: true })
     try {
       const colRef = collection(db, currentTable)
-      await addDoc(colRef, item)
-      commit('addCollection', { item, currentTable })
+      // addDocでドキュメントを作成し、その際に付与されたIDをdocRefとして取得する
+      const docRef = await addDoc(colRef, item)
+      // serverTimestampが付与されていないitemをv-data-tableに表示するとエラーとなるため、
+      // serverTimestampが付与されたドキュメントを取得しstateにセットする
+      const docSnap = await getDoc(docRef)
+      const timestampedItem = docSnap.data()
+      commit('addCollection', { item: timestampedItem, currentTable })
     } catch (e) {
       commit('setErrorMessage', { message: e })
     } finally {
