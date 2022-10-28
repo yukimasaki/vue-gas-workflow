@@ -34,11 +34,17 @@
         :search="search"
         :footer-props="footerProps"
         :loading="loading"
-        :sort-by="'id'"
+        :sort-by="'created_at'"
         :sort-desc="true"
         :items-per-page="30"
         mobile-breakpoint="0"
       >
+
+      <!-- <template v-slot:[`item.created_at`]="{ item }">
+        {{`${item.created_at.toDate().getFullYear()}年${item.created_at.toDate().getMonth()}月${item.created_at.toDate().getDate()}日
+        ${item.created_at.toDate().getHours()}:${item.created_at.toDate().getMinutes()}`}}
+      </template> -->
+
       </v-data-table>
     </v-card>
 
@@ -82,8 +88,8 @@ export default {
     /** テーブルのヘッダー設定 */
     tableHeaders () {
       return [
-        { text: '申請者', value: 'recipient_name', sortable: false },
-        { text: '部署', value: 'department', sortable: false },
+        { text: '申請者', value: 'recipient.name', sortable: false },
+        { text: '部署', value: 'recipient.department', sortable: false },
         { text: '事由', value: 'reason', sortable: false },
         { text: '予定日時', value: 'date_between', sortable: false },
         { text: '緊急連絡先', value: 'contact', sortable: false },

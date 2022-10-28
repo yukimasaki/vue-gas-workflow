@@ -67,6 +67,7 @@
 </template>
 
 <script>
+import { serverTimestamp } from '@firebase/firestore'
 import { mapState, mapActions, mapGetters } from 'vuex'
 
 export default {
@@ -153,26 +154,34 @@ export default {
     /** 追加／更新がクリックされたとき */
     async onClickAction () {
       if (this.actionType === 'add') {
+        // 操作対象のテーブル
+        const currentTable = this.currentTable
 
-        //createSubCollectionEmployeeを呼び出し (作成したサブコレクションはstateに格納)
+        // createSubCollectionEmployeeを呼び出し (作成したサブコレクションはstateに格納)
         const userEmail = this.getUserEmail()
         await this.createSubCollectionEmployee({ userEmail })
-        const employee = this.getSubCollectionEmployee()
-        console.log(employee[0].name)
+        const sub_employee = this.getSubCollectionEmployee()
 
-        //createSubCollectionRouteを呼び出し (作成したサブコレクションはstateに格納)
-        const department = employee[0].department
+        // createSubCollectionRouteを呼び出し (作成したサブコレクションはstateに格納)
+        const department = sub_employee[0].department
         await this.createSubCollectionRoute({ department })
-        const route = this.getSubCollectionRoute()
-        console.log(route)
+        const sub_route = this.getSubCollectionRoute()
 
-        //compositeItemを呼び出し
+        // フォームに入力された内容をitemに代入する
+        const item = {
+          recipient: sub_employee[0],
+          route: sub_route,
+          reason: this.reason,
+          date_between: this.date_between,
+          contact: this.contact,
+          memo: this.memo,
+          status: '承認中',
+          created_at: await serverTimestamp()
+        }
 
-        // await this.addCollection({ item, currentTable })
-      } else {
-        // await this.updateCollection({ item, currentTable })
+        await this.addCollection({ item, currentTable })
+        this.show = false
       }
-
     },
 
     /** フォームの内容を初期化します */

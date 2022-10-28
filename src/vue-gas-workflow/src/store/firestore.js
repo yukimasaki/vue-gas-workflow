@@ -163,7 +163,15 @@ const actions = {
 
 }
 
-/** メールアドレスから従業員情報を取得する */
+/**
+ * 従業員情報を取得する
+ * @param {string} userEmail
+ * @returns {object} sub_employee = {
+ *   email,
+ *   name,
+ *   depaertment
+ * }
+ */
 async function getEmployee(userEmail) {
   const currentTable = 'employees'
   const q = query(collection(db, currentTable), where('email', '==', userEmail))
@@ -176,7 +184,15 @@ async function getEmployee(userEmail) {
   return collections
 }
 
-/** 部署から申請ルート情報を取得する */
+/**
+ * 部署から申請ルート情報を取得する
+ * @param {string} department
+ * @returns {object} sub_route = {
+ *   0: {order, department, approverEmail, role}
+ *   1: {order, department, approverEmail, role}
+ *   ...
+ * }
+ */
 async function getRoute(department) {
   const currentTable = 'paid_leave_routes'
   const q = query(
