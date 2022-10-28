@@ -5,8 +5,7 @@
         <!-- 申請書タイトル -->
         <v-col cols="8">
           <div class="h5">
-            {{ title }}<br>
-            {{ formattedTableData }}
+            {{ title }}
           </div>
         </v-col>
         <v-spacer/>
