@@ -6,6 +6,7 @@
         <v-col cols="8">
           <div class="h5">
             {{ title }}<br>
+            {{ formattedTableData }}
           </div>
         </v-col>
         <v-spacer/>
@@ -30,7 +31,7 @@
       <v-data-table
         class="text-no-wrap"
         :headers="tableHeaders"
-        :items="tableData"
+        :items="formattedTableData"
         :search="search"
         :footer-props="footerProps"
         :loading="loading"
@@ -39,11 +40,6 @@
         :items-per-page="30"
         mobile-breakpoint="0"
       >
-
-      <!-- 申請日列 -->
-      <template v-slot:[`item.created_at`]="{ item }">
-        {{ item.created_at.toDate() }}
-      </template>
 
       </v-data-table>
     </v-card>
@@ -84,6 +80,14 @@ export default {
       paid_leave_requests: state => state.firestore.paid_leave_requests,
       loading: state => state.workflow.loading.fetch,
     }),
+
+    /** 申請日の表示形式をフォーマット */
+    formattedTableData () {
+      return this.tableData.map((item) => ({
+        ...item,
+        created_at: item.created_at.toDate(),
+      }))
+    },
 
     /** テーブルのヘッダー設定 */
     tableHeaders () {
