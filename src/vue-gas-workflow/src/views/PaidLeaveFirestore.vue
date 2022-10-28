@@ -84,7 +84,12 @@ export default {
     formattedTableData () {
       return this.tableData.map((item) => ({
         ...item,
-        created_at: item.created_at.toDate(),
+        created_at:
+          item.created_at.toDate().getFullYear() + '/' +
+          item.created_at.toDate().getMonth() + '/' +
+          item.created_at.toDate().getDate() + ' ' +
+          item.created_at.toDate().getHours() + ':' +
+          item.created_at.toDate().getMinutes()
       }))
     },
 
