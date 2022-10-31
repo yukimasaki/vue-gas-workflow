@@ -16,14 +16,14 @@
           <v-textarea
             label="事由"
             v-model="reason"
-            :reles="reasonRules"
+            :rules="reasonRules"
           />
 
           <!-- 予定日時 -->
           <v-textarea
             label="予定日時"
             v-model="date_between"
-            :reles="dateBetweenRules"
+            :rules="dateBetweenRules"
           />
 
           <!-- 緊急連絡先 -->
