@@ -34,11 +34,14 @@
             :reles="orderRules"
           />
 
-          <!-- メールアドレス -->
-          <v-text-field
-            label="メールアドレス"
-            v-model="email"
-            :reles="emailRules"
+          <!-- 従業員（［メールアドレス］+［氏名］の配列） -->
+          <v-select
+            label="従業員"
+            v-model="employee"
+            :reles="employeeRules"
+            :items="employees"
+            :item-text="employees => `${employees.name} (${employees.email})` "
+            return-object
           />
 
           <!-- 役割 -->
@@ -100,8 +103,8 @@ export default {
       department: '',
       /** 順序 */
       order: '',
-      /** メールアドレス */
-      email: '',
+      /** 従業員 */
+      employee: '',
       /** 役割 */
       role: '',
       roles: ['承認', '回覧'],
@@ -113,8 +116,8 @@ export default {
       orderRules: [
         v => v.trim().length > 0 || '順序は必須です',
       ],
-      emailRules: [
-        v => v.trim().length > 0 || 'メールアドレスは必須です',
+      employeeRules: [
+        v => v.trim().length > 0 || '従業員は必須です',
       ],
       roleRules: [
         v => v.trim().length > 0 || '役割は必須です',
@@ -126,6 +129,7 @@ export default {
     ...mapState({
       loading: state => state.workflow.loading.add || state.workflow.loading.update,
       departments: state => state.firestore.departments,
+      employees: state => state.firestore.employees,
     }),
 
     /** ダイアログのタイトル */
@@ -155,6 +159,7 @@ export default {
       this.show = true
       this.actionType = actionType
       this.getDepartments()
+      this.getEmployees()
       this.resetForm(item)
     },
 
@@ -169,7 +174,8 @@ export default {
         id: this.id,
         department: this.department,
         order: this.order,
-        email: this.email,
+        email: this.employee.email,
+        name: this.employee.name,
         role: this.role,
       }
       const currentTable = this.currentTable
@@ -188,7 +194,7 @@ export default {
       this.id = item.id || ''
       this.department = item.department || ''
       this.order = item.order || ''
-      this.email = item.email || ''
+      this.employee = `${item.name} (${item.email})` || ''
       this.role = item.role || ''
 
       this.$refs.form.resetValidation()
@@ -197,6 +203,12 @@ export default {
     /** 部署情報を取得する */
     async getDepartments() {
       const currentTable = 'departments'
+      await this.fetchAllCollections({ currentTable })
+    },
+
+    /** 従業員情報を取得する */
+    async getEmployees() {
+      const currentTable = 'employees'
       await this.fetchAllCollections({ currentTable })
     },
 
