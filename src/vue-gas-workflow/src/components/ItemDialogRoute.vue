@@ -91,6 +91,8 @@ export default {
     return {
       /** 操作対象のテーブル */
       currentTable: 'paid_leave_routes',
+      /** 操作対象のタブ */
+      currentTab: '',
       /** ダイアログの表示状態 */
       show: false,
       /** 入力したデータが有効かどうか */
@@ -157,9 +159,10 @@ export default {
      * ダイアログを表示します。
      * このメソッドは親から呼び出されます。
      */
-    open (actionType, item) {
+    open (actionType, item, currentTab) {
       this.show = true
       this.actionType = actionType
+      this.currentTab = currentTab
       this.getDepartments()
       this.getEmployees()
       this.resetForm(item)

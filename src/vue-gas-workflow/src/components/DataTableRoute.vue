@@ -113,7 +113,8 @@ export default {
 
     /** 追加ボタンがクリックされたとき */
     onClickAdd () {
-      this.$refs.ItemDialogRoute.open('add')
+      const currentTab = this.currentTab
+      this.$refs.ItemDialogRoute.open('add', {}, currentTab)
     },
 
     /** 編集ボタンがクリックされたとき */
@@ -129,7 +130,7 @@ export default {
 
     /** テーブルに表示させるデータを取得する */
     async getRecords() {
-      const currentTable = 'paid_leave_routes'
+      const currentTable = this.currentTable
       const customQuery = {
         field: 'request_type',
         compare:'==',
@@ -139,7 +140,9 @@ export default {
       this.tableData = this.paid_leave_routes
     },
 
-    /** クリックされたタブ情報を親コンポーネント（Route.vue）から受け取る */
+    /** クリックされたタブ情報を親コンポーネント（Route.vue）から受け取る
+     *  リロードした際は下記メソッドは実行されないのでdata()で定義したデフォルト値がセットされる
+     */
     setCurrentTab(currentTab) {
       this.currentTab = currentTab
     },
