@@ -28,6 +28,7 @@
 
           <!-- 順序 -->
           <v-text-field
+            type="number"
             label="順序"
             v-model="order"
             :reles="orderRules"
