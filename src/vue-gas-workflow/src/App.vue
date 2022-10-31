@@ -41,6 +41,13 @@
           </template>
           <v-list>
             <!-- 従業員設定 -->
+            <v-list-item link to="/department">
+              <v-list-item-content>
+                <v-list-item-title>部署設定</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+
+            <!-- 従業員設定 -->
             <v-list-item link to="/employee">
               <v-list-item-content>
                 <v-list-item-title>従業員設定</v-list-item-title>
