@@ -100,9 +100,11 @@ export default {
       ],
       emailRules: [
         v => v.trim().length > 0 || 'メールアドレスは必須です',
+        v => v.trim().length <= 32 || 'メールアドレスは32文字以内で入力してください',
       ],
       nameRules: [
         v => v.trim().length > 0 || '氏名は必須です',
+        v => v.trim().length <= 0 || '氏名は32文字以内で入力してください',
       ],
     }
   },
