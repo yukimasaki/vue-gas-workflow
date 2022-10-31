@@ -90,9 +90,9 @@ export default {
   data () {
     return {
       /** 操作対象のテーブル */
-      currentTable: 'paid_leave_routes',
+      currentTableName: 'paid_leave_routes',
       /** 操作対象のタブ */
-      currentTab: '',
+      currentTabName: '',
       /** ダイアログの表示状態 */
       show: false,
       /** 入力したデータが有効かどうか */
@@ -159,10 +159,10 @@ export default {
      * ダイアログを表示します。
      * このメソッドは親から呼び出されます。
      */
-    open (actionType, item, currentTab) {
+    open (actionType, item, currentTabName) {
       this.show = true
       this.actionType = actionType
-      this.currentTab = currentTab
+      this.currentTabName = currentTabName
       this.getDepartments()
       this.getEmployees()
       this.resetForm(item)
@@ -181,14 +181,14 @@ export default {
         email: this.employeeInfo.email,
         name: this.employeeInfo.name,
         role: this.role,
-        request_type: this.currentTab,
+        request_type: this.currentTabName,
       }
-      const currentTable = this.currentTable
+      const currentTableName = this.currentTableName
 
       if (this.actionType === 'add') {
-        await this.addCollection({ item, currentTable })
+        await this.addCollection({ item, currentTableName })
       } else {
-        await this.updateCollection({ item, currentTable })
+        await this.updateCollection({ item, currentTableName })
       }
 
       this.show = false
@@ -206,14 +206,14 @@ export default {
 
     /** プルダウンメニュー用 部署情報を取得する */
     async getDepartments() {
-      const currentTable = 'departments'
-      await this.fetchAllCollections({ currentTable })
+      const currentTableName = 'departments'
+      await this.fetchAllCollections({ currentTableName })
     },
 
     /** プルダウンメニュー用 従業員情報を取得する */
     async getEmployees() {
-      const currentTable = 'employees'
-      await this.fetchAllCollections({ currentTable })
+      const currentTableName = 'employees'
+      await this.fetchAllCollections({ currentTableName })
     },
 
   }

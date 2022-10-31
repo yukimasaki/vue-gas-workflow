@@ -70,7 +70,7 @@ export default {
   data() {
     return {
       /** 操作対象のテーブル */
-      currentTable: 'paid_leave_routes',
+      currentTableName: 'paid_leave_routes',
       /** 申請書タイトル */
       title: '申請ルート設定',
       /** 検索文字 */
@@ -78,7 +78,7 @@ export default {
       /** テーブルに表示させるデータ */
       tableData: [],
       /** 現在開いているタブ */
-      currentTab: 'paid_leave',
+      currentTabName: 'paid_leave',
     }
   },
 
@@ -113,8 +113,8 @@ export default {
 
     /** 追加ボタンがクリックされたとき */
     onClickAdd () {
-      const currentTab = this.currentTab
-      this.$refs.ItemDialogRoute.open('add', {}, currentTab)
+      const currentTabName = this.currentTabName
+      this.$refs.ItemDialogRoute.open('add', {}, currentTabName)
     },
 
     /** 編集ボタンがクリックされたとき */
@@ -124,27 +124,27 @@ export default {
 
     /** 削除ボタンがクリックされたとき */
     onClickDelete (item) {
-      const currentTable = this.currentTable
-      this.$refs.deleteDialog.open(item, currentTable)
+      const currentTableName = this.currentTableName
+      this.$refs.deleteDialog.open(item, currentTableName)
     },
 
     /** テーブルに表示させるデータを取得する */
     async getRecords() {
-      const currentTable = this.currentTable
+      const currentTableName = this.currentTableName
       const customQuery = {
         field: 'request_type',
         compare:'==',
-        value: this.currentTab
+        value: this.currentTabName
       }
-      await this.fetchCollectionsByOneQuery({ currentTable, customQuery })
+      await this.fetchCollectionsByOneQuery({ currentTableName, customQuery })
       this.tableData = this.paid_leave_routes
     },
 
     /** クリックされたタブ情報を親コンポーネント（Route.vue）から受け取る
      *  リロードした際は下記メソッドは実行されないのでdata()で定義したデフォルト値がセットされる
      */
-    setCurrentTab(currentTab) {
-      this.currentTab = currentTab
+    setcurrentTabName(currentTabName) {
+      this.currentTabName = currentTabName
     },
 
   },

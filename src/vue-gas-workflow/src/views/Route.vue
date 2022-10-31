@@ -25,8 +25,8 @@ export default {
 
   methods: {
     /** タブをクリックした際に、編集対象の申請書名を子コンポーネント（DataTableRoute.vue）に渡す */
-    onClickTab(currentTab) {
-      this.$refs.DataTableRoute.setCurrentTab(currentTab)
+    onClickTab(currentTabName) {
+      this.$refs.DataTableRoute.setcurrentTabName(currentTabName)
       this.$refs.DataTableRoute.getRecords()
     },
   },

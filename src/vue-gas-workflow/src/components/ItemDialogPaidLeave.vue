@@ -76,7 +76,7 @@ export default {
   data () {
     return {
       /** 操作対象のテーブル */
-      currentTable: 'paid_leave_requests',
+      currentTableName: 'paid_leave_requests',
       /** ダイアログの表示状態 */
       show: false,
       /** 入力したデータが有効かどうか */
@@ -155,7 +155,7 @@ export default {
     async onClickAction () {
       if (this.actionType === 'add') {
         // 操作対象のテーブル
-        const currentTable = this.currentTable
+        const currentTableName = this.currentTableName
 
         // createSubCollectionEmployeeを呼び出し (作成したサブコレクションはstateに格納)
         const userEmail = this.getUserEmail()
@@ -179,7 +179,7 @@ export default {
           created_at: await serverTimestamp()
         }
 
-        await this.addCollection({ item, currentTable })
+        await this.addCollection({ item, currentTableName })
         this.show = false
       }
     },

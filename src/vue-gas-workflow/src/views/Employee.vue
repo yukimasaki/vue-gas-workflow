@@ -75,7 +75,7 @@ export default {
   data() {
     return {
       /** 操作対象のテーブル */
-      currentTable: 'employees',
+      currentTableName: 'employees',
       /** 申請書タイトル */
       title: '従業員一覧',
       /** 検索文字 */
@@ -124,14 +124,14 @@ export default {
 
     /** 削除ボタンがクリックされたとき */
     onClickDelete (item) {
-      const currentTable = this.currentTable
-      this.$refs.deleteDialog.open(item, currentTable)
+      const currentTableName = this.currentTableName
+      this.$refs.deleteDialog.open(item, currentTableName)
     },
 
     /** テーブルに表示させるデータを取得する */
     async getRecords() {
-      const currentTable = this.currentTable
-      await this.fetchAllCollections({ currentTable })
+      const currentTableName = this.currentTableName
+      await this.fetchAllCollections({ currentTableName })
       this.tableData = this.employees
     },
 

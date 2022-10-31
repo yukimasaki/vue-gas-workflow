@@ -76,7 +76,7 @@ export default {
   data () {
     return {
       /** 操作対象のテーブル */
-      currentTable: 'employees',
+      currentTableName: 'employees',
       /** ダイアログの表示状態 */
       show: false,
       /** 入力したデータが有効かどうか */
@@ -158,12 +158,12 @@ export default {
         email: this.email,
         name: this.name,
       }
-      const currentTable = this.currentTable
+      const currentTableName = this.currentTableName
 
       if (this.actionType === 'add') {
-        await this.addCollection({ item, currentTable })
+        await this.addCollection({ item, currentTableName })
       } else {
-        await this.updateCollection({ item, currentTable })
+        await this.updateCollection({ item, currentTableName })
       }
 
       this.show = false
@@ -181,8 +181,8 @@ export default {
 
     /** 部署情報を取得する */
     async getDepartments() {
-      const currentTable = 'departments'
-      await this.fetchAllCollections({ currentTable })
+      const currentTableName = 'departments'
+      await this.fetchAllCollections({ currentTableName })
     }
   },
 
