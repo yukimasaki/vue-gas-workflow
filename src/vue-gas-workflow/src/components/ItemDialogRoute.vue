@@ -42,9 +42,10 @@
           />
 
           <!-- 役割 -->
-          <v-text-field
+          <v-select
             label="役割"
             v-model="role"
+            :items="roles"
             :reles="roleRules"
           />
 
@@ -103,6 +104,7 @@ export default {
       email: '',
       /** 役割 */
       role: '',
+      roles: ['承認', '回覧'],
 
       /** バリデーションルール */
       departmentRules: [
