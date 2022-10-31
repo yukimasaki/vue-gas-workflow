@@ -27,6 +27,7 @@ const state = {
   /** コレクション */
   paid_leave_requests: [],
   employees: [],
+  departments: [],
   paid_leave_routes: [],
   equipment_routes: [],
 
