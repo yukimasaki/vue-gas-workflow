@@ -9,6 +9,7 @@ import Login from '../views/Login.vue'
 import Settings from '../views/Settings.vue'
 import PaidLeave from '../views/PaidLeave.vue'
 import Employee from '../views/Employee.vue'
+import Department from '../views/Department.vue'
 import RouteList from '../views/RouteList.vue'
 import PaidLeaveRoute from '../views/PaidLeaveRoute.vue'
 
@@ -54,6 +55,12 @@ const routes = [
     path: '/employee',
     name: 'Employee',
     component: Employee,
+    meta: {requiresAuth: true}
+  },
+  {
+    path: '/department',
+    name: 'Department',
+    component: Department,
     meta: {requiresAuth: true}
   },
   {
