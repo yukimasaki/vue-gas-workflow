@@ -96,14 +96,11 @@ export default {
     /** テーブルのヘッダー設定 */
     tableHeaders () {
       return [
+        { text: 'タイトル', value: 'title', sortable: false },
         { text: '申請者', value: 'recipient.name', sortable: false },
         { text: '部署', value: 'recipient.department', sortable: false },
-        { text: '事由', value: 'reason', sortable: false },
-        { text: '予定日時', value: 'date_between', sortable: false },
-        { text: '緊急連絡先', value: 'contact', sortable: false },
-        { text: '備考', value: 'memo', sortable: false },
         { text: 'ステータス', value: 'status', sortable: false },
-        { text: '申請日', value: 'created_at' },
+        { text: '作成日時', value: 'created_at' },
       ]
     },
 
@@ -112,7 +109,6 @@ export default {
       return { itemsPerPageText: '', itemsPerPageOptions: [] }
     },
 
-    /** item.created_atを［yyyy/MM/dd HH:mm］形式で表示する */
   },
 
   methods: {
@@ -122,7 +118,7 @@ export default {
 
     /** 追加ボタンがクリックされたとき */
     onClickAdd () {
-      this.$refs.ItemDialogPaidLeave.open('add')
+      this.$refs.ItemDialogRequest.open('add')
     },
 
     async getRecords() {

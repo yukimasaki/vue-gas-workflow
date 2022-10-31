@@ -12,32 +12,53 @@
       <v-divider/>
       <v-card-text>
         <v-form ref="form" v-model="valid">
-          <!-- 事由 -->
-          <v-textarea
-            label="事由"
-            v-model="reason"
-            :rules="reasonRules"
+          <!-- 申請書の種類 -->
+          <v-select
+            label="申請書の種類"
+            v-model="requestType"
+            :items="items"
+            :rules="requestTypeRules"
           />
 
-          <!-- 予定日時 -->
-          <v-textarea
-            label="予定日時"
-            v-model="date_between"
-            :rules="dateBetweenRules"
-          />
-
-          <!-- 緊急連絡先 -->
+          <!-- タイトル -->
           <v-text-field
-            label="緊急連絡先"
-            v-model="contact"
-            :rules="contactRules"
+            label="タイトル"
+            v-model="title"
+            :rules="titleRules"
           />
 
-          <!-- 備考 -->
-          <v-textarea
-            label="備考"
-            v-model="memo"
-          />
+          <!-- 選択した申請書ごとに項目を出し分けする -->
+          <div v-if="requestType == 'paid_leave'">
+            <!-- 事由 -->
+            <v-textarea
+              label="事由"
+              v-model="reason"
+              :rules="reasonRules"
+              rows="3"
+            />
+
+            <!-- 予定日時 -->
+            <v-textarea
+              label="予定日時"
+              v-model="date_between"
+              :rules="dateBetweenRules"
+              rows="3"
+            />
+
+            <!-- 緊急連絡先 -->
+            <v-text-field
+              label="緊急連絡先"
+              v-model="contact"
+              :rules="contactRules"
+            />
+
+            <!-- 備考 -->
+            <v-textarea
+              label="備考"
+              v-model="memo"
+              rows="3"
+            />
+          </div>
 
         </v-form>
       </v-card-text>
@@ -71,12 +92,17 @@ import { serverTimestamp } from '@firebase/firestore'
 import { mapState, mapActions, mapGetters } from 'vuex'
 
 export default {
-  name: 'ItemDialogPaidLeaveFirestore',
+  name: 'ItemDialogRequest',
 
   data () {
     return {
+      /** 申請書の種類 */
+      items: [
+        {text: '休暇申請', value: 'paid_leave'},
+        {text: '備品申請', value: 'equipment'},
+      ],
       /** 操作対象のテーブル */
-      currentTableName: 'paid_leave_requests',
+      currentTableName: 'request_snippets',
       /** ダイアログの表示状態 */
       show: false,
       /** 入力したデータが有効かどうか */
@@ -85,6 +111,10 @@ export default {
       menu: false,
       /** 操作タイプ 'add' or 'edit' */
       actionType: 'add',
+      /** 申請書の種類 */
+      requestType: '',
+      /** タイトル */
+      title: '',
       /** 事由 */
       reason: '',
       /** 予定日時 */
@@ -95,6 +125,12 @@ export default {
       memo: '',
 
       /** バリデーションルール */
+      requestTypeRules: [
+        v => v.trim().length > 0 || '申請書の種類は必須です',
+      ],
+      titleRules: [
+        v => v.trim().length > 0 || 'タイトルは必須です',
+      ],
       reasonRules: [
         v => v.trim().length > 0 || '事由は必須です',
       ],
