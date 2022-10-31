@@ -104,7 +104,7 @@ export default {
       ],
       nameRules: [
         v => v.trim().length > 0 || '氏名は必須です',
-        v => v.trim().length <= 0 || '氏名は32文字以内で入力してください',
+        v => v.trim().length <= 32 || '氏名は32文字以内で入力してください',
       ],
     }
   },
