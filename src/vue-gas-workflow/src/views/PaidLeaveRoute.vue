@@ -24,6 +24,7 @@
             label="Search"
             single-line
             hide-details
+            clearable
           />
         </v-col>
       </v-card-title>
