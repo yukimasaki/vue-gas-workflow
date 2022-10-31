@@ -142,7 +142,6 @@ export default {
       this.actionType = actionType
       this.resetForm(item)
       this.getDepartments()
-      console.log(`departments: ${this.departments}`)
     },
 
     /** キャンセルがクリックされたとき */
