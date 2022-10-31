@@ -97,6 +97,7 @@ export default {
         { text: '部署', value: 'department', sortable: true },
         { text: '順序', value: 'order', sortable: false },
         { text: 'メールアドレス', value: 'email', sortable: false },
+        { text: '氏名', value: 'name', sortable: false },
         { text: '役割', value: 'role', sortable: false },
         { text: '操作', value: 'actions', sortable: false },
       ]
