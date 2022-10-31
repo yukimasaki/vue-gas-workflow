@@ -4,10 +4,10 @@ import VueRouter from 'vue-router'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
 // コンポーネント
-import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
 import Settings from '../views/Settings.vue'
 import PaidLeave from '../views/PaidLeave.vue'
+import RequestOverview from '../views/RequestOverview.vue'
 import Employee from '../views/Employee.vue'
 import Department from '../views/Department.vue'
 import Route from '../views/Route.vue'
@@ -17,8 +17,8 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home,
+    name: 'RequestOverview',
+    component: RequestOverview,
     meta: {requiresAuth: true}
   },
   {
