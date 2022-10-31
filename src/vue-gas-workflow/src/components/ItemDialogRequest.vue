@@ -162,14 +162,14 @@ export default {
   methods: {
     ...mapGetters({
       getUserEmail: 'firebase/getUserEmail',
-      getSubCollectionEmployee: 'firestore/getSubCollectionEmployee',
-      getSubCollectionRoute: 'firestore/getSubCollectionRoute',
+      getMapEmployee: 'firestore/getMapEmployee',
+      getArrayRoute: 'firestore/getArrayRoute',
     }),
 
     ...mapActions({
       addCollection: 'firestore/addCollection',
-      createSubCollectionEmployee: 'firestore/createSubCollectionEmployee',
-      createSubCollectionRoute: 'firestore/createSubCollectionRoute',
+      createMapEmployee: 'firestore/createMapEmployee',
+      createArrayRoute: 'firestore/createArrayRoute',
     }),
 
     /**
@@ -193,26 +193,26 @@ export default {
         // 操作対象のテーブル
         const currentTableName = this.currentTableName
 
-        // createSubCollectionEmployeeを呼び出し (作成したサブコレクションはstateに格納)
+        // 申請者情報をmap型に格納する
         const userEmail = this.getUserEmail()
-        await this.createSubCollectionEmployee({ userEmail })
-        const sub_employee = this.getSubCollectionEmployee()
+        await this.createMapEmployee({ userEmail })
+        const mapEmployee = this.getMapEmployee()
 
-        // createSubCollectionRouteを呼び出し (作成したサブコレクションはstateに格納)
-        const department = sub_employee[0].department
-        await this.createSubCollectionRoute({ department })
-        const sub_route = this.getSubCollectionRoute()
-
-        // フォームに入力された内容をitemに代入する
-        const item = {
-          recipient: sub_employee[0],
-          route: sub_route,
+        // 申請書に固有の項目をmap型に格納する
+        const detail = {
           reason: this.reason,
           date_between: this.date_between,
           contact: this.contact,
           memo: this.memo,
+        }
+
+        // フォームに入力された内容をitemに代入する
+        const item = {
+          title: this.title,
           status: '承認中',
-          created_at: await serverTimestamp()
+          created_at: await serverTimestamp(),
+          recipient: mapEmployee[0],
+          detail: detail, // request_snippetsコレクションにこのプロパティは不要だがテストのため格納している
         }
 
         await this.addCollection({ item, currentTableName })
@@ -222,7 +222,8 @@ export default {
 
     /** フォームの内容を初期化します */
     resetForm (item = {}) {
-      this.id = item.id || ''
+      this.title = item.title || ''
+
       this.reason = item.reason || ''
       this.date_between = item.date_between || ''
       this.contact = item.contact || ''

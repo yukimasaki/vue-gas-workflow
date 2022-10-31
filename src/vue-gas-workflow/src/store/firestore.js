@@ -32,9 +32,9 @@ const state = {
   paid_leave_routes: [],
   equipment_routes: [],
 
-  /** サブコレクション */
-  sub_employee: [],
-  sub_route: [],
+  /** map型、array型 */
+  mapEmployee: {},
+  arrayRoute: [],
 }
 
 const mutations = {
@@ -74,13 +74,13 @@ const mutations = {
   },
 
   /** 従業員情報をセットする */
-  setSubCollectionEmployee(state, { employee }) {
-    state.sub_employee = employee
+  setMapEmployee(state, { employee }) {
+    state.mapEmployee = employee
   },
 
   /** 申請ルート情報をセットする */
-  setSubCollectionRoute(state, { route }) {
-    state.sub_route = route
+  setArrayRoute(state, { route }) {
+    state.arrayRoute = route
   }
 }
 
@@ -178,16 +178,16 @@ const actions = {
     }
   },
 
-  /** サブコレクションを作成する（employee） */
-  async createSubCollectionEmployee({ commit }, { userEmail }) {
+  /** 申請者情報を作成する */
+  async createMapEmployee({ commit }, { userEmail }) {
     const employee = await getEmployee(userEmail)
-    commit('setSubCollectionEmployee', { employee })
+    commit('setMapEmployee', { employee })
   },
 
-  /** サブコレクションを作成する（route） */
-  async createSubCollectionRoute({ commit }, { department }) {
+  /** 申請ルート情報を作成する */
+  async createArrayRoute({ commit }, { department }) {
     const route = await getRoute(department)
-    commit('setSubCollectionRoute', { route })
+    commit('setArrayRoute', { route })
   },
 
 }
@@ -195,7 +195,7 @@ const actions = {
 /**
  * 従業員情報を取得する
  * @param {string} userEmail
- * @returns {object} sub_employee = {
+ * @returns {object} mapEmployee = {
  *   email,
  *   name,
  *   depaertment
@@ -216,7 +216,7 @@ async function getEmployee(userEmail) {
 /**
  * 部署から申請ルート情報を取得する
  * @param {string} department
- * @returns {object} sub_route = {
+ * @returns {object} arrayRoute = {
  *   0: {order, department, approverEmail, role}
  *   1: {order, department, approverEmail, role}
  *   ...
@@ -239,12 +239,12 @@ async function getRoute(department) {
 }
 
 const getters = {
-  getSubCollectionEmployee(state) {
-    return state.sub_employee
+  getMapEmployee(state) {
+    return state.mapEmployee
   },
 
-  getSubCollectionRoute(state) {
-    return state.sub_route
+  getArrayRoute(state) {
+    return state.arrayRoute
   },
 }
 
