@@ -31,16 +31,18 @@
             type="number"
             label="順序"
             v-model="order"
-            :reles="orderRules"
+            min="1"
+            max="10"
+            :rules="orderRules"
           />
 
-          <!-- 従業員（［メールアドレス］+［氏名］の配列） -->
+          <!-- 従業員 -->
           <v-select
             label="従業員"
-            v-model="employee"
-            :reles="employeeRules"
+            v-model="employeeInfo"
             :items="employees"
-            :item-text="employees => `${employees.name} (${employees.email})` "
+            :item-text="employees => `${employees.name} (${employees.email})`"
+            :rules="employeeRules"
             return-object
           />
 
@@ -49,7 +51,7 @@
             label="役割"
             v-model="role"
             :items="roles"
-            :reles="roleRules"
+            :rules="roleRules"
           />
 
         </v-form>
@@ -97,14 +99,12 @@ export default {
       menu: false,
       /** 操作タイプ 'add' or 'edit' */
       actionType: 'add',
-      /** ID */
-      id: '',
       /** 部署 */
       department: '',
       /** 順序 */
       order: '',
       /** 従業員 */
-      employee: '',
+      employeeInfo: '',
       /** 役割 */
       role: '',
       roles: ['承認', '回覧'],
@@ -115,9 +115,11 @@ export default {
       ],
       orderRules: [
         v => v.trim().length > 0 || '順序は必須です',
+        v => Number.isInteger(Number(v)) || '整数で入力してください',
+        v => Number(v) >= 1 && Number(v) <= 10 || '1～10までの整数を入力してください',
       ],
       employeeRules: [
-        v => v.trim().length > 0 || '従業員は必須です',
+        v => !!v || '従業員は必須です',
       ],
       roleRules: [
         v => v.trim().length > 0 || '役割は必須です',
@@ -171,11 +173,10 @@ export default {
     /** 追加／更新がクリックされたとき */
     async onClickAction () {
       const item = {
-        id: this.id,
         department: this.department,
         order: this.order,
-        email: this.employee.email,
-        name: this.employee.name,
+        email: this.employeeInfo.email,
+        name: this.employeeInfo.name,
         role: this.role,
       }
       const currentTable = this.currentTable
@@ -191,7 +192,6 @@ export default {
 
     /** フォームの内容を初期化します */
     resetForm (item = {}) {
-      this.id = item.id || ''
       this.department = item.department || ''
       this.order = item.order || ''
       this.employee = `${item.name} (${item.email})` || ''
