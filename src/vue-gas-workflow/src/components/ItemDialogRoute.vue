@@ -181,6 +181,7 @@ export default {
         email: this.employeeInfo.email,
         name: this.employeeInfo.name,
         role: this.role,
+        request_type: this.currentTab,
       }
       const currentTable = this.currentTable
 
@@ -203,13 +204,13 @@ export default {
       this.$refs.form.resetValidation()
     },
 
-    /** 部署情報を取得する */
+    /** プルダウンメニュー用 部署情報を取得する */
     async getDepartments() {
       const currentTable = 'departments'
       await this.fetchAllCollections({ currentTable })
     },
 
-    /** 従業員情報を取得する */
+    /** プルダウンメニュー用 従業員情報を取得する */
     async getEmployees() {
       const currentTable = 'employees'
       await this.fetchAllCollections({ currentTable })
