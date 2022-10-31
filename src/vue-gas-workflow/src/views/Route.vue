@@ -1,148 +1,34 @@
 <template>
-  <div>
-    <!-- 申請ルートテーブルを表示させる -->
-    <v-card>
-      <v-card-title>
-        <!-- 申請ルートタイトル -->
-        <v-col cols="8">
-          <div class="h5">
-            {{ title }}
-          </div>
-        </v-col>
-        <v-spacer/>
-        <!-- 追加ボタン -->
-        <v-col class="text-right" cols="4">
-          <v-btn dark color="green" @click="onClickAdd">
-            <v-icon>mdi-plus</v-icon>
-          </v-btn>
-        </v-col>
-        <!-- 検索フォーム -->
-        <v-col cols="12">
-          <v-text-field
-            v-model="search"
-            append-icon="mdi-magnify"
-            label="Search"
-            single-line
-            hide-details
-            clearable
-          />
-        </v-col>
-      </v-card-title>
-      <!-- テーブル -->
-      <v-data-table
-        class="text-no-wrap"
-        :headers="tableHeaders"
-        :items="tableData"
-        :search="search"
-        :footer-props="footerProps"
-        :loading="loading"
-        :sort-by="['order']"
-        :sort-desc="[false]"
-        :items-per-page="30"
-        mobile-breakpoint="0"
-      >
+  <!-- 申請ルートテーブルを表示させる -->
+  <v-card>
+    <!-- タブレイアウト -->
+    <v-tabs grow color="green">
+      <v-tab @click="onClickTab('paid_leave')">休暇申請</v-tab>
+      <v-tab @click="onClickTab('equipment')">備品申請</v-tab>
+    </v-tabs>
 
-        <!-- 操作列 -->
-        <template v-slot:[`item.actions`]="{ item }">
-          <v-icon class="mr-2" @click="onClickEdit(item)">mdi-pencil</v-icon>
-          <v-icon @click="onClickDelete(item)">mdi-delete</v-icon>
-        </template>
-
-      </v-data-table>
-    </v-card>
-
-    <!-- 追加／編集ダイアログ -->
-    <ItemDialogRoute ref="ItemDialogRoute"/>
-
-    <!-- 削除ダイアログ -->
-    <DeleteDialog ref="deleteDialog"/>
-
-  </div>
+    <!-- コンテンツ -->
+    <!-- データテーブル -->
+    <DataTableRoute ref="DataTableRoute"/>
+  </v-card>
 </template>
 
 <script>
-import ItemDialogRoute from '../components/ItemDialogRoute.vue'
-import DeleteDialog from '../components/DeleteDialog.vue'
-import { mapActions, mapState } from 'vuex'
+import DataTableRoute from '../components/DataTableRoute.vue'
 
 export default {
   name: 'Route',
 
   components: {
-    ItemDialogRoute,
-    DeleteDialog
-  },
-
-  data() {
-    return {
-      /** 操作対象のテーブル */
-      currentTable: 'paid_leave_routes',
-      /** 申請書タイトル */
-      title: '申請ルート設定',
-      /** 検索文字 */
-      search: '',
-      /** テーブルに表示させるデータ */
-      tableData: [],
-    }
-  },
-
-  computed: {
-    ...mapState({
-      paid_leave_routes: state => state.firestore.paid_leave_routes,
-      loading: state => state.workflow.loading.fetch,
-    }),
-
-    /** テーブルのヘッダー設定 */
-    tableHeaders () {
-      return [
-        { text: '部署', value: 'department', sortable: true },
-        { text: '順序', value: 'order', sortable: false },
-        { text: 'メールアドレス', value: 'email', sortable: false },
-        { text: '氏名', value: 'name', sortable: false },
-        { text: '役割', value: 'role', sortable: false },
-        { text: '操作', value: 'actions', sortable: false },
-      ]
-    },
-
-    /** テーブルのフッター設定 */
-    footerProps () {
-      return { itemsPerPageText: '', itemsPerPageOptions: [] }
-    },
+    DataTableRoute
   },
 
   methods: {
-    ...mapActions({
-      fetchAllCollections: 'firestore/fetchAllCollections',
-    }),
-
-    /** 追加ボタンがクリックされたとき */
-    onClickAdd () {
-      this.$refs.ItemDialogRoute.open('add')
+    /** タブをクリックした際に、編集対象の申請書名を子コンポーネント（DataTableRoute.vue）に渡す */
+    onClickTab(currentTab) {
+      this.$refs.DataTableRoute.setCurrentTab(currentTab)
+      this.$refs.DataTableRoute.getRecords()
     },
-
-    /** 編集ボタンがクリックされたとき */
-    onClickEdit (item) {
-      this.$refs.ItemDialogRoute.open('edit', item)
-    },
-
-    /** 削除ボタンがクリックされたとき */
-    onClickDelete (item) {
-      const currentTable = this.currentTable
-      this.$refs.deleteDialog.open(item, currentTable)
-    },
-
-    /** テーブルに表示させるデータを取得する */
-    async getRecords() {
-      const currentTable = 'paid_leave_routes'
-      await this.fetchAllCollections({ currentTable })
-      this.tableData = this.paid_leave_routes
-    },
-
   },
-
-  created() {
-    this.getRecords()
-  },
-
 }
 </script>

@@ -48,7 +48,7 @@ const mutations = {
   },
 
   /** 取得したデータをセットする */
-  setAllCollections(state, { collections, currentTable }) {
+  setCollections(state, { collections, currentTable }) {
     state[currentTable] = collections
   },
 
@@ -84,7 +84,7 @@ const mutations = {
 }
 
 const actions = {
-  /** データを取得する */
+  /** データを全件取得する */
   async fetchAllCollections({ commit }, { currentTable }) {
     const type = 'fetch'
     commit('setLoading', { type, v: true })
@@ -96,10 +96,10 @@ const actions = {
         collections.push({...doc.data(), id: doc.id})
       })
 
-      commit('setAllCollections', { collections, currentTable })
+      commit('setCollections', { collections, currentTable })
     } catch(e) {
       commit('setErrorMessage', { message: e })
-      commit('setAllCollections', { collections: [] })
+      commit('setCollections', { collections: [] })
     } finally {
       commit('setLoading', { type, v: false})
     }
@@ -153,6 +153,27 @@ const actions = {
       commit('setErrorMessage', { message: e })
     } finally {
       commit('setLoading', { type, v: false })
+    }
+  },
+
+  /** 単一のWHEREクエリに合致するコレクションを取得する */
+  async fetchCollectionsByOneQuery({ commit }, { currentTable, customQuery }) {
+    const type = 'fetch'
+    commit('setLoading', { type, v: true })
+    try {
+      const q = query(collection(db, currentTable), where(customQuery.field, customQuery.compare, customQuery.value))
+      const querySnapshot = await getDocs(q)
+      const collections = []
+      querySnapshot.forEach(doc => {
+        collections.push({...doc.data(), id: doc.id})
+      })
+
+      commit('setCollections', { collections, currentTable })
+    } catch(e) {
+      commit('setErrorMessage', { message: e })
+      commit('setCollections', { collections: [] })
+    } finally {
+      commit('setLoading', { type, v: false})
     }
   },
 
