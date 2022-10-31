@@ -132,7 +132,7 @@ export default {
     }
   },
 
-  async created() {
+  created() {
     this.getRecords()
   },
 

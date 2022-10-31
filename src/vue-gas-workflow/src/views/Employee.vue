@@ -137,8 +137,8 @@ export default {
 
   },
 
-  async created() {
-    await this.getRecords()
+  created() {
+    this.getRecords()
   },
 
 }
