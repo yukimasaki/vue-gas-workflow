@@ -34,8 +34,8 @@
       :search="search"
       :footer-props="footerProps"
       :loading="loading"
-      :sort-by="['order']"
-      :sort-desc="[false]"
+      :sort-by="['department', 'order']"
+      :sort-desc="[false, false]"
       :items-per-page="30"
       mobile-breakpoint="0"
     >
