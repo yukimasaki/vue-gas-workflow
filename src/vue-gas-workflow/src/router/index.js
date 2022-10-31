@@ -10,8 +10,7 @@ import Settings from '../views/Settings.vue'
 import PaidLeave from '../views/PaidLeave.vue'
 import Employee from '../views/Employee.vue'
 import Department from '../views/Department.vue'
-import RouteList from '../views/RouteList.vue'
-import PaidLeaveRoute from '../views/PaidLeaveRoute.vue'
+import Route from '../views/Route.vue'
 
 Vue.use(VueRouter)
 
@@ -64,17 +63,12 @@ const routes = [
     meta: {requiresAuth: true}
   },
   {
-    path: '/route_list',
-    name: 'RouteList',
-    component: RouteList,
+    path: '/route',
+    name: 'Route',
+    component: Route,
     meta: {requiresAuth: true}
   },
-  {
-    path: '/paid_leave_route',
-    name: 'PaidLeaveRoute',
-    component: PaidLeaveRoute,
-    meta: {requiresAuth: true}
-  },
+
 ]
 
 const router = new VueRouter({

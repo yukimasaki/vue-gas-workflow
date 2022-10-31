@@ -55,7 +55,7 @@
             </v-list-item>
 
             <!-- 申請ルート設定 -->
-            <v-list-item link to="/route_list">
+            <v-list-item link to="/route">
               <v-list-item-content>
                 <v-list-item-title>申請ルート設定</v-list-item-title>
               </v-list-item-content>

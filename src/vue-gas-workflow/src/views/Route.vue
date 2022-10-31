@@ -66,7 +66,7 @@ import DeleteDialog from '../components/DeleteDialog.vue'
 import { mapActions, mapState } from 'vuex'
 
 export default {
-  name: 'PaidLeaveRoute',
+  name: 'Route',
 
   components: {
     ItemDialogRoute,
