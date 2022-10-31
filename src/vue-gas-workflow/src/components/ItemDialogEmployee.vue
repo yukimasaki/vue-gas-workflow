@@ -12,8 +12,7 @@
       <v-divider/>
       <v-card-text>
         <v-form ref="form" v-model="valid">
-          <!-- 部署 -->
-          <!--
+          <!-- 部署
             * :items => state(オブジェクト)を指定する
             * item-text => ラベルとして表示させるオブジェクトのプロパティ名を指定する
             * item-text => 値として送信するオブジェクトのプロパティ名を指定する
@@ -140,8 +139,8 @@ export default {
     open (actionType, item) {
       this.show = true
       this.actionType = actionType
-      this.resetForm(item)
       this.getDepartments()
+      this.resetForm(item)
     },
 
     /** キャンセルがクリックされたとき */

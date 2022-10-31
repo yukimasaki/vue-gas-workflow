@@ -12,11 +12,18 @@
       <v-divider/>
       <v-card-text>
         <v-form ref="form" v-model="valid">
-          <!-- 部署 -->
-          <v-text-field
+          <!-- 部署
+            * :items => state(オブジェクト)を指定する
+            * item-text => ラベルとして表示させるオブジェクトのプロパティ名を指定する
+            * item-text => 値として送信するオブジェクトのプロパティ名を指定する
+          -->
+          <v-select
             label="部署"
             v-model="department"
             :rules="departmentRules"
+            :items="departments"
+            item-text="department"
+            item-value="department"
           />
 
           <!-- 順序 -->
@@ -114,8 +121,8 @@ export default {
 
   computed: {
     ...mapState({
-      /** ローディング状態 */
-      loading: state => state.workflow.loading.add || state.workflow.loading.update
+      loading: state => state.workflow.loading.add || state.workflow.loading.update,
+      departments: state => state.firestore.departments,
     }),
 
     /** ダイアログのタイトル */
@@ -132,7 +139,8 @@ export default {
     ...mapActions(
       {
         addCollection: 'firestore/addCollection',
-        updateCollection: 'firestore/updateCollection'
+        updateCollection: 'firestore/updateCollection',
+        fetchAllCollections: 'firestore/fetchAllCollections',
       }
     ),
 
@@ -143,6 +151,7 @@ export default {
     open (actionType, item) {
       this.show = true
       this.actionType = actionType
+      this.getDepartments()
       this.resetForm(item)
     },
 
@@ -180,7 +189,14 @@ export default {
       this.role = item.role || ''
 
       this.$refs.form.resetValidation()
-    }
+    },
+
+    /** 部署情報を取得する */
+    async getDepartments() {
+      const currentTable = 'departments'
+      await this.fetchAllCollections({ currentTable })
+    },
+
   }
 }
 </script>
