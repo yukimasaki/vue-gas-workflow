@@ -10,6 +10,7 @@ import {
   updateDoc,
   deleteDoc,
   getDoc,
+  writeBatch,
 } from 'firebase/firestore'
 
 const state = {
@@ -27,6 +28,7 @@ const state = {
   /** コレクション */
   paid_leave_requests: [],
   request_snippets: [],
+  request_details: [],
   employees: [],
   departments: [],
   paid_leave_routes: [],
@@ -175,6 +177,38 @@ const actions = {
       commit('setCollections', { collections: [] })
     } finally {
       commit('setLoading', { type, v: false})
+    }
+  },
+
+  /** バッチ書き込み */
+  async batchSetCollections({ commit }, { itemSnippets, itemDetails }) {
+    const type = 'add'
+    const batch = writeBatch(db)
+    commit('setLoading', { type, v: true })
+    try {
+      // コレクションの参照を取得
+      const colRefSnippets = collection(db, 'request_snippets')
+      const colRefDetails = collection(db, 'request_details')
+      // batch.add()を実現するため、ドキュメントのIDを取得しておく
+      const snippetsId = doc(colRefSnippets).id
+      const detailsId = doc(colRefDetails).id
+      // 空のドキュメントを作成する
+      const emptyDocSnippets = doc(db, 'request_snippets', snippetsId)
+      const emptyDocDetails = doc(db, 'request_details', detailsId)
+      // バッチ書き込みを実行
+      batch.set(emptyDocSnippets, itemSnippets)
+      batch.set(emptyDocDetails, itemDetails)
+      await batch.commit()
+      // serverTimestampが付与されていないitemをv-data-tableに表示するとエラーとなるため、
+      // serverTimestampが付与されたドキュメントを取得しstateにセットする
+      const docRefSnippets = doc(db, 'request_snippets', snippetsId)
+      const docSnapSnippets = await getDoc(docRefSnippets)
+      const timestampedItemSnippets = docSnapSnippets.data()
+      commit('addCollection', { item: timestampedItemSnippets, currentTableName: 'request_snippets' })
+    } catch (e) {
+      commit('setErrorMessage', { message: e })
+    } finally {
+      commit('setLoading', { type, v: false })
     }
   },
 

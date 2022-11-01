@@ -167,7 +167,7 @@ export default {
     }),
 
     ...mapActions({
-      addCollection: 'firestore/addCollection',
+      batchSetCollections: 'firestore/batchSetCollections',
       createMapEmployee: 'firestore/createMapEmployee',
       createArrayRoute: 'firestore/createArrayRoute',
     }),
@@ -191,7 +191,7 @@ export default {
     async onClickAction () {
       if (this.actionType === 'add') {
         // 操作対象のテーブル
-        const currentTableName = this.currentTableName
+        // const currentTableName = this.currentTableName
 
         // 申請者情報をmap型に格納する
         const userEmail = this.getUserEmail()
@@ -230,10 +230,8 @@ export default {
           route: route,
         }
 
-        // test
-        console.log(itemDetails)
-
         // batch処理のactionsを呼び出して［itemSnippets］と［itemDetails］を不可分的に保存する
+        await this.batchSetCollections({ itemSnippets, itemDetails })
 
         this.show = false
       }
