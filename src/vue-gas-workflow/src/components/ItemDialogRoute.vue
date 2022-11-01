@@ -185,16 +185,11 @@ export default {
         request_type: this.currentTabName,
       }
 
-      console.log(`onClickAction:`)
-      console.log(item)
       const currentTableName = this.currentTableName
-      console.log(`currentTableName:`)
-      console.log(currentTableName)
 
       if (this.actionType === 'add') {
         await this.addCollection({ item, currentTableName })
       } else {
-        console.log(`actionType: ${this.actionType}`)
         await this.updateCollection({ item, currentTableName })
       }
 

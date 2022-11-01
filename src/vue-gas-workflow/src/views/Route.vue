@@ -135,8 +135,6 @@ export default {
 
     /** 編集ボタンがクリックされたとき */
     onClickEdit (item) {
-      console.log(`onClickEdit:`)
-      console.log(item)
       const currentTabName = this.currentTabName
       this.$refs.ItemDialogRoute.open('edit', item, currentTabName)
     },
