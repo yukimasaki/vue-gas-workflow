@@ -106,7 +106,7 @@ export default {
 
     /** テーブルのフッター設定 */
     footerProps () {
-      return { itemsPerPageText: '', itemsPerPageOptions: [] }
+      return { itemsPerPageText: '', itemsPerPageOptions: [30, -1] }
     },
 
   },
