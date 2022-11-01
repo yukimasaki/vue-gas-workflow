@@ -215,7 +215,7 @@ export default {
         const itemSnippets = {
           title: this.title,
           status: '承認中',
-          created_at: await serverTimestamp(),
+          created_at: serverTimestamp(),
           recipient: mapEmployee[0],
         }
 
@@ -223,7 +223,7 @@ export default {
         const itemDetails = {
           title: this.title,
           status: '承認中',
-          created_at: await serverTimestamp(),
+          created_at: serverTimestamp(),
           recipient: mapEmployee[0],
           // 以下は、itemDetailsにのみ存在するプロパティ
           detail: detail,
@@ -233,7 +233,8 @@ export default {
         // test
         console.log(itemDetails)
 
-        await this.addCollection({ itemSnippets, currentTableName })
+        // batch処理のactionsを呼び出して［itemSnippets］と［itemDetails］を不可分的に保存する
+
         this.show = false
       }
     },
