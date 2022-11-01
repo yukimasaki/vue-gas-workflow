@@ -176,6 +176,7 @@ export default {
     /** 追加／更新がクリックされたとき */
     async onClickAction () {
       const item = {
+        id: this.id,
         department: this.department,
         order: this.order,
         email: this.employeeInfo.email,
@@ -183,11 +184,17 @@ export default {
         role: this.role,
         request_type: this.currentTabName,
       }
+
+      console.log(`onClickAction:`)
+      console.log(item)
       const currentTableName = this.currentTableName
+      console.log(`currentTableName:`)
+      console.log(currentTableName)
 
       if (this.actionType === 'add') {
         await this.addCollection({ item, currentTableName })
       } else {
+        console.log(`actionType: ${this.actionType}`)
         await this.updateCollection({ item, currentTableName })
       }
 
@@ -196,9 +203,10 @@ export default {
 
     /** フォームの内容を初期化します */
     resetForm (item = {}) {
+      this.id = item.id || ''
       this.department = item.department || ''
       this.order = item.order || ''
-      this.employeeInfo = `${item.name} (${item.email})` || ''
+      this.employeeInfo = {name: item.name, email: item.email} || ''
       this.role = item.role || ''
 
       this.$refs.form.resetValidation()
