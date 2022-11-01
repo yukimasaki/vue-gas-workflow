@@ -198,6 +198,11 @@ export default {
         await this.createMapEmployee({ userEmail })
         const mapEmployee = this.getMapEmployee()
 
+        // 申請ルート情報をarray型に格納する
+        const department = mapEmployee[0].department
+        await this.createArrayRoute({ department })
+        const route = this.getArrayRoute()
+
         // 申請書に固有の項目をmap型に格納する
         const detail = {
           reason: this.reason,
@@ -206,16 +211,29 @@ export default {
           memo: this.memo,
         }
 
-        // フォームに入力された内容をitemに代入する
-        const item = {
+        // フォームに入力された内容をitemSnippetsに格納する
+        const itemSnippets = {
           title: this.title,
           status: '承認中',
           created_at: await serverTimestamp(),
           recipient: mapEmployee[0],
-          detail: detail, // request_snippetsコレクションにこのプロパティは不要だがテストのため格納している
         }
 
-        await this.addCollection({ item, currentTableName })
+        // フォームに入力された内容をitemDetailsに格納する
+        const itemDetails = {
+          title: this.title,
+          status: '承認中',
+          created_at: await serverTimestamp(),
+          recipient: mapEmployee[0],
+          // 以下は、itemDetailsにのみ存在するプロパティ
+          detail: detail,
+          route: route,
+        }
+
+        // test
+        console.log(itemDetails)
+
+        await this.addCollection({ itemSnippets, currentTableName })
         this.show = false
       }
     },
