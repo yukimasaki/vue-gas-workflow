@@ -26,13 +26,11 @@ const state = {
   errorMessage: '',
 
   /** コレクション */
-  paid_leave_requests: [],
   request_snippets: [],
   request_details: [],
   employees: [],
   departments: [],
-  paid_leave_routes: [],
-  equipment_routes: [],
+  routes: [],
 
   /** map型、array型 */
   mapEmployee: {},
@@ -257,7 +255,7 @@ async function getEmployee(userEmail) {
  * }
  */
 async function getRoute(department) {
-  const currentTableName = 'paid_leave_routes'
+  const currentTableName = 'routes'
   const q = query(
     collection(db, currentTableName),
     where('department', '==', department),

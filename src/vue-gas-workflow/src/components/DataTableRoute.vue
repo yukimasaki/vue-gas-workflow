@@ -70,7 +70,7 @@ export default {
   data() {
     return {
       /** 操作対象のテーブル */
-      currentTableName: 'paid_leave_routes',
+      currentTableName: 'routes',
       /** 申請書タイトル */
       title: '申請ルート設定',
       /** 検索文字 */
@@ -84,7 +84,7 @@ export default {
 
   computed: {
     ...mapState({
-      paid_leave_routes: state => state.firestore.paid_leave_routes,
+      routes: state => state.firestore.routes,
       loading: state => state.workflow.loading.fetch,
     }),
 
@@ -137,7 +137,7 @@ export default {
         value: this.currentTabName
       }
       await this.fetchCollectionsByOneQuery({ currentTableName, customQuery })
-      this.tableData = this.paid_leave_routes
+      this.tableData = this.routes
     },
 
     /** クリックされたタブ情報を親コンポーネント（Route.vue）から受け取る

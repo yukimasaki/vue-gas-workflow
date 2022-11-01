@@ -6,7 +6,6 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth'
 // コンポーネント
 import Login from '../views/Login.vue'
 import Settings from '../views/Settings.vue'
-import PaidLeave from '../views/PaidLeave.vue'
 import RequestOverview from '../views/RequestOverview.vue'
 import Employee from '../views/Employee.vue'
 import Department from '../views/Department.vue'
@@ -42,12 +41,6 @@ const routes = [
     path: '/settings',
     name: 'Settings',
     component: Settings,
-    meta: {requiresAuth: true}
-  },
-  {
-    path: '/paid_leave',
-    name: 'PaidLeave',
-    component: PaidLeave,
     meta: {requiresAuth: true}
   },
   {

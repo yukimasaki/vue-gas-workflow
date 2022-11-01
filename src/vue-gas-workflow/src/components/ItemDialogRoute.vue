@@ -90,7 +90,7 @@ export default {
   data () {
     return {
       /** 操作対象のテーブル */
-      currentTableName: 'paid_leave_routes',
+      currentTableName: 'routes',
       /** 操作対象のタブ */
       currentTabName: '',
       /** ダイアログの表示状態 */
