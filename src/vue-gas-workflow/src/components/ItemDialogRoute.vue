@@ -198,7 +198,7 @@ export default {
     resetForm (item = {}) {
       this.department = item.department || ''
       this.order = item.order || ''
-      this.employee = `${item.name} (${item.email})` || ''
+      this.employeeInfo = `${item.name} (${item.email})` || ''
       this.role = item.role || ''
 
       this.$refs.form.resetValidation()
