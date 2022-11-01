@@ -157,7 +157,7 @@ export default {
       this.tableData = this.routes
     },
 
-    /** クリックされたタブ情報を親コンポーネント（Route.vue）から受け取る
+    /** クリックされたタブ情報を保持する
      *  リロードした際は下記メソッドは実行されないのでdata()で定義したデフォルト値がセットされる
      */
     setCurrentTabName(currentTabName) {
