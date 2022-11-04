@@ -7,6 +7,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import Login from '../views/Login.vue'
 import Settings from '../views/Settings.vue'
 import RequestOverview from '../views/RequestOverview.vue'
+import RequestDetail from '../views/RequestDetail.vue'
 import Employee from '../views/Employee.vue'
 import Department from '../views/Department.vue'
 import Route from '../views/Route.vue'
@@ -18,6 +19,12 @@ const routes = [
     path: '/',
     name: 'RequestOverview',
     component: RequestOverview,
+    meta: {requiresAuth: true}
+  },
+  {
+    path: '/request_detail/:id',
+    name: 'RequestDetail',
+    component: RequestDetail,
     meta: {requiresAuth: true}
   },
   {
