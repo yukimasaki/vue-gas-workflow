@@ -84,12 +84,7 @@ export default {
     formattedTableData () {
       return this.tableData.map((item) => ({
         ...item,
-        created_at:
-          item.created_at.toDate().getFullYear() + '/' +
-          item.created_at.toDate().getMonth() + '/' +
-          item.created_at.toDate().getDate() + ' ' +
-          item.created_at.toDate().getHours() + ':' +
-          item.created_at.toDate().getMinutes()
+        created_at: this.dateToStr24HPad0(item.created_at.toDate())
       }))
     },
 
@@ -125,7 +120,21 @@ export default {
       const currentTableName = this.currentTableName
       await this.fetchAllCollections({ currentTableName })
       this.tableData = this.request_snippets
-    }
+    },
+
+    dateToStr24HPad0(date, format) {
+        if (!format) {
+            format = 'YYYY/MM/DD hh:mm'
+        }
+        format = format.replace(/YYYY/g, date.getFullYear());
+        format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
+        format = format.replace(/DD/g, ('0' + date.getDate()).slice(-2));
+        format = format.replace(/hh/g, ('0' + date.getHours()).slice(-2));
+        format = format.replace(/mm/g, ('0' + date.getMinutes()).slice(-2));
+        format = format.replace(/ss/g, ('0' + date.getSeconds()).slice(-2));
+        return format;
+    },
+
   },
 
   created() {
