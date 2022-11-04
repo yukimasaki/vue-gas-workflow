@@ -38,6 +38,7 @@
         :sort-desc="true"
         :items-per-page="30"
         mobile-breakpoint="0"
+        @click:row="onClickRow"
       >
 
       </v-data-table>
@@ -114,6 +115,10 @@ export default {
     /** 追加ボタンがクリックされたとき */
     onClickAdd () {
       this.$refs.ItemDialogRequest.open('add')
+    },
+
+    onClickRow(item) {
+      this.$router.push({ path: `/request_detail/${item.id}` })
     },
 
     async getRecords() {
