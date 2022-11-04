@@ -193,6 +193,8 @@ const actions = {
       // 空のドキュメントを作成する
       const emptyDocSnippets = doc(db, 'request_snippets', snippetsId)
       const emptyDocDetails = doc(db, 'request_details', detailsId)
+      // 申請概要(ドキュメント)と申請詳細を紐づけるための情報をitemDetailsに追加する
+      itemDetails.snippet_ref = snippetsId
       // バッチ書き込みを実行
       batch.set(emptyDocSnippets, itemSnippets)
       batch.set(emptyDocDetails, itemDetails)
