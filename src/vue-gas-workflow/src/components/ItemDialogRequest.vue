@@ -203,6 +203,10 @@ export default {
         await this.createArrayRoute({ department })
         const route = this.getArrayRoute()
 
+        // ステップ数を格納する
+        const currentStep = 1
+        const maxStep = route.length
+
         // 申請書に固有の項目をmap型に格納する
         const detail = {
           reason: this.reason,
@@ -228,6 +232,8 @@ export default {
           // 以下は、itemDetailsにのみ存在するプロパティ
           detail: detail,
           route: route,
+          currentStep: currentStep,
+          maxStep: maxStep,
         }
 
         // batch処理のactionsを呼び出して［itemSnippets］と［itemDetails］を不可分的に保存する
