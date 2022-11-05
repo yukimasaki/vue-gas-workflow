@@ -1,7 +1,80 @@
 <template>
   <div>
-    {{ $route.params.id }}<br>
-    {{ request_details }}
+    <!-- 申請状況 -->
+    <v-row justify="center">
+      <v-col cols="12" md="6" xs="12">
+        <v-card >
+          <v-stepper value="2" alt-labels>
+            <v-stepper-header>
+              <v-stepper-step step="1" complete>承認一郎<small>承認済み</small></v-stepper-step>
+              <v-divider/>
+
+              <v-stepper-step step="2">承認次郎<small>承認中</small></v-stepper-step>
+              <v-divider/>
+
+              <v-stepper-step step="3">回覧太郎</v-stepper-step>
+            </v-stepper-header>
+          </v-stepper>
+        </v-card>
+      </v-col>
+    </v-row>
+
+    <!-- 申請詳細 -->
+    <v-row justify="center">
+      <v-col cols="12" md="6" xs="12">
+        <v-card>
+          <v-card-text>
+            <v-form readonly>
+              <v-text-field
+                label="タイトル"
+                v-model="title"
+              />
+
+              <v-text-field
+                label="作成日時"
+                v-model="created_at"
+              />
+
+              <v-text-field
+                label="申請者"
+                v-model="recipient.name"
+              />
+
+              <v-text-field
+                label="メールアドレス"
+                v-model="recipient.email"
+              />
+
+              <v-text-field
+                label="部署"
+                v-model="recipient.department"
+              />
+
+              <v-text-field
+                label="事由"
+                v-model="detail.reason"
+              />
+
+              <v-text-field
+                label="予定日時"
+                v-model="detail.date_between"
+              />
+
+              <v-text-field
+                label="緊急連絡先"
+                v-model="detail.contact"
+              />
+
+              <v-text-field
+                label="備考"
+                v-model="detail.memo"
+              />
+
+            </v-form>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
@@ -14,14 +87,20 @@ export default {
   data() {
     return {
       currentTableName: 'request_details',
-      data: [],
+      data: {},
+      title: '',
+      status: '',
+      created_at: '',
+      recipient: {},
+      detail: {},
     }
   },
 
   computed: {
     ...mapState({
       request_details: state => state.firestore.request_details,
-    })
+    }),
+
   },
 
   methods: {
@@ -38,13 +117,40 @@ export default {
       }
 
       await this.fetchCollectionsByOneQuery({ currentTableName, customQuery })
-      this.data = this.request_details
-      console.log(this.data)
+      this.data = this.request_details[0]
+    },
+
+    dateToStr24HPad0(date, format) {
+        if (!format) {
+            format = 'YYYY/MM/DD hh:mm'
+        }
+        format = format.replace(/YYYY/g, date.getFullYear())
+        format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2))
+        format = format.replace(/DD/g, ('0' + date.getDate()).slice(-2))
+        format = format.replace(/hh/g, ('0' + date.getHours()).slice(-2))
+        format = format.replace(/mm/g, ('0' + date.getMinutes()).slice(-2))
+        format = format.replace(/ss/g, ('0' + date.getSeconds()).slice(-2))
+        return format
+    },
+
+    formatDate() {
+      const date = this.data.created_at.toDate()
+      this.data.created_at = this.dateToStr24HPad0(date)
+    },
+
+    setData() {
+      this.title = this.data.title
+      this.status = this.data.status
+      this.created_at = this.data.created_at
+      this.recipient = this.data.recipient
+      this.detail = this.data.detail
     },
   },
 
-  created() {
-    this.fetchRequestDetail()
+  async created() {
+    await this.fetchRequestDetail()
+    this.formatDate()
+    this.setData()
   },
 }
 </script>
