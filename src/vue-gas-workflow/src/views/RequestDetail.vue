@@ -4,17 +4,23 @@
     <v-row justify="center">
       <v-col cols="12" md="6" xs="12">
         <v-card >
-          <v-stepper value="2" alt-labels>
+          <!-- ステップの基本構造
+          <v-stepper value="1" alt-labels>
             <v-stepper-header>
               <v-stepper-step step="1" complete>承認一郎<small>承認済み</small></v-stepper-step>
               <v-divider/>
-
-              <v-stepper-step step="2">承認次郎<small>承認中</small></v-stepper-step>
-              <v-divider/>
-
-              <v-stepper-step step="3">回覧太郎</v-stepper-step>
             </v-stepper-header>
           </v-stepper>
+          -->
+          <v-stepper :value="currentStep" alt-labels>
+            <v-stepper-header>
+              <div v-for="route in routes" :key="route.order">
+                <v-stepper-step :step="route.order" complete>{{ route.name }}<small>承認済み</small></v-stepper-step>
+                <v-divider/>
+              </div>
+            </v-stepper-header>
+          </v-stepper>
+
         </v-card>
       </v-col>
     </v-row>
@@ -86,13 +92,20 @@ export default {
 
   data() {
     return {
+      /** 操作対象のテーブル */
       currentTableName: 'request_details',
+      /** stateのデータを受け取って格納する */
       data: {},
+      /** フォームに表示するデータを格納 */
       title: '',
       status: '',
       created_at: '',
       recipient: {},
       detail: {},
+      routes: [],
+      /** ステップの制御に使用 */
+      currentStep: '',
+      maxStep: '',
     }
   },
 
@@ -100,7 +113,6 @@ export default {
     ...mapState({
       request_details: state => state.firestore.request_details,
     }),
-
   },
 
   methods: {
@@ -144,6 +156,9 @@ export default {
       this.created_at = this.data.created_at
       this.recipient = this.data.recipient
       this.detail = this.data.detail
+      this.routes = this.data.route
+      this.currentStep = this.data.currentStep
+      this.maxStep = this.data.maxStep
     },
   },
 
