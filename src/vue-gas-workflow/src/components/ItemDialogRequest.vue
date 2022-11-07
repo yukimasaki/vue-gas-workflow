@@ -232,8 +232,8 @@ export default {
           // 以下は、itemDetailsにのみ存在するプロパティ
           detail: detail,
           route: route,
-          currentStep: currentStep,
-          maxStep: maxStep,
+          current_step: currentStep,
+          max_step: maxStep,
         }
 
         // batch処理のactionsを呼び出して［itemSnippets］と［itemDetails］を不可分的に保存する
