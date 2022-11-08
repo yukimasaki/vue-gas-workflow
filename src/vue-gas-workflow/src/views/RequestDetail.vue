@@ -4,20 +4,21 @@
     <v-row justify="center">
       <v-col cols="12" md="6" xs="12">
         <v-card >
-          <!-- ステップの基本構造
-          <v-stepper value="1" alt-labels>
+          <!-- ステップの基本構造 -->
+          <!-- <v-stepper value="2" alt-labels>
             <v-stepper-header>
               <v-stepper-step step="1" complete>承認一郎<small>承認済み</small></v-stepper-step>
               <v-divider/>
+              <v-stepper-step step="2">承認二郎<small>承認中</small></v-stepper-step>
             </v-stepper-header>
-          </v-stepper>
-          -->
-          <v-stepper :value="currentStep" alt-labels>
+          </v-stepper> -->
+
+          <v-stepper v-model="currentStep" alt-labels>
             <v-stepper-header>
-              <div v-for="route in routes" :key="route.order">
-                <v-stepper-step :step="route.order" complete>{{ route.name }}<small>承認済み</small></v-stepper-step>
-                <v-divider/>
-              </div>
+              <template v-for="route in routes">
+                <v-stepper-step :key="`${route.order}-step`" :step="route.order" :complete="currentStep >= route.order">{{ route.name }}<small>承認済み</small></v-stepper-step>
+                <v-divider :key="`${route.order}-divider`" v-if="route.order != routes.length" />
+              </template>
             </v-stepper-header>
           </v-stepper>
 
