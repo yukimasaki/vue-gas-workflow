@@ -5,9 +5,9 @@
       <v-col cols="12" md="6" xs="12">
         <v-card >
           <!-- ステップの基本構造 -->
-          <!-- <v-stepper value="2" alt-labels>
+          <!-- <v-stepper value="1" alt-labels>
             <v-stepper-header>
-              <v-stepper-step step="1" complete>承認一郎<small>承認済み</small></v-stepper-step>
+              <v-stepper-step step="1" >承認一郎<small>承認済み</small></v-stepper-step>
               <v-divider/>
               <v-stepper-step step="2">承認二郎<small>承認中</small></v-stepper-step>
             </v-stepper-header>
@@ -15,9 +15,9 @@
 
           <v-stepper v-model="currentStep" alt-labels>
             <v-stepper-header>
-              <template v-for="route in routes">
-                <v-stepper-step :key="`${route.order}-step`" :step="route.order" :complete="currentStep >= route.order">{{ route.name }}<small>承認済み</small></v-stepper-step>
-                <v-divider :key="`${route.order}-divider`" v-if="route.order != routes.length" />
+              <template v-for="( n, index ) in steps">
+                <v-stepper-step :key="`${n}-step`" :complete="currentStep == maxStep && status >= '完了'" :step="n" >{{ routes[index].name }}<small>{{ routes[index].role }}</small></v-stepper-step>
+                <v-divider :key="`${n}-divider`" v-if="routes[index].order < routes.length" />
               </template>
             </v-stepper-header>
           </v-stepper>
@@ -105,6 +105,7 @@ export default {
       detail: {},
       routes: [],
       /** ステップの制御に使用 */
+      steps: 1,
       currentStep: '',
       maxStep: '',
     }
@@ -158,15 +159,20 @@ export default {
       this.recipient = this.data.recipient
       this.detail = this.data.detail
       this.routes = this.data.route
-      this.currentStep = this.data.currentStep
-      this.maxStep = this.data.maxStep
+      this.currentStep = this.data.current_step
+      this.maxStep = this.data.max_step
+    },
+
+    setSteps() {
+      this.steps = this.routes.length
     },
   },
 
   async created() {
     await this.fetchRequestDetail()
-    this.formatDate()
-    this.setData()
+    await this.formatDate()
+    await this.setData()
+    this.setSteps()
   },
 }
 </script>
