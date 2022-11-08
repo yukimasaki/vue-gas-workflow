@@ -9,13 +9,10 @@
               <template v-for="( n, index ) in steps">
                 <v-stepper-step
                   :key="`${n}-step`"
-                  :complete="currentStep == maxStep && status >= '完了'"
+                  :complete="currentStep > n"
                   :step="n" >
                   {{ routes[index].name }}
-                  <small class="mt-1">
-                    {{ routes[index].role }}
-                    {{ n == currentStep? status : '保留中' }}
-                  </small>
+                  <small class="mt-1">{{ routes[index].role }}</small>
                 </v-stepper-step>
                 <v-divider :key="`${n}-divider`" v-if="routes[index].order < routes.length" />
               </template>
@@ -81,6 +78,21 @@
         </v-card>
       </v-col>
     </v-row>
+
+    <!-- 承認・否認等のボタン -->
+    <v-row justify="center">
+      <v-col cols="12" md="6" xs="12">
+          <v-card>
+            <v-card-actions class="justify-center">
+              <v-btn class="mx-2" color="green" :dark="btnApproveRules? false : true" @click="onClickApprove" :disabled="btnApproveRules">承認</v-btn>
+              <v-btn class="mx-2" color="green" dark @click="onClickDisapprove">否認</v-btn>
+              <v-btn class="mx-2" color="green" dark @click="onClickRemand">差戻し</v-btn>
+              <v-btn class="mx-2" color="green" dark @click="onClickRead">回覧</v-btn>
+            </v-card-actions>
+          </v-card>
+
+      </v-col>
+    </v-row>
   </div>
 </template>
 
@@ -114,6 +126,11 @@ export default {
     ...mapState({
       request_details: state => state.firestore.request_details,
     }),
+
+    /** 各種ボタンの表示/非表示ルール */
+    btnApproveRules() {
+      return this.currentStep > this.maxStep ? true : false
+    }
   },
 
   methods: {
@@ -165,6 +182,18 @@ export default {
     setSteps() {
       this.steps = this.routes.length
     },
+
+    onClickApprove() {
+      if (this.currentStep <= this.maxStep) {
+        this.currentStep++
+      }
+    },
+
+    onClickDisapprove() {},
+
+    onClickRemand() {},
+
+    onClickRead() {},
   },
 
   async created() {
