@@ -4,24 +4,23 @@
     <v-row justify="center">
       <v-col cols="12" md="6" xs="12">
         <v-card >
-          <!-- ステップの基本構造 -->
-          <!-- <v-stepper value="1" alt-labels>
-            <v-stepper-header>
-              <v-stepper-step step="1" >承認一郎<small>承認済み</small></v-stepper-step>
-              <v-divider/>
-              <v-stepper-step step="2">承認二郎<small>承認中</small></v-stepper-step>
-            </v-stepper-header>
-          </v-stepper> -->
-
           <v-stepper v-model="currentStep" alt-labels>
             <v-stepper-header>
               <template v-for="( n, index ) in steps">
-                <v-stepper-step :key="`${n}-step`" :complete="currentStep == maxStep && status >= '完了'" :step="n" >{{ routes[index].name }}<small>{{ routes[index].role }}</small></v-stepper-step>
+                <v-stepper-step
+                  :key="`${n}-step`"
+                  :complete="currentStep == maxStep && status >= '完了'"
+                  :step="n" >
+                  {{ routes[index].name }}
+                  <small class="mt-1">
+                    {{ routes[index].role }}
+                    {{ n == currentStep? status : '保留中' }}
+                  </small>
+                </v-stepper-step>
                 <v-divider :key="`${n}-divider`" v-if="routes[index].order < routes.length" />
               </template>
             </v-stepper-header>
           </v-stepper>
-
         </v-card>
       </v-col>
     </v-row>
