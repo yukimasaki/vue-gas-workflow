@@ -226,7 +226,7 @@ export default {
         // フォームに入力された内容をitemDetailsに格納する
         const itemDetails = {
           title: this.title,
-          status: '承認中',
+          status: '保留中',
           created_at: serverTimestamp(),
           recipient: mapEmployee[0],
           // 以下は、itemDetailsにのみ存在するプロパティ
