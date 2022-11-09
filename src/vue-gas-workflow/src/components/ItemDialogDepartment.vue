@@ -64,8 +64,6 @@ export default {
       menu: false,
       /** 操作タイプ 'add' or 'edit' */
       actionType: 'add',
-      /** ID */
-      id: '',
       /** 部署 */
       department: '',
 
@@ -109,6 +107,7 @@ export default {
       this.show = true
       this.actionType = actionType
       this.resetForm(item)
+      console.log(item)
     },
 
     /** キャンセルがクリックされたとき */
@@ -119,10 +118,7 @@ export default {
     /** 追加／更新がクリックされたとき */
     async onClickAction () {
       const item = {
-        id: this.id,
         department: this.department,
-        email: this.email,
-        name: this.name,
       }
       const currentTableName = this.currentTableName
 
