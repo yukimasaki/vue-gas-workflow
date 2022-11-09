@@ -4,7 +4,6 @@ import {
   doc,
   query,
   where,
-  orderBy,
   getDocs,
   addDoc,
   updateDoc,
@@ -250,10 +249,12 @@ async function getEmployee(userEmail) {
 /**
  * 部署から申請ルート情報を取得する
  * @param {string} department
- * @returns {object} arrayRoute = {
- *   0: {order, department, approverEmail, role}
- *   1: {order, department, approverEmail, role}
- *   ...
+ * @returns {object}
+ * arrayRoute = {
+ *   department: string,
+ *   title: string,
+ *   approvers: array,
+ *   readers: array,
  * }
  */
 async function getRoute(department) {
@@ -261,7 +262,6 @@ async function getRoute(department) {
   const q = query(
     collection(db, currentTableName),
     where('department', '==', department),
-    orderBy('order', 'asc')
   )
   const querySnapshot = await getDocs(q)
   const collections = []
