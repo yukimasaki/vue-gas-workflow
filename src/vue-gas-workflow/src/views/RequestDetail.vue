@@ -4,8 +4,9 @@
     <v-row justify="center">
       <v-col cols="12" md="6" xs="12">
         <v-card >
-          <v-stepper v-model="currentStep" alt-labels>
-            <v-stepper-header>
+          <!-- スマホは縦型のステップを表示 -->
+          <template v-if="$vuetify.breakpoint.xs">
+            <v-stepper v-model="currentStep" vertical>
               <template v-for="( n, index ) in steps">
                 <v-stepper-step
                   :key="`${n}-step`"
@@ -13,10 +14,26 @@
                   :step="n" >
                   {{ routes.approvers[index].name }}
                 </v-stepper-step>
-                <v-divider :key="`${n}-divider`" v-if="routes.approvers[index].order < routes.approvers.length" />
               </template>
-            </v-stepper-header>
-          </v-stepper>
+            </v-stepper>
+          </template>
+
+          <!-- その他の端末は横型のステップを表示 -->
+          <template v-else>
+            <v-stepper v-model="currentStep" alt-labels>
+              <v-stepper-header>
+                <template v-for="( n, index ) in steps">
+                  <v-stepper-step
+                    :key="`${n}-step`"
+                    :complete="currentStep > n"
+                    :step="n" >
+                    {{ routes.approvers[index].name }}
+                  </v-stepper-step>
+                  <v-divider :key="`${n}-divider`" v-if="routes.approvers[index].order < routes.approvers.length" />
+                </template>
+              </v-stepper-header>
+            </v-stepper>
+          </template>
         </v-card>
       </v-col>
     </v-row>
