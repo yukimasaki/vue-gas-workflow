@@ -194,13 +194,14 @@ export default {
         const mapEmployee = this.getMapEmployee()
 
         // 申請ルート情報をarray型に格納する
+        const requestType = this.requestType
         const department = mapEmployee[0].department
-        await this.createArrayRoute({ department })
-        const route = this.getArrayRoute()
+        await this.createArrayRoute({ requestType, department })
+        const route = this.getArrayRoute()[0]
 
         // ステップ数を格納する
         const currentStep = 1
-        const maxStep = route.length
+        const maxStep = route.approvers.length
 
         // 申請書に固有の項目をmap型に格納する
         const detail = {
