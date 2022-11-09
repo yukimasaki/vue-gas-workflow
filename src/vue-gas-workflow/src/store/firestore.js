@@ -218,8 +218,8 @@ const actions = {
   },
 
   /** 申請ルート情報を作成する */
-  async createArrayRoute({ commit }, { department }) {
-    const route = await getRoute(department)
+  async createArrayRoute({ commit }, { requestType, department }) {
+    const route = await getRoute(requestType, department)
     commit('setArrayRoute', { route })
   },
 
@@ -248,6 +248,7 @@ async function getEmployee(userEmail) {
 
 /**
  * 部署から申請ルート情報を取得する
+ * @param {string} requestType
  * @param {string} department
  * @returns {object}
  * arrayRoute = {
@@ -257,10 +258,11 @@ async function getEmployee(userEmail) {
  *   readers: array,
  * }
  */
-async function getRoute(department) {
+async function getRoute(requestType, department) {
   const currentTableName = 'routes'
   const q = query(
     collection(db, currentTableName),
+    where('request_type', '==', requestType),
     where('department', '==', department),
   )
   const querySnapshot = await getDocs(q)
