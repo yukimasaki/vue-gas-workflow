@@ -171,7 +171,6 @@ export default {
 
     /** フォームの内容を初期化します */
     resetForm (item = {}) {
-      this.id = item.id || ''
       this.department = item.department || ''
       this.email = item.email || ''
       this.name = item.name || ''
