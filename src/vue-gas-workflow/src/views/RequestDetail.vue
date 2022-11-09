@@ -11,10 +11,10 @@
                   :key="`${n}-step`"
                   :complete="currentStep > n"
                   :step="n" >
-                  {{ routes[index].name }}
-                  <small class="mt-1">{{ routes[index].role }}</small>
+                  {{ routes.approvers[index].name }}
+                  <small class="mt-1">{{ routes.approvers[index].role }}</small>
                 </v-stepper-step>
-                <v-divider :key="`${n}-divider`" v-if="routes[index].order < routes.length" />
+                <v-divider :key="`${n}-divider`" v-if="routes.approvers[index].order < routes.approvers.length" />
               </template>
             </v-stepper-header>
           </v-stepper>
@@ -84,10 +84,9 @@
       <v-col cols="12" md="6" xs="12">
           <v-card>
             <v-card-actions class="justify-center">
-              <v-btn class="mx-2" color="green" :dark="btnApproveRules? false : true" @click="onClickApprove" :disabled="btnApproveRules">承認</v-btn>
+              <v-btn class="mx-2" color="green" :dark="isDisabledApproveBtn? false : true" @click="onClickApprove" :disabled="isDisabledApproveBtn">承認</v-btn>
               <v-btn class="mx-2" color="green" dark @click="onClickDisapprove">否認</v-btn>
               <v-btn class="mx-2" color="green" dark @click="onClickRemand">差戻し</v-btn>
-              <v-btn class="mx-2" color="green" dark @click="onClickRead">回覧</v-btn>
             </v-card-actions>
           </v-card>
 
@@ -128,9 +127,9 @@ export default {
     }),
 
     /** 各種ボタンの表示/非表示ルール */
-    btnApproveRules() {
+    isDisabledApproveBtn() {
       return this.currentStep > this.maxStep ? true : false
-    }
+    },
   },
 
   methods: {
@@ -180,7 +179,7 @@ export default {
     },
 
     setSteps() {
-      this.steps = this.routes.length
+      this.steps = this.routes.approvers.length
     },
 
     onClickApprove() {
