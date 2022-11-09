@@ -101,8 +101,6 @@ export default {
         {text: '休暇申請', value: 'paid_leave'},
         {text: '備品申請', value: 'equipment'},
       ],
-      /** 操作対象のテーブル */
-      currentTableName: 'request_snippets',
       /** ダイアログの表示状態 */
       show: false,
       /** 入力したデータが有効かどうか */
@@ -190,9 +188,6 @@ export default {
     /** 追加／更新がクリックされたとき */
     async onClickAction () {
       if (this.actionType === 'add') {
-        // 操作対象のテーブル
-        // const currentTableName = this.currentTableName
-
         // 申請者情報をmap型に格納する
         const userEmail = this.getUserEmail()
         await this.createMapEmployee({ userEmail })
