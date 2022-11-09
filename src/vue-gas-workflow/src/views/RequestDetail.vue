@@ -12,7 +12,6 @@
                   :complete="currentStep > n"
                   :step="n" >
                   {{ routes.approvers[index].name }}
-                  <small class="mt-1">{{ routes.approvers[index].role }}</small>
                 </v-stepper-step>
                 <v-divider :key="`${n}-divider`" v-if="routes.approvers[index].order < routes.approvers.length" />
               </template>
@@ -80,18 +79,13 @@
     </v-row>
 
     <!-- 承認・否認等のボタン -->
-    <v-row justify="center">
-      <v-col cols="12" md="6" xs="12">
-          <v-card>
-            <v-card-actions class="justify-center">
-              <v-btn class="mx-2" color="green" :dark="isDisabledApproveBtn? false : true" @click="onClickApprove" :disabled="isDisabledApproveBtn">承認</v-btn>
-              <v-btn class="mx-2" color="green" dark @click="onClickDisapprove">否認</v-btn>
-              <v-btn class="mx-2" color="green" dark @click="onClickRemand">差戻し</v-btn>
-            </v-card-actions>
-          </v-card>
-
+    <v-footer app padless>
+      <v-col col="12" class="text-center">
+        <v-btn class="mx-2" color="green" :dark="isDisabledApproveBtn? false : true" @click="onClickApprove" :disabled="isDisabledApproveBtn">承認</v-btn>
+        <v-btn class="mx-2" color="green" :dark="isDisabledApproveBtn? false : true" @click="onClickDisapprove" :disabled="isDisabledApproveBtn">否認</v-btn>
+        <v-btn class="mx-2" color="green" :dark="isDisabledApproveBtn? false : true" @click="onClickRemand" :disabled="isDisabledApproveBtn">差戻し</v-btn>
       </v-col>
-    </v-row>
+    </v-footer>
   </div>
 </template>
 
@@ -113,7 +107,12 @@ export default {
       created_at: '',
       recipient: {},
       detail: {},
-      routes: [],
+      routes: {
+        approvers: [
+          {name: ''}
+        ]
+      },
+
       /** ステップの制御に使用 */
       steps: 1,
       currentStep: '',
@@ -183,16 +182,15 @@ export default {
     },
 
     onClickApprove() {
-      if (this.currentStep <= this.maxStep) {
-        this.currentStep++
-      }
+      this.currentStep++
     },
 
-    onClickDisapprove() {},
+    onClickDisapprove() {
+
+    },
 
     onClickRemand() {},
 
-    onClickRead() {},
   },
 
   async created() {
