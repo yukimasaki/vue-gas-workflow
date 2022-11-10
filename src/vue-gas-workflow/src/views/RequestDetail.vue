@@ -13,6 +13,7 @@
                   :complete="currentStep > n"
                   :step="n" >
                   {{ routes.approvers[index].name }}
+                  <small class="mt-2">{{ currentStep > n ? '完了' : '保留中' }}</small>
                 </v-stepper-step>
                 <div
                   :key="`${n}-div`"
@@ -33,6 +34,7 @@
                     :complete="currentStep > n"
                     :step="n" >
                     {{ routes.approvers[index].name }}
+                    <small class="mt-2">{{ currentStep > n ? '完了' : '保留中' }}</small>
                   </v-stepper-step>
                   <v-divider :key="`${n}-divider`" v-if="routes.approvers[index].order < routes.approvers.length" />
                 </template>
@@ -49,6 +51,11 @@
         <v-card>
           <v-card-text>
             <v-form readonly>
+              <v-text-field
+                label="ステータス"
+                v-model="status"
+              />
+
               <v-text-field
                 label="タイトル"
                 v-model="title"
@@ -205,6 +212,9 @@ export default {
 
     onClickApprove() {
       this.currentStep++
+      if (this.currentStep > this.maxStep) {
+        this.status = '完了'
+      }
     },
 
     onClickDisapprove() {
