@@ -244,17 +244,6 @@ export default {
       this.routes.approvers[this.currentStep - 1].status = '差戻し'
     },
 
-    /** ステップをエラー表示とする際の条件を列挙する */
-    stepperRules(index) {
-      const rules = [
-        this.routes.approvers[index].status == '否認' ? true : false,
-        this.routes.approvers[index].status == '差戻し' ? true : false,
-      ]
-
-      // 配列「rules」に1つでも「true」の要素があったら「true」を返し、bool値を反転させている
-      return !rules.some(v => v == true)
-    },
-
   },
 
   async created() {
