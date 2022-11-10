@@ -14,6 +14,11 @@
                   :step="n" >
                   {{ routes.approvers[index].name }}
                 </v-stepper-step>
+                <div
+                  :key="`${n}-div`"
+                  v-if="routes.approvers[index].order < routes.approvers.length"
+                  style="border-left:1px solid rgba(0,0,0,.25); height:30px; margin-left:36px;"
+                ></div>
               </template>
             </v-stepper>
           </template>
