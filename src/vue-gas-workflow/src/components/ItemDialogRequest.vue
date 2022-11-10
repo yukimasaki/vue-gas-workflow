@@ -198,6 +198,11 @@ export default {
         const department = mapEmployee[0].department
         await this.createArrayRoute({ requestType, department })
         const route = this.getArrayRoute()[0]
+        const arrayAddedStatus = []
+        route.approvers.forEach(element => {
+          arrayAddedStatus.push({...element, status: '保留中'})
+        })
+        route.approvers = arrayAddedStatus
 
         // ステップ数を格納する
         const currentStep = 1
@@ -222,7 +227,6 @@ export default {
         // フォームに入力された内容をitemDetailsに格納する
         const itemDetails = {
           title: this.title,
-          status: '保留中',
           created_at: serverTimestamp(),
           recipient: mapEmployee[0],
           // 以下は、itemDetailsにのみ存在するプロパティ
