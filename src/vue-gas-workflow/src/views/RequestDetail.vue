@@ -11,9 +11,11 @@
                 <v-stepper-step
                   :key="`${n}-step`"
                   :complete="currentStep > n"
-                  :step="n" >
+                  :step="n"
+                  :rules="[() => { return routes.approvers[index].status == '保留中'}]"
+                  >
                   {{ routes.approvers[index].name }}
-                  <small class="mt-2">{{ currentStep > n ? '完了' : '保留中' }}</small>
+                  <small class="mt-2">{{ routes.approvers[index].status }}</small>
                 </v-stepper-step>
                 <div
                   :key="`${n}-div`"
@@ -32,9 +34,11 @@
                   <v-stepper-step
                     :key="`${n}-step`"
                     :complete="currentStep > n"
-                    :step="n" >
+                    :step="n"
+                    :rules="[() => { return routes.approvers[index].status == '保留中'}]"
+                    >
                     {{ routes.approvers[index].name }}
-                    <small class="mt-2">{{ currentStep > n ? '完了' : '保留中' }}</small>
+                    <small class="mt-2">{{ routes.approvers[index].status }}</small>
                   </v-stepper-step>
                   <v-divider :key="`${n}-divider`" v-if="routes.approvers[index].order < routes.approvers.length" />
                 </template>
@@ -51,11 +55,6 @@
         <v-card>
           <v-card-text>
             <v-form readonly>
-              <v-text-field
-                label="ステータス"
-                v-model="status"
-              />
-
               <v-text-field
                 label="タイトル"
                 v-model="title"
@@ -132,7 +131,6 @@ export default {
       data: {},
       /** フォームに表示するデータを格納 */
       title: '',
-      status: '',
       created_at: '',
       recipient: {},
       detail: {},
@@ -144,8 +142,8 @@ export default {
 
       /** ステップの制御に使用 */
       steps: 1,
-      currentStep: '',
-      maxStep: '',
+      currentStep: 1,
+      maxStep: 1,
     }
   },
 
@@ -156,7 +154,26 @@ export default {
 
     /** 各種ボタンの表示/非表示ルール */
     isDisabledApproveBtn() {
-      return this.currentStep > this.maxStep ? true : false
+      // 各種ボタンを非活性にする際の条件を列挙する
+      const rules = [
+        this.currentStep > this.maxStep ? true : false,
+        this.routes.approvers[this.currentStep - 1].status == '否認' ? true : false,
+        this.routes.approvers[this.currentStep - 1].status == '差戻し' ? true : false,
+      ]
+
+      // 配列「rules」に1つでも「true」の要素があったら「true」を返す
+      return rules.some(v => v == true)
+    },
+
+    /** ステップをエラー表示とする条件 */
+    stepperRules() {
+      // const rules = [
+      //   this.status == '否認' ? true : false,
+      //   this.status == '差戻し' ? true : false,
+      // ]
+
+      // return rules.some(v => v == true)
+      return [false, 'error']
     },
   },
 
@@ -197,7 +214,6 @@ export default {
 
     setData() {
       this.title = this.data.title
-      this.status = this.data.status
       this.created_at = this.data.created_at
       this.recipient = this.data.recipient
       this.detail = this.data.detail
@@ -213,15 +229,17 @@ export default {
     onClickApprove() {
       this.currentStep++
       if (this.currentStep > this.maxStep) {
-        this.status = '完了'
+        this.routes.approvers[this.currentStep - 1].status = '完了'
       }
     },
 
     onClickDisapprove() {
-
+      this.routes.approvers[this.currentStep - 1].status = '否認'
     },
 
-    onClickRemand() {},
+    onClickRemand() {
+      this.routes.approvers[this.currentStep - 1].status = '差戻し'
+    },
 
   },
 
