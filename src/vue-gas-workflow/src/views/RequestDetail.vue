@@ -10,9 +10,15 @@
               <template v-for="( n, index ) in steps">
                 <v-stepper-step
                   :key="`${n}-step`"
-                  :complete="currentStep > n"
+                  :complete="routes.approvers[index].status == '完了'"
                   :step="n"
-                  :rules="[() => { return routes.approvers[index].status == '保留中'}]"
+                  :rules="[() => {
+                    const rules = [
+                      routes.approvers[index].status == '否認' ? true : false,
+                      routes.approvers[index].status == '差戻し' ? true : false,
+                    ]
+                    return !rules.some(v => v == true)
+                  }]"
                   >
                   {{ routes.approvers[index].name }}
                   <small class="mt-2">{{ routes.approvers[index].status }}</small>
@@ -33,9 +39,15 @@
                 <template v-for="( n, index ) in steps">
                   <v-stepper-step
                     :key="`${n}-step`"
-                    :complete="currentStep > n"
+                    :complete="routes.approvers[index].status == '完了'"
                     :step="n"
-                    :rules="[() => { return routes.approvers[index].status == '保留中'}]"
+                    :rules="[() => {
+                      const rules = [
+                        routes.approvers[index].status == '否認' ? true : false,
+                        routes.approvers[index].status == '差戻し' ? true : false,
+                      ]
+                      return !rules.some(v => v == true)
+                    }]"
                     >
                     {{ routes.approvers[index].name }}
                     <small class="mt-2">{{ routes.approvers[index].status }}</small>
@@ -156,24 +168,13 @@ export default {
     isDisabledApproveBtn() {
       // 各種ボタンを非活性にする際の条件を列挙する
       const rules = [
-        this.currentStep > this.maxStep ? true : false,
+        this.routes.approvers[this.currentStep - 1].status == '完了' ? true : false,
         this.routes.approvers[this.currentStep - 1].status == '否認' ? true : false,
         this.routes.approvers[this.currentStep - 1].status == '差戻し' ? true : false,
       ]
 
       // 配列「rules」に1つでも「true」の要素があったら「true」を返す
       return rules.some(v => v == true)
-    },
-
-    /** ステップをエラー表示とする条件 */
-    stepperRules() {
-      // const rules = [
-      //   this.status == '否認' ? true : false,
-      //   this.status == '差戻し' ? true : false,
-      // ]
-
-      // return rules.some(v => v == true)
-      return [false, 'error']
     },
   },
 
@@ -227,9 +228,11 @@ export default {
     },
 
     onClickApprove() {
-      this.currentStep++
-      if (this.currentStep > this.maxStep) {
+      if (this.currentStep == this.maxStep) {
         this.routes.approvers[this.currentStep - 1].status = '完了'
+      } else {
+        this.currentStep++
+        this.routes.approvers[this.currentStep - 2].status = '完了'
       }
     },
 
@@ -239,6 +242,17 @@ export default {
 
     onClickRemand() {
       this.routes.approvers[this.currentStep - 1].status = '差戻し'
+    },
+
+    /** ステップをエラー表示とする際の条件を列挙する */
+    stepperRules(index) {
+      const rules = [
+        this.routes.approvers[index].status == '否認' ? true : false,
+        this.routes.approvers[index].status == '差戻し' ? true : false,
+      ]
+
+      // 配列「rules」に1つでも「true」の要素があったら「true」を返し、bool値を反転させている
+      return !rules.some(v => v == true)
     },
 
   },
