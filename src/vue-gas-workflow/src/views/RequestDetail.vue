@@ -228,12 +228,17 @@ export default {
     },
 
     onClickApprove() {
+      // フロント側の表示を更新
       if (this.currentStep == this.maxStep) {
         this.routes.approvers[this.currentStep - 1].status = '完了'
       } else {
         this.currentStep++
         this.routes.approvers[this.currentStep - 2].status = '完了'
       }
+
+      // Firestoreにバッチ更新
+      // 1. request_snippets
+      // 2. request_detail
     },
 
     onClickDisapprove() {
