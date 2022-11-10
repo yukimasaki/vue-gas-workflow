@@ -5,7 +5,7 @@
       <v-col cols="12" md="6" xs="12">
         <v-card >
           <!-- スマホは縦型のステップを表示 -->
-          <template v-if="$vuetify.breakpoint.xs">
+          <template v-if="$vuetify.breakpoint.xs || $vuetify.breakpoint.sm">
             <v-stepper v-model="currentStep" vertical>
               <template v-for="( n, index ) in steps">
                 <v-stepper-step
