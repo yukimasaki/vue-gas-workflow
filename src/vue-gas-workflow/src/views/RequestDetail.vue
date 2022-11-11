@@ -130,7 +130,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapState, mapGetters } from 'vuex';
 
 export default {
   name: 'RequestDetail',
@@ -164,10 +164,15 @@ export default {
       request_details: state => state.firestore.request_details,
     }),
 
+    ...mapGetters({
+      getUserEmail: 'firebase/getUserEmail',
+    }),
+
     /** 各種ボタンの表示/非表示ルール */
     isDisabledApproveBtn() {
       // 各種ボタンを非活性にする際の条件を列挙する
       const rules = [
+        this.routes.approvers[this.currentStep - 1].email != this.getUserEmail ? true : false,
         this.routes.approvers[this.currentStep - 1].status == '完了' ? true : false,
         this.routes.approvers[this.currentStep - 1].status == '否認' ? true : false,
         this.routes.approvers[this.currentStep - 1].status == '差戻し' ? true : false,
