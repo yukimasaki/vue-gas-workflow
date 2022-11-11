@@ -6,7 +6,7 @@
         <v-card >
           <!-- スマホは縦型のステップを表示 -->
           <template v-if="$vuetify.breakpoint.xs || $vuetify.breakpoint.sm">
-            <v-stepper v-model="currentStep" vertical>
+            <v-stepper v-model="dataStep" vertical>
               <template v-for="( n, index ) in steps">
                 <v-stepper-step
                   :key="`${n}-step`"
@@ -34,9 +34,9 @@
 
           <!-- その他の端末は横型のステップを表示 -->
           <template v-else>
-            <v-stepper v-model="currentStep" alt-labels>
+            <v-stepper v-model="nowStep" alt-labels>
               <v-stepper-header>
-                <template v-for="( n, index ) in steps">
+                <template v-for="( n, index ) in maxStep">
                   <v-stepper-step
                     :key="`${n}-step`"
                     :complete="routes.approvers[index].status == '完了'"
@@ -52,7 +52,7 @@
                     {{ routes.approvers[index].name }}
                     <small class="mt-2">{{ routes.approvers[index].status }}</small>
                   </v-stepper-step>
-                  <v-divider :key="`${n}-divider`" v-if="routes.approvers[index].order < routes.approvers.length" />
+                  <v-divider :key="`${n}-divider`" v-if="n < maxStep" />
                 </template>
               </v-stepper-header>
             </v-stepper>
@@ -153,15 +153,19 @@ export default {
       },
 
       /** ステップの制御に使用 */
-      steps: 1,
-      currentStep: 1,
-      maxStep: 1,
+      // currentStep: 1,
+      // maxStep: 1,
+
+      /** Firestoreにバッチ書き込みするデータを格納 */
+      latestStatus: '',
+
     }
   },
 
   computed: {
     ...mapState({
       request_details: state => state.firestore.request_details,
+      request_snippets: state => state.firestore.request_snippets,
     }),
 
     ...mapGetters({
@@ -170,10 +174,27 @@ export default {
 
     /** 各種ボタンの表示/非表示ルール */
     isDisabledApproveBtn() {
+      console.log(`this.routes.approvers: ${this.routes.approvers}`)
+      console.log(`this.currentStep: ${this.currentStep}`)
+      console.log(`this.data.current_step: ${this.data.current_step}`)
+      console.log(`this.data:`)
+      console.log(this.data)
+
+      /** ステップが動作しない原因：
+       *  まず、Vueのライフサイクルは下記の通り。
+       *  1. htmlがレンダリングされる
+       *  2. beforeMount, created等の関数が実行される
+       *
+       *  そのため、vuetifyディレクティブから直接呼び出されている「isDisabledApproveBtn」メソッドは、
+       *  data関数内で初期化されたばかりの変数を読みに行ってしまっている。
+       */
+      this.fetchRequestDetail()
+      this.setData()
+
       // 各種ボタンを非活性にする際の条件を列挙する
       const rules = [
         this.routes.approvers[this.currentStep - 1].email != this.getUserEmail ? true : false,
-        this.routes.approvers[this.currentStep - 1].status == '完了' ? true : false,
+        this.routes.approvers[this.maxStep - 1].status == '完了' ? true : false,
         this.routes.approvers[this.currentStep - 1].status == '否認' ? true : false,
         this.routes.approvers[this.currentStep - 1].status == '差戻し' ? true : false,
       ]
@@ -181,11 +202,27 @@ export default {
       // 配列「rules」に1つでも「true」の要素があったら「true」を返す
       return rules.some(v => v == true)
     },
+
+    nowStep() {
+      const n = 2
+      return n
+    },
+
+    currentStep() {
+      return this.data.current_step
+    },
+
+    maxStep() {
+      return this.data.max_step
+    },
+
   },
 
   methods: {
     ...mapActions({
-      fetchCollectionsByOneQuery: 'firestore/fetchCollectionsByOneQuery'
+      fetchCollectionsByOneQuery: 'firestore/fetchCollectionsByOneQuery',
+      fetchCollectionByDocId: 'firestore/fetchCollectionByDocId',
+      batchUpdateCollections: 'firestore/batchUpdateCollections',
     }),
 
     async fetchRequestDetail() {
@@ -213,37 +250,32 @@ export default {
         return format
     },
 
-    formatDate() {
-      const date = this.data.created_at.toDate()
-      this.data.created_at = this.dateToStr24HPad0(date)
-    },
-
     setData() {
+      const date = this.data.created_at.toDate()
+      const formattedDate = this.dateToStr24HPad0(date)
+
       this.title = this.data.title
-      this.created_at = this.data.created_at
+      this.created_at = formattedDate
       this.recipient = this.data.recipient
       this.detail = this.data.detail
       this.routes = this.data.route
-      this.currentStep = this.data.current_step
-      this.maxStep = this.data.max_step
-    },
-
-    setSteps() {
-      this.steps = this.routes.approvers.length
     },
 
     onClickApprove() {
+      console.log(`onClickApprove実行前: ${this.currentStep}`)
       // フロント側の表示を更新
+      // 最終ステップの場合
       if (this.currentStep == this.maxStep) {
         this.routes.approvers[this.currentStep - 1].status = '完了'
+        this.latestStatus = this.routes.approvers[this.currentStep - 1].status
+      // それ以外のステップの場合
       } else {
+        this.routes.approvers[this.currentStep - 1].status = '完了'
         this.currentStep++
-        this.routes.approvers[this.currentStep - 2].status = '完了'
+        this.latestStatus = '保留中'
       }
-
-      // Firestoreにバッチ更新
-      // 1. request_snippets
-      // 2. request_detail
+      console.log(`onClickApprove実行後: ${this.currentStep}`)
+      // this.batchUpdate()
     },
 
     onClickDisapprove() {
@@ -254,13 +286,34 @@ export default {
       this.routes.approvers[this.currentStep - 1].status = '差戻し'
     },
 
+    async batchUpdate() {
+      // itemSnippetsを取得
+      const currentTableName = 'request_snippets'
+      const docId = this.$route.params.id
+      await this.fetchCollectionByDocId({ currentTableName, docId })
+      const itemSnippets = this.request_snippets
+      console.log(`1. this.request_snippets:`)
+      console.log(this.request_snippets)
+      console.log(`2. itemSnippets:`)
+      console.log(itemSnippets)
+
+      // itemSnippetsに最新のステータスを格納する
+      itemSnippets.status = this.latestStatus
+
+      // itemDetailsを作成
+      let itemDetails = this.data
+      itemDetails.current_step = this.currentStep
+
+      // Firestoreにバッチ書き込み(update)
+      console.log(`3. itemSnippets:`)
+      console.log(itemSnippets)
+      console.log(`4. itemDetails:`)
+      console.log(itemDetails)
+      this.batchUpdateCollections({ itemSnippets, itemDetails })
+    },
   },
 
-  async created() {
-    await this.fetchRequestDetail()
-    await this.formatDate()
-    await this.setData()
-    this.setSteps()
+  created() {
   },
 }
 </script>
