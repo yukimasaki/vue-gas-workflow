@@ -184,7 +184,7 @@ const actions = {
     try {
       const docRef = doc(db, currentTableName, docId)
       const docSnap = await getDoc(docRef)
-      const document = docSnap.data()
+      const document = {...docSnap.data(), id: docSnap.id}
       commit('setCollections', { collections: document, currentTableName })
     } catch(e) {
       commit('setErrorMessage', { message: e })
