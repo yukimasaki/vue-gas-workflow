@@ -177,6 +177,23 @@ const actions = {
     }
   },
 
+  /** ドキュメントIDを指定して単一のドキュメントを取得する */
+  async fetchCollectionByDocId({ commit }, { currentTableName, docId }) {
+    const type = 'fetch'
+    commit('setLoading', { type, v: true })
+    try {
+      const docRef = doc(db, currentTableName, docId)
+      const docSnap = await getDoc(docRef)
+      const document = docSnap.data()
+      commit('setCollections', { collections: document, currentTableName })
+    } catch(e) {
+      commit('setErrorMessage', { message: e })
+      commit('setCollections', { collections: [] })
+    } finally {
+      commit('setLoading', { type, v: false})
+    }
+  },
+
   /** バッチ書き込み(add) */
   async batchAddCollections({ commit }, { itemSnippets, itemDetails }) {
     const type = 'add'
@@ -211,9 +228,7 @@ const actions = {
     }
   },
 
-  /** バッチ書き込み(update)
-   *  ※作成中
-   */
+  /** バッチ書き込み(update) */
    async batchUpdateCollections({ commit }, { itemSnippets, itemDetails }) {
     const type = 'update'
     const batch = writeBatch(db)
