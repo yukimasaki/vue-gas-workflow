@@ -177,8 +177,8 @@ const actions = {
     }
   },
 
-  /** バッチ書き込み */
-  async batchSetCollections({ commit }, { itemSnippets, itemDetails }) {
+  /** バッチ書き込み(add) */
+  async batchAddCollections({ commit }, { itemSnippets, itemDetails }) {
     const type = 'add'
     const batch = writeBatch(db)
     commit('setLoading', { type, v: true })
@@ -210,6 +210,11 @@ const actions = {
       commit('setLoading', { type, v: false })
     }
   },
+
+  /** バッチ書き込み(update)
+   *  ※作成中
+   */
+
 
   /** 申請者情報を作成する */
   async createMapEmployee({ commit }, { userEmail }) {

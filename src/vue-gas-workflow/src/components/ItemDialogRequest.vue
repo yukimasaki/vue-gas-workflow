@@ -165,7 +165,7 @@ export default {
     }),
 
     ...mapActions({
-      batchSetCollections: 'firestore/batchSetCollections',
+      batchAddCollections: 'firestore/batchAddCollections',
       createMapEmployee: 'firestore/createMapEmployee',
       createArrayRoute: 'firestore/createArrayRoute',
     }),
@@ -237,7 +237,7 @@ export default {
         }
 
         // batch処理のactionsを呼び出して［itemSnippets］と［itemDetails］を不可分的に保存する
-        await this.batchSetCollections({ itemSnippets, itemDetails })
+        await this.batchAddCollections({ itemSnippets, itemDetails })
 
         this.show = false
       }
