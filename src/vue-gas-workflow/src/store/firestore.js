@@ -214,7 +214,24 @@ const actions = {
   /** バッチ書き込み(update)
    *  ※作成中
    */
-
+   async batchUpdateCollections({ commit }, { itemSnippets, itemDetails }) {
+    const type = 'update'
+    const batch = writeBatch(db)
+    commit('setLoading', { type, v: true })
+    try {
+      // item*.idに対応するドキュメントを取得
+      const docSnippets = doc(db, 'request_snippets', itemSnippets.id)
+      const docDetails = doc(db, 'request_details', itemDetails.id)
+      // バッチ書き込みを実行
+      batch.set(docSnippets, itemSnippets)
+      batch.set(docDetails, itemDetails)
+      await batch.commit()
+    } catch (e) {
+      commit('setErrorMessage', { message: e })
+    } finally {
+      commit('setLoading', { type, v: false })
+    }
+  },
 
   /** 申請者情報を作成する */
   async createMapEmployee({ commit }, { userEmail }) {
