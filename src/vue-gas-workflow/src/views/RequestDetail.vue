@@ -185,8 +185,12 @@ export default {
        *  1. htmlがレンダリングされる
        *  2. beforeMount, created等の関数が実行される
        *
-       *  そのため、vuetifyディレクティブから直接呼び出されている「isDisabledApproveBtn」メソッドは、
+       *  当メソッドはvuetifyディレクティブから直接呼び出されており、
        *  data関数内で初期化されたばかりの変数を読みに行ってしまっている。
+       *
+       *  created関数内に存在していた下記2行を当メソッドに移動すると、
+       *  ステップは動作するようになる。
+       *  ※ただしconsole.logが無限ループするようになる。
        */
       this.fetchRequestDetail()
       this.setData()
