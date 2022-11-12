@@ -1,6 +1,13 @@
 <template>
   <div>
     <v-card>
+      <!-- タブレイアウト -->
+      <v-tabs grow color="green">
+        <v-tab @click="onClickTab('othersRequest')">承認依頼</v-tab>
+        <v-tab @click="onClickTab('myRequest')">自分の申請</v-tab>
+      </v-tabs>
+
+      <!-- コンテンツ -->
       <v-card-title>
         <!-- 申請書タイトル -->
         <v-col cols="8">
@@ -80,11 +87,13 @@ export default {
       /** 操作対象のテーブル */
       currentTableName: 'request_snippets',
       /* 申請書タイトル */
-      title: '自分の申請一覧',
+      title: '申請一覧',
       /** 検索文字 */
       search: '',
       /** テーブルに表示させるデータ */
       tableData: [],
+      /** 現在開いているタブ */
+      currentTabName: 'othersRequest',
     }
   },
 
