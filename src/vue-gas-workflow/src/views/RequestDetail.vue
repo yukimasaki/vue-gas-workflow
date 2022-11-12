@@ -250,10 +250,12 @@ export default {
 
     onClickDisapprove() {
       this.routes.approvers[this.currentStep - 1].status = '否認'
+      this.batchUpdate()
     },
 
     onClickRemand() {
       this.routes.approvers[this.currentStep - 1].status = '差戻し'
+      this.batchUpdate()
     },
 
     async batchUpdate() {
