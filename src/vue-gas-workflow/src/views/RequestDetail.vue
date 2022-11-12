@@ -245,7 +245,7 @@ export default {
         this.currentStep++
         this.latestStatus = '保留中'
       }
-      // this.batchUpdate()
+      this.batchUpdate()
     },
 
     onClickDisapprove() {
@@ -262,10 +262,6 @@ export default {
       const docId = this.$route.params.id
       await this.fetchCollectionByDocId({ currentTableName, docId })
       const itemSnippets = this.request_snippets
-      console.log(`1. this.request_snippets:`)
-      console.log(this.request_snippets)
-      console.log(`2. itemSnippets:`)
-      console.log(itemSnippets)
 
       // itemSnippetsに最新のステータスを格納する
       itemSnippets.status = this.latestStatus
@@ -275,10 +271,6 @@ export default {
       itemDetails.current_step = this.currentStep
 
       // Firestoreにバッチ書き込み(update)
-      console.log(`3. itemSnippets:`)
-      console.log(itemSnippets)
-      console.log(`4. itemDetails:`)
-      console.log(itemDetails)
       this.batchUpdateCollections({ itemSnippets, itemDetails })
     },
   },
