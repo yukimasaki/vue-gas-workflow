@@ -6,8 +6,8 @@
         <v-card >
           <!-- スマホは縦型のステップを表示 -->
           <template v-if="$vuetify.breakpoint.xs || $vuetify.breakpoint.sm">
-            <v-stepper v-model="dataStep" vertical>
-              <template v-for="( n, index ) in steps">
+            <v-stepper v-if="currentStep" v-model="currentStep" vertical>
+              <template v-for="( n, index ) in maxStep">
                 <v-stepper-step
                   :key="`${n}-step`"
                   :complete="routes.approvers[index].status == '完了'"
@@ -25,7 +25,7 @@
                 </v-stepper-step>
                 <div
                   :key="`${n}-div`"
-                  v-if="routes.approvers[index].order < routes.approvers.length"
+                  v-if="n < maxStep"
                   style="border-left:1px solid rgba(0,0,0,.25); height:30px; margin-left:36px;"
                 ></div>
               </template>
@@ -34,7 +34,7 @@
 
           <!-- その他の端末は横型のステップを表示 -->
           <template v-else>
-            <v-stepper v-model="nowStep" alt-labels>
+            <v-stepper v-if="currentStep" v-model="currentStep" alt-labels>
               <v-stepper-header>
                 <template v-for="( n, index ) in maxStep">
                   <v-stepper-step
@@ -146,15 +146,11 @@ export default {
       created_at: '',
       recipient: {},
       detail: {},
-      routes: {
-        approvers: [
-          {name: ''}
-        ]
-      },
+      routes: {},
 
       /** ステップの制御に使用 */
-      // currentStep: 1,
-      // maxStep: 1,
+      currentStep: null,
+      maxStep: null,
 
       /** Firestoreにバッチ書き込みするデータを格納 */
       latestStatus: '',
@@ -174,50 +170,20 @@ export default {
 
     /** 各種ボタンの表示/非表示ルール */
     isDisabledApproveBtn() {
-      console.log(`this.routes.approvers: ${this.routes.approvers}`)
-      console.log(`this.currentStep: ${this.currentStep}`)
-      console.log(`this.data.current_step: ${this.data.current_step}`)
-      console.log(`this.data:`)
-      console.log(this.data)
-
-      /** ステップが動作しない原因：
-       *  まず、Vueのライフサイクルは下記の通り。
-       *  1. htmlがレンダリングされる
-       *  2. beforeMount, created等の関数が実行される
-       *
-       *  当メソッドはvuetifyディレクティブから直接呼び出されており、
-       *  data関数内で初期化されたばかりの変数を読みに行ってしまっている。
-       *
-       *  created関数内に存在していた下記2行を当メソッドに移動すると、
-       *  ステップは動作するようになる。
-       *  ※ただしconsole.logが無限ループするようになる。
-       */
-      this.fetchRequestDetail()
-      this.setData()
-
       // 各種ボタンを非活性にする際の条件を列挙する
-      const rules = [
-        this.routes.approvers[this.currentStep - 1].email != this.getUserEmail ? true : false,
-        this.routes.approvers[this.maxStep - 1].status == '完了' ? true : false,
-        this.routes.approvers[this.currentStep - 1].status == '否認' ? true : false,
-        this.routes.approvers[this.currentStep - 1].status == '差戻し' ? true : false,
-      ]
+      if (!this.currentStep) {
+        return true
+      } else {
+        const rules = [
+          this.routes.approvers[this.currentStep - 1].email != this.getUserEmail ? true : false,
+          this.routes.approvers[this.maxStep - 1].status == '完了' ? true : false,
+          this.routes.approvers[this.currentStep - 1].status == '否認' ? true : false,
+          this.routes.approvers[this.currentStep - 1].status == '差戻し' ? true : false,
+        ]
 
-      // 配列「rules」に1つでも「true」の要素があったら「true」を返す
-      return rules.some(v => v == true)
-    },
-
-    nowStep() {
-      const n = 2
-      return n
-    },
-
-    currentStep() {
-      return this.data.current_step
-    },
-
-    maxStep() {
-      return this.data.max_step
+        // 配列「rules」に1つでも「true」の要素があったら「true」を返す
+        return rules.some(v => v == true)
+      }
     },
 
   },
@@ -263,10 +229,11 @@ export default {
       this.recipient = this.data.recipient
       this.detail = this.data.detail
       this.routes = this.data.route
+      this.currentStep = this.data.current_step
+      this.maxStep = this.data.max_step
     },
 
     onClickApprove() {
-      console.log(`onClickApprove実行前: ${this.currentStep}`)
       // フロント側の表示を更新
       // 最終ステップの場合
       if (this.currentStep == this.maxStep) {
@@ -278,7 +245,6 @@ export default {
         this.currentStep++
         this.latestStatus = '保留中'
       }
-      console.log(`onClickApprove実行後: ${this.currentStep}`)
       // this.batchUpdate()
     },
 
@@ -317,7 +283,9 @@ export default {
     },
   },
 
-  created() {
+  async created() {
+    await this.fetchRequestDetail()
+    this.setData()
   },
 }
 </script>
