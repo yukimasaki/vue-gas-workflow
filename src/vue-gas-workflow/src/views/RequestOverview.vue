@@ -41,6 +41,19 @@
         @click:row="onClickRow"
       >
 
+      <template v-slot:[`item.status`]="{ item }">
+        <v-chip
+          class="ma-2"
+          :color="statusColor(item)"
+          text-color="white"
+        >
+          <v-icon left>
+            {{ statusIcon(item) }}
+          </v-icon>
+          {{ item.status }}
+        </v-chip>
+      </template>
+
       </v-data-table>
     </v-card>
 
@@ -140,6 +153,27 @@ export default {
         return format
     },
 
+    statusColor(item) {
+      let color = ''
+      switch (item.status) {
+        case '完了': color =  'green' ; break
+        case '保留中': color =  'blue' ; break
+        case '否認': color =  'red' ; break
+        case '差戻し': color =  'orange' ; break
+      }
+      return color
+    },
+
+    statusIcon(item) {
+      let icon = ''
+      switch (item.status) {
+        case '完了': icon =  'mdi-check' ; break
+        case '保留中': icon =  'mdi-timer-sand' ; break
+        case '否認': icon =  'mdi-cancel' ; break
+        case '差戻し': icon =  'mdi-arrow-u-left-bottom' ; break
+      }
+      return icon
+    },
   },
 
   created() {
