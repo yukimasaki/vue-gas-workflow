@@ -220,6 +220,7 @@ export default {
         const itemSnippets = {
           title: this.title,
           status: '保留中',
+          approver_email: route.approvers[0].email,
           created_at: serverTimestamp(),
           recipient: mapEmployee[0],
         }

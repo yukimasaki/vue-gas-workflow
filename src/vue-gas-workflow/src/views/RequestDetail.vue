@@ -154,6 +154,7 @@ export default {
 
       /** Firestoreにバッチ書き込みするデータを格納 */
       latestStatus: '',
+      latestApproverEmail: '',
 
     }
   },
@@ -239,11 +240,13 @@ export default {
       if (this.currentStep == this.maxStep) {
         this.routes.approvers[this.currentStep - 1].status = '完了'
         this.latestStatus = this.routes.approvers[this.currentStep - 1].status
+        this.latestApproverEmail = null
       // それ以外のステップの場合
       } else {
         this.routes.approvers[this.currentStep - 1].status = '完了'
         this.currentStep++
         this.latestStatus = '保留中'
+        this.latestApproverEmail = this.routes.approvers[this.currentStep - 1].email
       }
       this.batchUpdate()
     },
@@ -251,12 +254,14 @@ export default {
     onClickDisapprove() {
       this.routes.approvers[this.currentStep - 1].status = '否認'
       this.latestStatus = '否認'
+        this.latestApproverEmail = null
       this.batchUpdate()
     },
 
     onClickRemand() {
       this.routes.approvers[this.currentStep - 1].status = '差戻し'
       this.latestStatus = '差戻し'
+      this.latestApproverEmail = null
       this.batchUpdate()
     },
 
@@ -269,6 +274,8 @@ export default {
 
       // itemSnippetsに最新のステータスを格納する
       itemSnippets.status = this.latestStatus
+      // itemSnippetsに最新の承認者メールアドレスを格納する
+      itemSnippets.approver_email = this.latestApproverEmail
 
       // itemDetailsを作成
       let itemDetails = this.data
