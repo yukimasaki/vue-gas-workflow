@@ -1,13 +1,23 @@
 <template>
   <div>
-    <v-card>
-      <!-- タブレイアウト -->
-      <v-tabs grow color="green">
-        <v-tab @click="onClickTab('othersRequest')">承認依頼</v-tab>
-        <v-tab @click="onClickTab('myRequest')">自分の申請</v-tab>
-      </v-tabs>
+    <!-- タブレイアウト -->
+    <v-row>
+      <v-col cols="12" md="6" xs="12">
+        <v-tabs grow color="green">
+          <v-tab @click="onClickTab('othersRequest')">
+            <v-badge
+              v-if="countOthersRequest"
+              color="red"
+              :content="countOthersRequest"
+            ></v-badge>承認依頼
+          </v-tab>
+          <v-tab @click="onClickTab('myRequest')">自分の申請</v-tab>
+        </v-tabs>
+      </v-col>
+    </v-row>
 
-      <!-- コンテンツ -->
+    <!-- コンテンツ -->
+    <v-card>
       <v-card-title>
         <!-- 申請書タイトル -->
         <v-col cols="8">
@@ -94,6 +104,8 @@ export default {
       tableData: [],
       /** 現在開いているタブ */
       currentTabName: 'othersRequest',
+      /** 承認依頼の件数 */
+      countOthersRequest: null
     }
   },
 
@@ -218,10 +230,21 @@ export default {
 
       return customQuery
     },
+
+    setCountOthersRequest() {
+      const count = this.request_snippets.length
+      if (count == 0) {
+        this.countOthersRequest = null
+      } else {
+        this.countOthersRequest = count
+      }
+    },
+
   },
 
-  created() {
-    this.getRecords(this.currentTabName)
+  async created() {
+    await this.getRecords(this.currentTabName)
+    this.setCountOthersRequest()
   },
 
 }
