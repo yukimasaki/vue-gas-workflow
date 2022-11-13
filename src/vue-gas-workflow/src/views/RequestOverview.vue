@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 import ItemDialogRequest from '../components/ItemDialogRequest.vue'
 
 export default {
@@ -103,6 +103,10 @@ export default {
       loading: state => state.workflow.loading.fetch,
     }),
 
+    ...mapGetters({
+      getUserEmail: 'firebase/getUserEmail',
+    }),
+
     /** 申請日の表示形式をフォーマット */
     formattedTableData () {
       return this.tableData.map((item) => ({
@@ -131,7 +135,7 @@ export default {
 
   methods: {
     ...mapActions({
-      fetchAllCollections: 'firestore/fetchAllCollections',
+      fetchCollectionsByOneQuery: 'firestore/fetchCollectionsByOneQuery',
     }),
 
     /** 追加ボタンがクリックされたとき */
@@ -143,9 +147,10 @@ export default {
       this.$router.push({ path: `/request_detail/${item.id}` })
     },
 
-    async getRecords() {
+    async getRecords(currentTabName) {
       const currentTableName = this.currentTableName
-      await this.fetchAllCollections({ currentTableName })
+      const customQuery = this.setQuery(currentTabName)
+      await this.fetchCollectionsByOneQuery({ currentTableName, customQuery })
       this.tableData = this.request_snippets
     },
 
@@ -183,10 +188,40 @@ export default {
       }
       return icon
     },
+
+    /** タブをクリックした際に、編集対象の申請書名を子コンポーネント（DataTableRoute.vue）に渡す */
+    onClickTab(currentTabName) {
+      this.getRecords(currentTabName)
+    },
+
+    /** クリックされたタブ情報を保持する
+     *  リロードした際は下記メソッドは実行されないのでdata()で定義したデフォルト値がセットされる
+     */
+    setQuery(currentTabName) {
+      let customQuery = {}
+      switch(currentTabName) {
+        case 'othersRequest':
+          customQuery = {
+            field: 'approver_email',
+            compare: '==',
+            value: this.getUserEmail,
+          }
+          break
+        case 'myRequest':
+          customQuery = {
+            field: 'recipient.email',
+            compare: '==',
+            value: this.getUserEmail,
+          }
+          break
+      }
+
+      return customQuery
+    },
   },
 
   created() {
-    this.getRecords()
+    this.getRecords(this.currentTabName)
   },
 
 }
