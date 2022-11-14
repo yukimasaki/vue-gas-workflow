@@ -168,6 +168,7 @@ export default {
       batchAddCollections: 'firestore/batchAddCollections',
       createMapEmployee: 'firestore/createMapEmployee',
       createArrayRoute: 'firestore/createArrayRoute',
+      countOthersRequest: 'firestore/countOthersRequest',
     }),
 
     /**
@@ -239,6 +240,9 @@ export default {
 
         // batch処理のactionsを呼び出して［itemSnippets］と［itemDetails］を不可分的に保存する
         await this.batchAddCollections({ itemSnippets, itemDetails })
+
+        // バッジに表示する承認依頼の件数を取得する
+        this.countOthersRequest()
 
         this.show = false
       }

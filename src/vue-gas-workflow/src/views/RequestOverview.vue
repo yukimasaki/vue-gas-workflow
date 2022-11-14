@@ -6,9 +6,9 @@
         <v-tabs grow color="green">
           <v-tab @click="onClickTab('othersRequest')">
             <v-badge
-              v-if="countOthersRequest"
+              v-if="getNumberOfOthersRequest"
               color="red"
-              :content="countOthersRequest"
+              :content="getNumberOfOthersRequest"
             ></v-badge>承認依頼
           </v-tab>
           <v-tab @click="onClickTab('myRequest')">自分の申請</v-tab>
@@ -104,8 +104,6 @@ export default {
       tableData: [],
       /** 現在開いているタブ */
       currentTabName: 'othersRequest',
-      /** 承認依頼の件数 */
-      countOthersRequest: null
     }
   },
 
@@ -117,6 +115,7 @@ export default {
 
     ...mapGetters({
       getUserEmail: 'firebase/getUserEmail',
+      getNumberOfOthersRequest: 'firestore/getNumberOfOthersRequest',
     }),
 
     /** 申請日の表示形式をフォーマット */
@@ -148,6 +147,7 @@ export default {
   methods: {
     ...mapActions({
       fetchCollectionsByOneQuery: 'firestore/fetchCollectionsByOneQuery',
+      countOthersRequest: 'firestore/countOthersRequest',
     }),
 
     /** 追加ボタンがクリックされたとき */
@@ -231,20 +231,12 @@ export default {
       return customQuery
     },
 
-    setCountOthersRequest() {
-      const count = this.request_snippets.length
-      if (count == 0) {
-        this.countOthersRequest = null
-      } else {
-        this.countOthersRequest = count
-      }
-    },
 
   },
 
   async created() {
     await this.getRecords(this.currentTabName)
-    this.setCountOthersRequest()
+    await this.countOthersRequest()
   },
 
 }
