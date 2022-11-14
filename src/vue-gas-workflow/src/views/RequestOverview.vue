@@ -5,11 +5,13 @@
       <v-col cols="12" md="6" xs="12">
         <v-tabs grow color="green">
           <v-tab @click="onClickTab('othersRequest')">
-            <v-badge
-              v-if="getNumberOfOthersRequest"
-              color="red"
-              :content="getNumberOfOthersRequest"
-            ></v-badge>承認依頼
+            <template v-if="getNumberOfOthersRequest">
+              <v-badge
+                color="red"
+                :content="getNumberOfOthersRequest"
+              >承認依頼</v-badge>
+            </template>
+            <template v-else>承認依頼</template>
           </v-tab>
           <v-tab @click="onClickTab('myRequest')">自分の申請</v-tab>
         </v-tabs>
