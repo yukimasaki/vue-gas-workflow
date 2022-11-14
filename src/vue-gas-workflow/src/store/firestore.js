@@ -34,6 +34,10 @@ const state = {
   /** map型、array型 */
   mapEmployee: {},
   arrayRoute: [],
+
+  /** バッジに表示する承認依頼の件数 */
+  numberOfOthersRequest: null,
+
 }
 
 const mutations = {
@@ -80,7 +84,12 @@ const mutations = {
   /** 申請ルート情報をセットする */
   setArrayRoute(state, { route }) {
     state.arrayRoute = route
-  }
+  },
+
+  /** バッジに表示する承認依頼の件数をセットする */
+  setNumberOfOtersRequest(state, { val }) {
+    state.numberOfOthersRequest = val
+  },
 }
 
 const actions = {
@@ -260,6 +269,18 @@ const actions = {
     commit('setArrayRoute', { route })
   },
 
+  /** バッジに表示する承認依頼の件数を取得する */
+  countOthersRequest({ commit }) {
+    const count = state.request_snippets.length
+    let val = null
+    if (count == 0) {
+      return
+    } else {
+      val = count
+    }
+    commit('setNumberOfOtersRequest', { val })
+  },
+
 }
 
 /**
@@ -319,6 +340,11 @@ const getters = {
   getArrayRoute(state) {
     return state.arrayRoute
   },
+
+  getNumberOfOthersRequest(state) {
+    return state.numberOfOthersRequest
+  },
+
 }
 
 export default {
