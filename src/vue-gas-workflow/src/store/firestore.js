@@ -228,7 +228,7 @@ const actions = {
       // serverTimestampが付与されたドキュメントを取得しstateにセットする
       const docRefSnippets = doc(db, 'request_snippets', snippetsId)
       const docSnapSnippets = await getDoc(docRefSnippets)
-      const timestampedItemSnippets = docSnapSnippets.data()
+      const timestampedItemSnippets = { ...docSnapSnippets.data(), id: docRefSnippets.id }
       commit('addCollection', { item: timestampedItemSnippets, currentTableName: 'request_snippets' })
     } catch (e) {
       commit('setErrorMessage', { message: e })

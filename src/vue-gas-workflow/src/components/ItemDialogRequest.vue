@@ -111,6 +111,8 @@ export default {
       actionType: 'add',
       /** 申請書の種類 */
       requestType: '',
+      /** ID */
+      id: '',
       /** タイトル */
       title: '',
       /** 事由 */
@@ -144,7 +146,7 @@ export default {
   computed: {
     ...mapState({
       /** ローディング状態 */
-      loading: state => state.workflow.loading.add || state.workflow.loading.update
+      loading: state => state.workflow.loading.add || state.workflow.loading.update,
     }),
 
     /** ダイアログのタイトル */
@@ -219,6 +221,7 @@ export default {
 
         // フォームに入力された内容をitemSnippetsに格納する
         const itemSnippets = {
+          id: this.id,
           title: this.title,
           status: '保留中',
           approver_email: route.approvers[0].email,
@@ -228,6 +231,7 @@ export default {
 
         // フォームに入力された内容をitemDetailsに格納する
         const itemDetails = {
+          id: this.id,
           title: this.title,
           created_at: serverTimestamp(),
           recipient: mapEmployee[0],
@@ -250,8 +254,8 @@ export default {
 
     /** フォームの内容を初期化します */
     resetForm (item = {}) {
+      this.id = item.id || ''
       this.title = item.title || ''
-
       this.reason = item.reason || ''
       this.date_between = item.date_between || ''
       this.contact = item.contact || ''
