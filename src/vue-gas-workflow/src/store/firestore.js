@@ -272,9 +272,9 @@ const actions = {
   /** バッジに表示する承認依頼の件数を取得する */
   countOthersRequest({ commit }) {
     const count = state.request_snippets.length
-    let val = null
+    let val = ''
     if (count == 0) {
-      return
+      val = null
     } else {
       val = count
     }
