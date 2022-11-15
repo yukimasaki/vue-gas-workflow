@@ -1,0 +1,143 @@
+<template>
+  <div>
+    <v-card>
+      <v-card-title>
+        <!-- ページタイトル -->
+        <v-col cols="8">
+          <div class="h5">
+            {{ title }}
+          </div>
+        </v-col>
+        <v-spacer/>
+        <!-- 追加ボタン -->
+        <v-col class="text-right" cols="4">
+          <v-btn dark color="green" @click="onClickAdd">
+            <v-icon>mdi-plus</v-icon>
+          </v-btn>
+        </v-col>
+        <!-- 検索フォーム -->
+        <v-col cols="12">
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="Search"
+            single-line
+            hide-details
+          />
+        </v-col>
+      </v-card-title>
+      <!-- テーブル -->
+      <v-data-table
+        class="text-no-wrap"
+        :headers="tableHeaders"
+        :items="tableData"
+        :search="search"
+        :footer-props="footerProps"
+        :loading="loading"
+        :sort-by="'email'"
+        :sort-desc="false"
+        :items-per-page="30"
+        mobile-breakpoint="0"
+      >
+
+        <!-- 操作列 -->
+        <template v-slot:[`item.actions`]="{ item }">
+          <v-icon class="mr-2" @click="onClickEdit(item)">mdi-pencil</v-icon>
+          <v-icon @click="onClickDelete(item)">mdi-delete</v-icon>
+        </template>
+
+      </v-data-table>
+    </v-card>
+
+    <!-- 追加／編集ダイアログ -->
+    <ItemDialogAdmin ref="ItemDialogAdmin"/>
+
+    <!-- 削除ダイアログ -->
+    <DeleteDialog ref="deleteDialog"/>
+
+  </div>
+</template>
+
+<script>
+import ItemDialogAdmin from '../components/ItemDialogAdmin.vue'
+import DeleteDialog from '../components/DeleteDialog.vue'
+import { mapActions, mapState } from 'vuex'
+
+export default {
+  name: 'Admin',
+
+  components: {
+    ItemDialogAdmin,
+    DeleteDialog
+  },
+
+  data() {
+    return {
+      /** 操作対象のテーブル */
+      currentTableName: 'administrators',
+      /** 申請書タイトル */
+      title: '管理者一覧',
+      /** 検索文字 */
+      search: '',
+      /** テーブルに表示させるデータ */
+      tableData: [],
+    }
+  },
+
+  computed: {
+    ...mapState({
+      administrators: state => state.firestore.administrators,
+      loading: state => state.workflow.loading.fetch,
+    }),
+
+    /** テーブルのヘッダー設定 */
+    tableHeaders () {
+      return [
+        { text: 'メールアドレス', value: 'email', sortable: true },
+        { text: '氏名', value: 'name', sortable: false },
+        { text: '操作', value: 'actions', sortable: false },
+      ]
+    },
+
+    /** テーブルのフッター設定 */
+    footerProps () {
+      return { itemsPerPageText: '', itemsPerPageOptions: [30, -1] }
+    },
+  },
+
+  methods: {
+    ...mapActions({
+      fetchAllCollections: 'firestore/fetchAllCollections',
+    }),
+
+    /** 追加ボタンがクリックされたとき */
+    onClickAdd () {
+      this.$refs.ItemDialogAdmin.open('add')
+    },
+
+    /** 編集ボタンがクリックされたとき */
+    onClickEdit (item) {
+      this.$refs.ItemDialogAdmin.open('edit', item)
+    },
+
+    /** 削除ボタンがクリックされたとき */
+    onClickDelete (item) {
+      const currentTableName = this.currentTableName
+      this.$refs.deleteDialog.open(item, currentTableName)
+    },
+
+    /** テーブルに表示させるデータを取得する */
+    async getRecords() {
+      const currentTableName = this.currentTableName
+      await this.fetchAllCollections({ currentTableName })
+      this.tableData = this.administrators
+    },
+
+  },
+
+  async created() {
+    await this.getRecords()
+  },
+
+}
+</script>

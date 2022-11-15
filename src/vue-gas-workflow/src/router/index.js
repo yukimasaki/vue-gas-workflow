@@ -11,6 +11,7 @@ import RequestDetail from '../views/RequestDetail.vue'
 import Employee from '../views/Employee.vue'
 import Department from '../views/Department.vue'
 import Route from '../views/Route.vue'
+import Admin from '../views/Admin.vue'
 
 Vue.use(VueRouter)
 
@@ -66,6 +67,12 @@ const routes = [
     path: '/route',
     name: 'Route',
     component: Route,
+    meta: {requiresAuth: true}
+  },
+  {
+    path: '/admin',
+    name: 'Admin',
+    component: Admin,
     meta: {requiresAuth: true}
   },
 

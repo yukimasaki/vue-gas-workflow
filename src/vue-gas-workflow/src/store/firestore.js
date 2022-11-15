@@ -30,6 +30,7 @@ const state = {
   employees: [],
   departments: [],
   routes: [],
+  administrators: [],
 
   /** map型、array型 */
   mapEmployee: {},
