@@ -5,35 +5,39 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    // isAdmin関数を実装中
     function isAdmin() {
       return isAuth() &&
-              // administratorsのドキュメントをすべて取得し、emailが含まれていたらtrueを返す　という処理を実装したい...
-              get(/databases/$(database)/documents/administrators/{doc=**});
+             exists(/databases/$(database)/documents/administrators/$(request.auth.token.email));
     }
 
-    match /administrators/{doc=**} {
+    match /administrators/{id} {
       // isAdmin関数で読み取る必要があるため全員にread権限を与える
       // また、申請書の作成にread権限が必要
       allow read: if isAuth();
+      allow write: if isAdmin();
     }
 
-    match /employees/{doc=**} {
+    match /employees/{id} {
       // isAdmin関数で読み取る必要があるため全員にread権限を与える
       // また、申請書の作成にread権限が必要
       allow read: if isAuth();
+      allow write: if isAdmin();
     }
 
-    match /departments/{doc=**} {
+    match /departments/{id} {
       allow read: if isAuth();
+      allow write: if isAdmin();
     }
 
-    match /routes/{doc=**} {
+    match /routes/{id} {
       allow read: if isAuth();
+      allow write: if isAdmin();
     }
 
-    match /request_snippets/{request_snippetId} {
-
+    match /request_snippets/{id} {
+      allow read: if isAuth();
+      allow write: if isAdmin();
     }
+
   }
 }
