@@ -1,43 +1,9 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    function isAuth() {
-      return request.auth != null;
+    match /{doc=**} {
+      allow read: if true;
+      allow write: if true;
     }
-
-    function isAdmin() {
-      return isAuth() &&
-             exists(/databases/$(database)/documents/administrators/$(request.auth.token.email));
-    }
-
-    match /administrators/{id} {
-      // isAdmin関数で読み取る必要があるため全員にread権限を与える
-      // また、申請書の作成にread権限が必要
-      allow read: if isAuth();
-      allow write: if isAdmin();
-    }
-
-    match /employees/{id} {
-      // isAdmin関数で読み取る必要があるため全員にread権限を与える
-      // また、申請書の作成にread権限が必要
-      allow read: if isAuth();
-      allow write: if isAdmin();
-    }
-
-    match /departments/{id} {
-      allow read: if isAuth();
-      allow write: if isAdmin();
-    }
-
-    match /routes/{id} {
-      allow read: if isAuth();
-      allow write: if isAdmin();
-    }
-
-    match /request_snippets/{id} {
-      allow read: if isAuth();
-      allow write: if isAdmin();
-    }
-
   }
 }
