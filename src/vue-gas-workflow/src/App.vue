@@ -75,6 +75,13 @@
               </v-list-item-content>
             </v-list-item>
 
+            <!-- テスト -->
+            <v-list-item link to="/users">
+              <v-list-item-content>
+                <v-list-item-title>テスト</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+
           </v-list>
         </v-menu>
 
