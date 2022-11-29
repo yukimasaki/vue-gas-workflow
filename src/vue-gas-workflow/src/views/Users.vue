@@ -1,59 +1,18 @@
 <template>
   <div>
-    <!-- 従業員テーブルを表示させる -->
-    <v-card>
-      <v-card-title>
-        <!-- 申請書タイトル -->
-        <v-col cols="8">
-          <div class="h5">
-            {{ title }}
-          </div>
-        </v-col>
-        <v-spacer/>
-        <!-- 追加ボタン -->
-        <v-col class="text-right" cols="4">
-          <v-btn dark color="green" @click="onClickAdd">
-            <v-icon>mdi-plus</v-icon>
-          </v-btn>
-        </v-col>
-        <!-- 検索フォーム -->
-        <v-col cols="12">
-          <v-text-field
-            v-model="search"
-            append-icon="mdi-magnify"
-            label="Search"
-            single-line
-            hide-details
-          />
-        </v-col>
-      </v-card-title>
-      <!-- テーブル -->
-      <v-data-table
-        class="text-no-wrap"
-        :headers="tableHeaders"
-        :items="tableData"
-        :search="search"
-        :footer-props="footerProps"
-        :loading="loading"
-        :sort-by="'department'"
-        :sort-desc="false"
-        :items-per-page="30"
-        mobile-breakpoint="0"
-      >
+    <v-row>
+      {{ users }}
+      <v-spacer></v-spacer>
+    </v-row>
 
-        <!-- 操作列 -->
-        <template v-slot:[`item.actions`]="{ item }">
-          <v-icon class="mr-2" @click="onClickEdit(item)">mdi-pencil</v-icon>
-          <v-icon @click="onClickDelete(item)">mdi-delete</v-icon>
-        </template>
+    <v-row>
+      <v-btn dark color="green" @click="onClickAdd">
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
+    </v-row>
 
-      </v-data-table>
-    </v-card>
-
-    <!-- 追加／編集ダイアログ -->
     <ItemDialogUsers ref="ItemDialogUsers"/>
 
-    <!-- 削除ダイアログ -->
     <DeleteDialog ref="deleteDialog"/>
 
   </div>

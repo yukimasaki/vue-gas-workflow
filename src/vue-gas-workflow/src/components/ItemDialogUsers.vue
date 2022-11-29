@@ -128,7 +128,7 @@ export default {
   methods: {
     ...mapActions(
       {
-        addCollection: 'firestore/addCollection',
+        addCollectionWithTextId: 'firestore/addCollectionWithTextId',
         updateCollection: 'firestore/updateCollection',
         fetchAllCollections: 'firestore/fetchAllCollections',
       }
@@ -153,15 +153,14 @@ export default {
     /** 追加／更新がクリックされたとき */
     async onClickAction () {
       const item = {
-        id: this.id,
-        department: this.department,
-        email: this.email,
+        id: this.email,
         name: this.name,
+        department: this.department,
       }
       const currentTableName = this.currentTableName
 
       if (this.actionType === 'add') {
-        await this.addCollection({ item, currentTableName })
+        await this.addCollectionWithTextId({ item, currentTableName })
       } else {
         await this.updateCollection({ item, currentTableName })
       }
@@ -172,9 +171,8 @@ export default {
     /** フォームの内容を初期化します */
     resetForm (item = {}) {
       this.id = item.id || ''
-      this.department = item.department || ''
-      this.email = item.email || ''
       this.name = item.name || ''
+      this.department = item.department || ''
 
       this.$refs.form.resetValidation()
     },
