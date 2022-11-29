@@ -9,6 +9,7 @@ import {
   updateDoc,
   deleteDoc,
   getDoc,
+  setDoc,
   writeBatch,
 } from 'firebase/firestore'
 
@@ -31,6 +32,7 @@ const state = {
   departments: [],
   routes: [],
   administrators: [],
+  users: [],
 
   /** map型、array型 */
   mapEmployee: {},
@@ -115,7 +117,7 @@ const actions = {
     }
   },
 
-  /** データを作成する */
+  /** データを作成する(IDを自動生成する) */
   async addCollection({ commit }, { item, currentTableName }) {
     const type = 'add'
     commit('setLoading', { type, v: true })
@@ -123,6 +125,25 @@ const actions = {
       const colRef = collection(db, currentTableName)
       // addDocでドキュメントを作成し、その際に付与されたIDをdocRefとして取得する
       const docRef = await addDoc(colRef, item)
+      // serverTimestampが付与されていないitemをv-data-tableに表示するとエラーとなるため、
+      // serverTimestampが付与されたドキュメントを取得しstateにセットする
+      const docSnap = await getDoc(docRef)
+      const timestampedItem = docSnap.data()
+      commit('addCollection', { item: timestampedItem, currentTableName })
+    } catch (e) {
+      commit('setErrorMessage', { message: e })
+    } finally {
+      commit('setLoading', { type, v: false })
+    }
+  },
+
+  /** データを作成する(IDを任意の文字列に指定する) */
+  async addCollectionWithTextId({ commit }, { item, currentTableName }) {
+    const type = 'add'
+    commit('setLoading', { type, v: true })
+    try {
+      const docRef = doc(db, currentTableName, item.id)
+      await setDoc(docRef, item)
       // serverTimestampが付与されていないitemをv-data-tableに表示するとエラーとなるため、
       // serverTimestampが付与されたドキュメントを取得しstateにセットする
       const docSnap = await getDoc(docRef)
