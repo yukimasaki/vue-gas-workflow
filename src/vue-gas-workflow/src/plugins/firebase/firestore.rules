@@ -15,9 +15,16 @@ service cloud.firestore {
              request.auth.token.email == userId;
     }
 
+    match /admins/{adminId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /departments/{departmentId} {
+      allow read, write: if isAdmin();
+    }
+
     match /users/{userId} {
-      allow read: if isAuth();
-      allow write: if isAdmin();
+      allow read, write: if isAdmin();
 
       match /requests/{requestId} {
         allow read, create, update: if isMe(userId);
@@ -28,6 +35,9 @@ service cloud.firestore {
       }
     }
 
-
+    match /routes/{routeId} {
+      allow read: if isAuth();
+      allow write: if isAdmin();
+    }
   }
 }
