@@ -12,6 +12,7 @@ import {
   setDoc,
   writeBatch,
 } from 'firebase/firestore'
+import { v4 as uuidv4} from 'uuid'
 
 const state = {
   /** ローディング状態 */
@@ -33,6 +34,7 @@ const state = {
   routes: [],
   administrators: [],
   users: [],
+  requests: [],
 
   /** map型、array型 */
   mapEmployee: {},
@@ -223,6 +225,28 @@ const actions = {
     } finally {
       commit('setLoading', { type, v: false})
     }
+  },
+
+  /** 2階層のサブコレクションをusersコレクションにバッチ書き込み(add)する */
+  async batchAddSubCollectionsToUsers({ commit }, { userId, item }) {
+    const batch = writeBatch(db)
+    const uid = uuidv4()
+
+    // uuidをドキュメントIDとして指定し、空のドキュメントを作成しておく
+    // doc関数の引数は、dbを除き偶数個で指定する必要がある
+    const emptyDocRefRequest = doc(db, 'users', userId, 'requests', uid)
+    const emptyDocRefDetail = doc(db, 'users', userId, 'requests', uid, 'details', uid)
+
+    // バッチ書き込みを実行
+    batch.set(emptyDocRefRequest, item.request)
+    batch.set(emptyDocRefDetail, item.detail)
+    await batch.commit()
+
+    // serverTimestampが付与されたドキュメントを取得する
+    const docSnap = await getDoc(emptyDocRefRequest)
+    const timestampedItem = { ...docSnap.data(), id: uid }
+
+    commit('addCollection', { item: timestampedItem, currentTableName: 'requests' })
   },
 
   /** バッチ書き込み(add) */
