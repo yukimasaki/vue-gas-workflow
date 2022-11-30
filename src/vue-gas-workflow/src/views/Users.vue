@@ -46,7 +46,7 @@
 import ItemDialogUsers from '../components/ItemDialogUsers.vue'
 import ItemDialogRequests from '../components/ItemDialogRequests.vue'
 import DeleteDialog from '../components/DeleteDialog.vue'
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'Users',
@@ -94,6 +94,10 @@ export default {
   },
 
   methods: {
+    ...mapGetters({
+      getUserEmail: 'firebase/getUserEmail',
+    }),
+
     ...mapActions({
       fetchAllCollections: 'firestore/fetchAllCollections',
       fetchRequests: 'firestore/fetchRequests',
@@ -122,7 +126,9 @@ export default {
     async getRecords() {
       const currentTableName = this.currentTableName
       await this.fetchAllCollections({ currentTableName })
-      await this.fetchRequests({ userId: 'masaki@fts-com.jp' })
+
+      const userId = this.getUserEmail()
+      await this.fetchRequests({ userId })
     },
 
   },
