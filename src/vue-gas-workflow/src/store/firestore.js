@@ -227,6 +227,19 @@ const actions = {
     }
   },
 
+  /** userIdを渡して当該ユーザーのrequestsサブコレクションを取得する */
+  async fetchRequests({ commit }, { userId }) {
+    const subColRef = collection(db, 'users', userId, 'requests')
+    const snapshot = await getDocs(subColRef)
+    const docs = []
+
+    snapshot.forEach(doc => {
+      docs.push({ ...doc.data(), id: doc.id })
+    })
+
+    commit('setCollections', { collections: docs, currentTableName: 'requests' })
+  },
+
   /** 2階層のサブコレクションをusersコレクションにバッチ書き込み(add)する */
   async batchAddSubCollectionsToUsers({ commit }, { userId, item }) {
     const batch = writeBatch(db)
