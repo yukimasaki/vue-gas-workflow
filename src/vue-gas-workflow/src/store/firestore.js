@@ -11,6 +11,7 @@ import {
   getDoc,
   setDoc,
   writeBatch,
+  collectionGroup,
 } from 'firebase/firestore'
 import { v4 as uuidv4} from 'uuid'
 
@@ -227,12 +228,26 @@ const actions = {
     }
   },
 
-  /** userIdを渡して当該ユーザーのrequestsサブコレクションを取得する */
-  async fetchRequests({ commit }, { userId }) {
+  /** userIdを渡して当該ユーザーの申請（requestsサブコレクション）を取得する */
+  async fetchMyRequests({ commit }, { userId }) {
     const subColRef = collection(db, 'users', userId, 'requests')
     const snapshot = await getDocs(subColRef)
     const docs = []
+    snapshot.forEach(doc => {
+      docs.push({ ...doc.data(), id: doc.id })
+    })
 
+    commit('setCollections', { collections: docs, currentTableName: 'requests' })
+  },
+
+  /** userIdを渡して自分宛ての申請（requestsサブコレクション）を取得する */
+  async fetchOthersRequests({ commit }, { userId }) {
+    const requestForMe = query(
+      collectionGroup(db, 'requests'),
+      where('current_approver_email', '==', userId)
+    )
+    const snapshot = await getDocs(requestForMe)
+    const docs = []
     snapshot.forEach(doc => {
       docs.push({ ...doc.data(), id: doc.id })
     })
