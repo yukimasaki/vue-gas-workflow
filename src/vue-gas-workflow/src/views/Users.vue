@@ -1,17 +1,41 @@
 <template>
   <div>
     <v-row>
-      {{ users }}
-      <v-spacer></v-spacer>
+      <v-col col="12">
+        <v-card>
+          <v-card-text>
+            {{ users }}
+            <v-spacer></v-spacer>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn dark color="green" @click="onClickAddUser">
+              <v-icon left>mdi-plus</v-icon>
+              usersを作成
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
     </v-row>
 
     <v-row>
-      <v-btn dark color="green" @click="onClickAdd">
-        <v-icon>mdi-plus</v-icon>
-      </v-btn>
+      <v-col col="12">
+        <v-card>
+          <v-card-text>
+            {{ requests }}
+            <v-spacer></v-spacer>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn dark color="green" @click="onClickAddRequest">
+              <v-icon left>mdi-plus</v-icon>
+              requestsを作成
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
     </v-row>
 
     <ItemDialogUsers ref="ItemDialogUsers"/>
+    <ItemDialogRequests ref="ItemDialogRequests"/>
 
     <DeleteDialog ref="deleteDialog"/>
 
@@ -20,6 +44,7 @@
 
 <script>
 import ItemDialogUsers from '../components/ItemDialogUsers.vue'
+import ItemDialogRequests from '../components/ItemDialogRequests.vue'
 import DeleteDialog from '../components/DeleteDialog.vue'
 import { mapActions, mapState } from 'vuex'
 
@@ -28,6 +53,7 @@ export default {
 
   components: {
     ItemDialogUsers,
+    ItemDialogRequests,
     DeleteDialog
   },
 
@@ -47,6 +73,7 @@ export default {
   computed: {
     ...mapState({
       users: state => state.firestore.users,
+      requests: state => state.firestore.requests,
       loading: state => state.workflow.loading.fetch,
     }),
 
@@ -69,11 +96,15 @@ export default {
   methods: {
     ...mapActions({
       fetchAllCollections: 'firestore/fetchAllCollections',
+      fetchRequests: 'firestore/fetchRequests',
     }),
 
     /** 追加ボタンがクリックされたとき */
-    onClickAdd () {
+    onClickAddUser () {
       this.$refs.ItemDialogUsers.open('add')
+    },
+    onClickAddRequest () {
+      this.$refs.ItemDialogRequests.open('add')
     },
 
     /** 編集ボタンがクリックされたとき */
@@ -91,7 +122,7 @@ export default {
     async getRecords() {
       const currentTableName = this.currentTableName
       await this.fetchAllCollections({ currentTableName })
-      this.tableData = this.users
+      await this.fetchRequests({ userId: 'masaki@fts-com.jp' })
     },
 
   },
