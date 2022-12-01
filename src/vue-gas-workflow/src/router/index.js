@@ -13,6 +13,7 @@ import Department from '../views/Department.vue'
 import Route from '../views/Route.vue'
 import Admin from '../views/Admin.vue'
 import Users from '../views/Users.vue'
+import Test from '../views/Test.vue'
 
 Vue.use(VueRouter)
 
@@ -80,6 +81,12 @@ const routes = [
     path: '/users',
     name: 'Users',
     component: Users,
+    meta: {requiresAuth: true}
+  },
+  {
+    path: '/test',
+    name: 'Test',
+    component: Test,
     meta: {requiresAuth: true}
   },
 

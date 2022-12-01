@@ -76,7 +76,7 @@
             </v-list-item>
 
             <!-- テスト -->
-            <v-list-item link to="/users">
+            <v-list-item link to="/test">
               <v-list-item-content>
                 <v-list-item-title>テスト</v-list-item-title>
               </v-list-item-content>
