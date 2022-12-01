@@ -37,7 +37,7 @@ service cloud.firestore {
     }
 
     match /{path=**}/requests/{requestId} {
-      allow read: if isRequestForMe();
+      allow read, update: if isRequestForMe();
     }
 
     match /routes/{routeId} {
