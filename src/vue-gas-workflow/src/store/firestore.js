@@ -28,14 +28,11 @@ const state = {
   errorMessage: '',
 
   /** コレクション */
-  request_snippets: [],
-  request_details: [],
+  requests: [],
   users: [],
   departments: [],
   routes: [],
-  administrators: [],
-  myRequests: [],
-  othersRequests: [],
+  admins: [],
 
   /** map型、array型 */
   mapEmployee: {},
@@ -237,7 +234,7 @@ const actions = {
       docs.push({ ...doc.data(), id: doc.id })
     })
 
-    commit('setCollections', { collections: docs, currentTableName: 'myRequests' })
+    commit('setCollections', { collections: docs, currentTableName: 'requests' })
   },
 
   /** userIdを渡して自分宛ての申請（requestsサブコレクション）を取得する */
@@ -252,7 +249,7 @@ const actions = {
       docs.push({ ...doc.data(), id: doc.id })
     })
 
-    commit('setCollections', { collections: docs, currentTableName: 'othersRequests' })
+    commit('setCollections', { collections: docs, currentTableName: 'requests' })
   },
 
   /** 2階層のサブコレクションをusersコレクションにバッチ書き込み(add)する */
@@ -274,7 +271,7 @@ const actions = {
     const docSnap = await getDoc(emptyDocRefRequest)
     const timestampedItem = { ...docSnap.data(), id: uid }
 
-    commit('addCollection', { item: timestampedItem, currentTableName: 'myRequests' })
+    commit('addCollection', { item: timestampedItem, currentTableName: 'requests' })
   },
 
   /** バッチ書き込み(add) */
