@@ -35,7 +35,8 @@ const state = {
   routes: [],
   administrators: [],
   users: [],
-  requests: [],
+  myRequests: [],
+  othersRequests: [],
 
   /** map型、array型 */
   mapEmployee: {},
@@ -237,7 +238,7 @@ const actions = {
       docs.push({ ...doc.data(), id: doc.id })
     })
 
-    commit('setCollections', { collections: docs, currentTableName: 'requests' })
+    commit('setCollections', { collections: docs, currentTableName: 'myRequests' })
   },
 
   /** userIdを渡して自分宛ての申請（requestsサブコレクション）を取得する */
@@ -252,7 +253,7 @@ const actions = {
       docs.push({ ...doc.data(), id: doc.id })
     })
 
-    commit('setCollections', { collections: docs, currentTableName: 'requests' })
+    commit('setCollections', { collections: docs, currentTableName: 'othersRequests' })
   },
 
   /** 2階層のサブコレクションをusersコレクションにバッチ書き込み(add)する */
