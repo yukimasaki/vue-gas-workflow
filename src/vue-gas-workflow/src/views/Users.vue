@@ -1,56 +1,59 @@
 <template>
   <div>
-    <v-row>
-      <v-col col="12">
-        <v-card>
-          <v-card-title>users</v-card-title>
-          <v-card-text>
-            {{ users }}
-            <v-spacer></v-spacer>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn dark color="green" @click="onClickAddUser">
-              <v-icon left>mdi-plus</v-icon>
-              usersを作成
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-    </v-row>
+    <!-- 従業員テーブルを表示させる -->
+    <v-card>
+      <v-card-title>
+        <!-- 申請書タイトル -->
+        <v-col cols="8">
+          <div class="h5">
+            {{ title }}
+          </div>
+        </v-col>
+        <v-spacer/>
+        <!-- 追加ボタン -->
+        <v-col class="text-right" cols="4">
+          <v-btn dark color="green" @click="onClickAdd">
+            <v-icon>mdi-plus</v-icon>
+          </v-btn>
+        </v-col>
+        <!-- 検索フォーム -->
+        <v-col cols="12">
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="Search"
+            single-line
+            hide-details
+          />
+        </v-col>
+      </v-card-title>
+      <!-- テーブル -->
+      <v-data-table
+        class="text-no-wrap"
+        :headers="tableHeaders"
+        :items="tableData"
+        :search="search"
+        :footer-props="footerProps"
+        :loading="loading"
+        :sort-by="'department'"
+        :sort-desc="false"
+        :items-per-page="30"
+        mobile-breakpoint="0"
+      >
 
-    <v-row>
-      <v-col col="12">
-        <v-card>
-          <v-card-title>myRequests</v-card-title>
-          <v-card-text>
-            {{ myRequests }}
-            <v-spacer></v-spacer>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn dark color="green" @click="onClickAddRequest">
-              <v-icon left>mdi-plus</v-icon>
-              requestsを作成
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-    </v-row>
+        <!-- 操作列 -->
+        <template v-slot:[`item.actions`]="{ item }">
+          <v-icon class="mr-2" @click="onClickEdit(item)">mdi-pencil</v-icon>
+          <v-icon @click="onClickDelete(item)">mdi-delete</v-icon>
+        </template>
 
-    <v-row>
-      <v-col col="12">
-        <v-card>
-          <v-card-title>othersRequests</v-card-title>
-          <v-card-text>
-            {{ othersRequests }}
-            <v-spacer></v-spacer>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
+      </v-data-table>
+    </v-card>
 
+    <!-- 追加／編集ダイアログ -->
     <ItemDialogUsers ref="ItemDialogUsers"/>
-    <ItemDialogRequests ref="ItemDialogRequests"/>
 
+    <!-- 削除ダイアログ -->
     <DeleteDialog ref="deleteDialog"/>
 
   </div>
@@ -58,16 +61,14 @@
 
 <script>
 import ItemDialogUsers from '../components/ItemDialogUsers.vue'
-import ItemDialogRequests from '../components/ItemDialogRequests.vue'
 import DeleteDialog from '../components/DeleteDialog.vue'
-import { mapActions, mapState, mapGetters } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 
 export default {
   name: 'Users',
 
   components: {
     ItemDialogUsers,
-    ItemDialogRequests,
     DeleteDialog
   },
 
@@ -87,8 +88,6 @@ export default {
   computed: {
     ...mapState({
       users: state => state.firestore.users,
-      myRequests: state => state.firestore.myRequests,
-      othersRequests: state => state.firestore.othersRequests,
       loading: state => state.workflow.loading.fetch,
     }),
 
@@ -96,7 +95,7 @@ export default {
     tableHeaders () {
       return [
         { text: '部署', value: 'department', sortable: true },
-        { text: 'メールアドレス', value: 'email', sortable: false },
+        { text: 'メールアドレス', value: 'id', sortable: false },
         { text: '氏名', value: 'name', sortable: false },
         { text: '操作', value: 'actions', sortable: false },
       ]
@@ -109,22 +108,13 @@ export default {
   },
 
   methods: {
-    ...mapGetters({
-      getUserEmail: 'firebase/getUserEmail',
-    }),
-
     ...mapActions({
       fetchAllCollections: 'firestore/fetchAllCollections',
-      fetchMyRequests: 'firestore/fetchMyRequests',
-      fetchOthersRequests: 'firestore/fetchOthersRequests',
     }),
 
     /** 追加ボタンがクリックされたとき */
-    onClickAddUser () {
+    onClickAdd () {
       this.$refs.ItemDialogUsers.open('add')
-    },
-    onClickAddRequest () {
-      this.$refs.ItemDialogRequests.open('add')
     },
 
     /** 編集ボタンがクリックされたとき */
@@ -142,10 +132,7 @@ export default {
     async getRecords() {
       const currentTableName = this.currentTableName
       await this.fetchAllCollections({ currentTableName })
-
-      const userId = this.getUserEmail()
-      await this.fetchMyRequests({ userId })
-      await this.fetchOthersRequests({ userId })
+      this.tableData = this.users
     },
 
   },
