@@ -55,7 +55,7 @@
             </v-list-item>
 
             <!-- 従業員設定 -->
-            <v-list-item link to="/employee">
+            <v-list-item link to="/users">
               <v-list-item-content>
                 <v-list-item-title>従業員設定</v-list-item-title>
               </v-list-item-content>
