@@ -275,7 +275,7 @@ const actions = {
     const docSnap = await getDoc(emptyDocRefRequest)
     const timestampedItem = { ...docSnap.data(), id: uid }
 
-    commit('addCollection', { item: timestampedItem, currentTableName: 'requests' })
+    commit('addCollection', { item: timestampedItem, currentTableName: 'myRequests' })
   },
 
   /** バッチ書き込み(add) */
