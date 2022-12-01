@@ -31,6 +31,7 @@
             label="メールアドレス"
             v-model="email"
             :rules="emailRules"
+            :readonly="actionType=='edit'"
           />
 
           <!-- 氏名 -->
@@ -154,8 +155,8 @@ export default {
     async onClickAction () {
       const item = {
         id: this.email,
-        name: this.name,
         department: this.department,
+        name: this.name,
       }
       const currentTableName = this.currentTableName
 
@@ -171,8 +172,9 @@ export default {
     /** フォームの内容を初期化します */
     resetForm (item = {}) {
       this.id = item.id || ''
-      this.name = item.name || ''
       this.department = item.department || ''
+      this.email = item.id || ''
+      this.name = item.name || ''
 
       this.$refs.form.resetValidation()
     },
