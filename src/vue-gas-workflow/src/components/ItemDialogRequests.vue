@@ -40,8 +40,8 @@
             <!-- 予定日時 -->
             <v-textarea
               label="予定日時"
-              v-model="date_between"
-              :rules="dateBetweenRules"
+              v-model="date"
+              :rules="dateRules"
               rows="3"
             />
 
@@ -118,7 +118,7 @@ export default {
       /** 事由 */
       reason: '',
       /** 予定日時 */
-      date_between: '',
+      date: '',
       /** 緊急連絡先 */
       contact: '',
       /** 備考 */
@@ -134,7 +134,7 @@ export default {
       reasonRules: [
         v => v.trim().length > 0 || '事由は必須です',
       ],
-      dateBetweenRules: [
+      dateRules: [
         v => v.trim().length > 0 || '予定日時は必須です',
       ],
       contactRules: [
@@ -147,6 +147,7 @@ export default {
     ...mapState({
       /** ローディング状態 */
       loading: state => state.workflow.loading.add || state.workflow.loading.update,
+      department: state => state.firestore.department
     }),
 
     /** ダイアログのタイトル */
@@ -162,10 +163,13 @@ export default {
   methods: {
     ...mapGetters({
       getUserEmail: 'firebase/getUserEmail',
+      getArrayRoute: 'firestore/getArrayRoute',
     }),
 
     ...mapActions({
       batchAddSubCollectionsToUsers: 'firestore/batchAddSubCollectionsToUsers',
+      fetchDepartment: 'firestore/fetchDepartment',
+      createArrayRoute: 'firestore/createArrayRoute',
     }),
 
     /**
@@ -183,26 +187,41 @@ export default {
       this.show = false
     },
 
-    /** 追加／更新がクリックされたとき */
+    /** 追加がクリックされたとき */
     async onClickAction () {
       if (this.actionType === 'add') {
 
+        // 申請ルート情報をarray型に格納する
         const userId = this.getUserEmail()
+        const requestType = this.requestType
+        await this.fetchDepartment({ userId })
+        const department = this.department
+        await this.createArrayRoute({ requestType, department })
+        const routes = this.getArrayRoute()[0]
+        const arrayAddedStatus = []
+        routes.approvers.forEach(element => {
+          arrayAddedStatus.push({...element, status: '保留中'})
+        })
+        routes.approvers = arrayAddedStatus
+        // ステップ数を格納する
+        const currentStep = 1
+        const maxStep = routes.approvers.length
+
         const item = {
           request: {
-            title: '12/24終日',
+            title: this.title,
             status: '保留中',
-            current_approver_email: 'test@example.com',
+            current_approver_email: routes.approvers[0].email,
             created_at: serverTimestamp()
           },
           detail: {
-            current_step: 1,
-            max_step: 3,
-            reason: '私用のため',
-            date: '2022/12/24',
-            contact: '080-1111-2222',
-            memo: 'よろしくお願いします。',
-            routes: ['route1', 'route2', 'route3'],
+            current_step: currentStep,
+            max_step: maxStep,
+            reason: this.reason,
+            date: this.date,
+            contact: this.contact,
+            memo: this.memo,
+            routes: routes,
             comments: ['comment1', 'comment2', 'comment3']
           }
         }
@@ -217,7 +236,7 @@ export default {
       this.id = item.id || ''
       this.title = item.title || ''
       this.reason = item.reason || ''
-      this.date_between = item.date_between || ''
+      this.date = item.date || ''
       this.contact = item.contact || ''
       this.memo = item.memo || ''
 

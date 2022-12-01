@@ -34,8 +34,7 @@ const state = {
   routes: [],
   admins: [],
 
-  /** map型、array型 */
-  mapEmployee: {},
+  department: '',
   arrayRoute: [],
 
   /** バッジに表示する承認依頼の件数 */
@@ -79,9 +78,9 @@ const mutations = {
     list.splice(index, 1)
   },
 
-  /** 従業員情報をセットする */
-  setMapEmployee(state, { employee }) {
-    state.mapEmployee = employee
+  /** 部署をセットする */
+  setDepartment(state, { department }) {
+    state.department = department
   },
 
   /** 申請ルート情報をセットする */
@@ -328,10 +327,12 @@ const actions = {
     }
   },
 
-  /** 申請者情報を作成する */
-  async createMapEmployee({ commit }, { userEmail }) {
-    const employee = await getEmployee(userEmail)
-    commit('setMapEmployee', { employee })
+  /** userIdを渡して部署を取得する */
+  async fetchDepartment({ commit }, { userId }) {
+    const snapshot = await getDoc(doc(db, 'users', userId))
+    const userInfo = snapshot.data()
+    const department = userInfo.department
+    commit('setDepartment', { department })
   },
 
   /** 申請ルート情報を作成する */
@@ -352,27 +353,6 @@ const actions = {
     commit('setNumberOfOtersRequest', { val })
   },
 
-}
-
-/**
- * 従業員情報を取得する
- * @param {string} userEmail
- * @returns {object} mapEmployee = {
- *   email,
- *   name,
- *   depaertment
- * }
- */
-async function getEmployee(userEmail) {
-  const currentTableName = 'users'
-  const q = query(collection(db, currentTableName), where('email', '==', userEmail))
-  const querySnapshot = await getDocs(q)
-  const collections = []
-  querySnapshot.forEach(doc => {
-    collections.push({...doc.data(), id: doc.id})
-  })
-
-  return collections
 }
 
 /**
@@ -404,10 +384,6 @@ async function getRoute(requestType, department) {
 }
 
 const getters = {
-  getMapEmployee(state) {
-    return state.mapEmployee
-  },
-
   getArrayRoute(state) {
     return state.arrayRoute
   },
