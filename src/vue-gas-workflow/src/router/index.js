@@ -8,7 +8,6 @@ import Login from '../views/Login.vue'
 import Settings from '../views/Settings.vue'
 import RequestOverview from '../views/RequestOverview.vue'
 import RequestDetail from '../views/RequestDetail.vue'
-import Employee from '../views/Employee.vue'
 import Department from '../views/Department.vue'
 import Route from '../views/Route.vue'
 import Admin from '../views/Admin.vue'
@@ -51,12 +50,6 @@ const routes = [
     path: '/settings',
     name: 'Settings',
     component: Settings,
-    meta: {requiresAuth: true}
-  },
-  {
-    path: '/employee',
-    name: 'Employee',
-    component: Employee,
     meta: {requiresAuth: true}
   },
   {
