@@ -69,7 +69,7 @@
             <v-form readonly>
               <v-text-field
                 label="タイトル"
-                v-model="pageTitle"
+                v-model="title"
               />
 
               <v-text-field
@@ -137,7 +137,6 @@ export default {
 
   data() {
     return {
-      pageTitle: '',
       /** 操作対象のテーブル */
       currentTableName: 'details',
       /** stateのデータを受け取って格納する */
@@ -295,7 +294,6 @@ export default {
   async created() {
     await this.fetchRequestDetail()
     this.setData()
-    console.log(this.currentStep)
   },
 }
 </script>
