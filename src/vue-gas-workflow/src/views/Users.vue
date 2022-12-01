@@ -21,7 +21,7 @@
       <v-col col="12">
         <v-card>
           <v-card-text>
-            {{ requests }}
+            {{ myRequests }}
             <v-spacer></v-spacer>
           </v-card-text>
           <v-card-actions>
@@ -73,7 +73,7 @@ export default {
   computed: {
     ...mapState({
       users: state => state.firestore.users,
-      requests: state => state.firestore.requests,
+      myRequests: state => state.firestore.myRequests,
       loading: state => state.workflow.loading.fetch,
     }),
 
@@ -100,7 +100,8 @@ export default {
 
     ...mapActions({
       fetchAllCollections: 'firestore/fetchAllCollections',
-      fetchRequests: 'firestore/fetchRequests',
+      fetchMyRequests: 'firestore/fetchMyRequests',
+      fetchOthersRequests: 'firestore/fetchOthersRequests',
     }),
 
     /** 追加ボタンがクリックされたとき */
@@ -128,7 +129,7 @@ export default {
       await this.fetchAllCollections({ currentTableName })
 
       const userId = this.getUserEmail()
-      await this.fetchRequests({ userId })
+      await this.fetchMyRequests({ userId })
     },
 
   },
