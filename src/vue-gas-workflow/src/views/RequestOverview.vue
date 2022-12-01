@@ -4,7 +4,8 @@
     <v-row>
       <v-col cols="12" md="6" xs="12">
         <v-tabs grow color="green">
-          <v-tab @click="onClickTab('othersRequest')">
+          <v-tab @click="onClickTab('myRequests')">自分の申請</v-tab>
+          <v-tab @click="onClickTab('othersRequests')">
             <template v-if="getNumberOfOthersRequest">
               <v-badge
                 color="red"
@@ -13,7 +14,6 @@
             </template>
             <template v-else>承認依頼</template>
           </v-tab>
-          <v-tab @click="onClickTab('myRequest')">自分の申請</v-tab>
         </v-tabs>
       </v-col>
     </v-row>
@@ -77,7 +77,7 @@
     </v-card>
 
     <!-- 追加／編集ダイアログ -->
-    <ItemDialogRequest ref="ItemDialogRequest"/>
+    <ItemDialogRequests ref="ItemDialogRequests"/>
 
   </div>
 
@@ -85,38 +85,37 @@
 
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
-import ItemDialogRequest from '../components/ItemDialogRequest.vue'
+import ItemDialogRequests from '../components/ItemDialogRequests.vue'
 
 export default {
   name: 'RequestOverView',
 
   components: {
-    ItemDialogRequest
+    ItemDialogRequests
   },
 
   data() {
     return {
       /** 操作対象のテーブル */
-      currentTableName: 'request_snippets',
+      currentTableName: 'myRequests',
+      /** 現在開いているタブ */
+      currentTabName: 'myRequests',
       /* 申請書タイトル */
       title: '申請一覧',
       /** 検索文字 */
       search: '',
       /** テーブルに表示させるデータ */
       tableData: [],
-      /** 現在開いているタブ */
-      currentTabName: 'othersRequest',
     }
   },
 
   computed: {
     ...mapState({
-      request_snippets: state => state.firestore.request_snippets,
+      requests: state => state.firestore.requests,
       loading: state => state.workflow.loading.fetch,
     }),
 
     ...mapGetters({
-      getUserEmail: 'firebase/getUserEmail',
       getNumberOfOthersRequest: 'firestore/getNumberOfOthersRequest',
     }),
 
@@ -132,8 +131,6 @@ export default {
     tableHeaders () {
       return [
         { text: 'タイトル', value: 'title', sortable: false },
-        { text: '申請者', value: 'recipient.name', sortable: false },
-        { text: '部署', value: 'recipient.department', sortable: false },
         { text: 'ステータス', value: 'status', sortable: false },
         { text: '作成日時', value: 'created_at' },
       ]
@@ -148,24 +145,37 @@ export default {
 
   methods: {
     ...mapActions({
-      fetchCollectionsByOneQuery: 'firestore/fetchCollectionsByOneQuery',
+      fetchMyRequests: 'firestore/fetchMyRequests',
+      fetchOthersRequests: 'firestore/fetchOthersRequests',
       countOthersRequest: 'firestore/countOthersRequest',
+    }),
+
+    ...mapGetters({
+      getUserEmail: 'firebase/getUserEmail',
     }),
 
     /** 追加ボタンがクリックされたとき */
     onClickAdd () {
-      this.$refs.ItemDialogRequest.open('add')
+      this.$refs.ItemDialogRequests.open('add')
     },
 
     onClickRow(item) {
       this.$router.push({ path: `/request_detail/${item.id}` })
     },
 
-    async getRecords(currentTabName) {
-      const currentTableName = this.currentTableName
-      const customQuery = this.setQuery(currentTabName)
-      await this.fetchCollectionsByOneQuery({ currentTableName, customQuery })
-      this.tableData = this.request_snippets
+    async onClickTab(currentTabName) {
+      const userId = this.getUserEmail()
+
+      switch(currentTabName) {
+        case 'myRequests':
+          await this.fetchMyRequests({ userId })
+          break
+        case 'othersRequests':
+          await this.fetchOthersRequests({ userId })
+          break
+      }
+
+      this.tableData = this.requests
     },
 
     dateToStr24HPad0(date, format) {
@@ -203,42 +213,14 @@ export default {
       return icon
     },
 
-    /** タブをクリックした際に、編集対象の申請書名を子コンポーネント（DataTableRoute.vue）に渡す */
-    onClickTab(currentTabName) {
-      this.getRecords(currentTabName)
-    },
-
-    /** クリックされたタブ情報を保持する
-     *  リロードした際は下記メソッドは実行されないのでdata()で定義したデフォルト値がセットされる
-     */
-    setQuery(currentTabName) {
-      let customQuery = {}
-      switch(currentTabName) {
-        case 'othersRequest':
-          customQuery = {
-            field: 'approver_email',
-            compare: '==',
-            value: this.getUserEmail,
-          }
-          break
-        case 'myRequest':
-          customQuery = {
-            field: 'recipient.email',
-            compare: '==',
-            value: this.getUserEmail,
-          }
-          break
-      }
-
-      return customQuery
-    },
-
-
   },
 
   async created() {
-    await this.getRecords(this.currentTabName)
-    await this.countOthersRequest()
+    const userId = this.getUserEmail()
+    await this.fetchMyRequests({ userId })
+    this.tableData = this.requests
+
+    // await this.countOthersRequest()
   },
 
 }
