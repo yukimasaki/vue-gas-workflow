@@ -34,7 +34,7 @@ const state = {
   routes: [],
   admins: [],
 
-  department: '',
+  userInfo: '',
   arrayRoute: [],
 
   /** バッジに表示する承認依頼の件数 */
@@ -79,8 +79,8 @@ const mutations = {
   },
 
   /** 部署をセットする */
-  setDepartment(state, { department }) {
-    state.department = department
+  setUserInfo(state, { userInfo }) {
+    state.userInfo = userInfo
   },
 
   /** 申請ルート情報をセットする */
@@ -327,12 +327,11 @@ const actions = {
     }
   },
 
-  /** userIdを渡して部署を取得する */
-  async fetchDepartment({ commit }, { userId }) {
+  /** userIdを渡してユーザー情報を取得する */
+  async fetchUserInfo({ commit }, { userId }) {
     const snapshot = await getDoc(doc(db, 'users', userId))
     const userInfo = snapshot.data()
-    const department = userInfo.department
-    commit('setDepartment', { department })
+    commit('setUserInfo', { userInfo })
   },
 
   /** 申請ルート情報を作成する */

@@ -130,9 +130,11 @@ export default {
     /** テーブルのヘッダー設定 */
     tableHeaders () {
       return [
-        { text: 'タイトル', value: 'title', sortable: false },
-        { text: 'ステータス', value: 'status', sortable: false },
         { text: '作成日時', value: 'created_at' },
+        { text: 'ステータス', value: 'status', sortable: false },
+        { text: 'タイトル', value: 'title', sortable: false },
+        { text: '申請者', value: 'name', sortable: false },
+        { text: '部署', value: 'department', sortable: false },
       ]
     },
 
@@ -160,7 +162,7 @@ export default {
     },
 
     onClickRow(item) {
-      this.$router.push({ path: `/request_detail/${item.id}` })
+      this.$router.push({ path: `/requests/${item.id}` })
     },
 
     async onClickTab(currentTabName) {

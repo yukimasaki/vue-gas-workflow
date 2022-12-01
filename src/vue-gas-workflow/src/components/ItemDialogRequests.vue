@@ -147,7 +147,7 @@ export default {
     ...mapState({
       /** ローディング状態 */
       loading: state => state.workflow.loading.add || state.workflow.loading.update,
-      department: state => state.firestore.department
+      userInfo: state => state.firestore.userInfo
     }),
 
     /** ダイアログのタイトル */
@@ -168,7 +168,7 @@ export default {
 
     ...mapActions({
       batchAddSubCollectionsToUsers: 'firestore/batchAddSubCollectionsToUsers',
-      fetchDepartment: 'firestore/fetchDepartment',
+      fetchUserInfo: 'firestore/fetchUserInfo',
       createArrayRoute: 'firestore/createArrayRoute',
     }),
 
@@ -192,10 +192,11 @@ export default {
       if (this.actionType === 'add') {
 
         // 申請ルート情報をarray型に格納する
+        // ↓ごちゃごちゃしてるのでキレイにする！
         const userId = this.getUserEmail()
         const requestType = this.requestType
-        await this.fetchDepartment({ userId })
-        const department = this.department
+        await this.fetchUserInfo({ userId })
+        const department = this.userInfo.department
         await this.createArrayRoute({ requestType, department })
         const routes = this.getArrayRoute()[0]
         const arrayAddedStatus = []
@@ -212,9 +213,18 @@ export default {
             title: this.title,
             status: '保留中',
             current_approver_email: routes.approvers[0].email,
-            created_at: serverTimestamp()
+            created_at: serverTimestamp(),
+            email: this.userInfo.id,
+            name: this.userInfo.name,
+            department: this.userInfo.department
           },
           detail: {
+            title: this.title,
+            status: '保留中',
+            created_at: serverTimestamp(),
+            email: this.userInfo.id,
+            name: this.userInfo.name,
+            department: this.userInfo.department,
             current_step: currentStep,
             max_step: maxStep,
             reason: this.reason,
