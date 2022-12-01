@@ -15,9 +15,9 @@ service cloud.firestore {
              request.auth.token.email == userId;
     }
 
-    function isRequestForMe(userId) {
+    function isRequestForMe() {
       return isAuth() &&
-             resource.data.current_approver_email == userId
+             request.auth.token.email == resource.data.current_approver_email;
     }
 
     match /admins/{adminId} {
@@ -32,10 +32,12 @@ service cloud.firestore {
       allow read, write: if isAdmin();
 
       match /requests/{requestId}/{doc=**} {
-        allow read: if isMe(userId) || isRequestForMe(userId);
-        allow create: if isMe(userId);
-        allow update: if isRequestForMe(userId);
+        allow read: if isMe(userId);
       }
+    }
+
+    match /{path=**}/requests/{requestId} {
+      allow read: if isRequestForMe();
     }
 
     match /routes/{routeId} {
