@@ -3,6 +3,7 @@
     <v-row>
       <v-col col="12">
         <v-card>
+          <v-card-title>users</v-card-title>
           <v-card-text>
             {{ users }}
             <v-spacer></v-spacer>
@@ -20,6 +21,7 @@
     <v-row>
       <v-col col="12">
         <v-card>
+          <v-card-title>myRequests</v-card-title>
           <v-card-text>
             {{ myRequests }}
             <v-spacer></v-spacer>
@@ -30,6 +32,18 @@
               requestsを作成
             </v-btn>
           </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col col="12">
+        <v-card>
+          <v-card-title>othersRequests</v-card-title>
+          <v-card-text>
+            {{ othersRequests }}
+            <v-spacer></v-spacer>
+          </v-card-text>
         </v-card>
       </v-col>
     </v-row>
@@ -74,6 +88,7 @@ export default {
     ...mapState({
       users: state => state.firestore.users,
       myRequests: state => state.firestore.myRequests,
+      othersRequests: state => state.firestore.othersRequests,
       loading: state => state.workflow.loading.fetch,
     }),
 
@@ -130,6 +145,7 @@ export default {
 
       const userId = this.getUserEmail()
       await this.fetchMyRequests({ userId })
+      await this.fetchOthersRequests({ userId })
     },
 
   },
