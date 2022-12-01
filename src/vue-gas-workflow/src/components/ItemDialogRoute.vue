@@ -60,13 +60,16 @@
             </template>
           </v-data-table>
 
-          <!-- 承認者テーブルにデータを追加するためのフォーム -->
           <!-- 従業員 -->
+          <!-- 承認者テーブルにデータを追加するためのフォーム
+               プルダウンメニューで「氏名(メールアドレス)」を選択すると、
+               v-model:userInfoにオブジェクトが代入される。
+           -->
           <v-select
             label="承認者"
-            v-model="employeeInfo"
-            :items="employees"
-            :item-text="employees => `${employees.name} (${employees.email})`"
+            v-model="userInfo"
+            :items="users"
+            :item-text="users => `${users.name} (${users.id})`"
             return-object
           />
           <v-spacer/>
@@ -74,7 +77,7 @@
           <v-btn
             color="blue darken-1"
             text
-            :disabled="!employeeInfo.email"
+            :disabled="!userInfo.id"
             :loading="loading"
             @click="addApprover"
           >追加</v-btn>
@@ -132,7 +135,7 @@ export default {
       /** タイトル */
       title: '',
       /** 従業員 */
-      employeeInfo: '',
+      userInfo: '',
       /** 承認者数 */
       numberOfApprovers: '',
 
@@ -157,7 +160,7 @@ export default {
     ...mapState({
       loading: state => state.workflow.loading.add || state.workflow.loading.update,
       departments: state => state.firestore.departments,
-      employees: state => state.firestore.employees,
+      users: state => state.firestore.users,
     }),
 
     /** ダイアログのタイトル */
@@ -239,15 +242,15 @@ export default {
     addApprover () {
       const approvers = {
         order: this.approvers.length + 1,
-        email: this.employeeInfo.email,
-        name: this.employeeInfo.name,
+        email: this.userInfo.id,
+        name: this.userInfo.name,
       }
 
       /** テーブルに追加 */
       this.approvers.push(approvers)
 
       /** プルダウンメニューをクリア */
-      this.employeeInfo = []
+      this.userInfo = []
     },
 
     /** 承認者削除ボタンがクリックされたとき */
@@ -276,7 +279,7 @@ export default {
 
     /** プルダウンメニュー用 従業員情報を取得する */
     async getEmployees() {
-      const currentTableName = 'employees'
+      const currentTableName = 'users'
       await this.fetchAllCollections({ currentTableName })
     },
 
