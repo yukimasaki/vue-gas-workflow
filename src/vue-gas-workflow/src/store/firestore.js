@@ -34,7 +34,6 @@ const state = {
   departments: [],
   routes: [],
   administrators: [],
-  users: [],
   myRequests: [],
   othersRequests: [],
 
