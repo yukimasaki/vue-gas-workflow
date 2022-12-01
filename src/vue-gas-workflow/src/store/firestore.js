@@ -30,7 +30,7 @@ const state = {
   /** コレクション */
   request_snippets: [],
   request_details: [],
-  employees: [],
+  users: [],
   departments: [],
   routes: [],
   administrators: [],
@@ -368,7 +368,7 @@ const actions = {
  * }
  */
 async function getEmployee(userEmail) {
-  const currentTableName = 'employees'
+  const currentTableName = 'users'
   const q = query(collection(db, currentTableName), where('email', '==', userEmail))
   const querySnapshot = await getDocs(q)
   const collections = []
