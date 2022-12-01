@@ -111,8 +111,8 @@ export default {
 
   computed: {
     ...mapState({
-      requests: state => state.firestore.requests,
       loading: state => state.workflow.loading.fetch,
+      requests: state => state.firestore.requests,
     }),
 
     ...mapGetters({
@@ -176,7 +176,6 @@ export default {
           await this.fetchOthersRequests({ userId })
           break
       }
-
       this.tableData = this.requests
     },
 

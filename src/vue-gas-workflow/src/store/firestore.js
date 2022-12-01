@@ -93,6 +93,7 @@ const mutations = {
   setNumberOfOtersRequest(state, { val }) {
     state.numberOfOthersRequest = val
   },
+
 }
 
 const actions = {
@@ -233,6 +234,14 @@ const actions = {
     commit('setCollections', { collections: detail, currentTableName: 'details' })
   },
 
+  /** userIdとdocIdを渡して申請概要（requestsサブコレクション）を取得する */
+  async fetchRequest({ commit }, { userId, docId }) {
+    const docRef = doc(db, 'users', userId, 'requests', docId,)
+    const snapshot = await getDoc(docRef)
+    const request = snapshot.data()
+    commit('setCollections', { collections: request, currentTableName: 'requests' })
+  },
+
   /** userIdを渡して当該ユーザーの申請（requestsサブコレクション）を取得する */
   async fetchMyRequests({ commit }, { userId }) {
     const subColRef = collection(db, 'users', userId, 'requests')
@@ -282,58 +291,20 @@ const actions = {
     commit('addCollection', { item: timestampedItem, currentTableName: 'requests' })
   },
 
-  /** バッチ書き込み(add) */
-  async batchAddCollections({ commit }, { itemSnippets, itemDetails }) {
-    const type = 'add'
-    const batch = writeBatch(db)
-    commit('setLoading', { type, v: true })
-    try {
-      // コレクションの参照を取得
-      const colRefSnippets = collection(db, 'request_snippets')
-      const colRefDetails = collection(db, 'request_details')
-      // batch.add()を実現するため、ドキュメントのIDを取得しておく
-      const snippetsId = doc(colRefSnippets).id
-      const detailsId = doc(colRefDetails).id
-      // 空のドキュメントを作成する
-      const emptyDocSnippets = doc(db, 'request_snippets', snippetsId)
-      const emptyDocDetails = doc(db, 'request_details', detailsId)
-      // 申請概要(ドキュメント)と申請詳細を紐づけるための情報をitemDetailsに追加する
-      itemDetails.snippet_ref = snippetsId
-      // バッチ書き込みを実行
-      batch.set(emptyDocSnippets, itemSnippets)
-      batch.set(emptyDocDetails, itemDetails)
-      await batch.commit()
-      // serverTimestampが付与されていないitemをv-data-tableに表示するとエラーとなるため、
-      // serverTimestampが付与されたドキュメントを取得しstateにセットする
-      const docRefSnippets = doc(db, 'request_snippets', snippetsId)
-      const docSnapSnippets = await getDoc(docRefSnippets)
-      const timestampedItemSnippets = { ...docSnapSnippets.data(), id: docRefSnippets.id }
-      commit('addCollection', { item: timestampedItemSnippets, currentTableName: 'request_snippets' })
-    } catch (e) {
-      commit('setErrorMessage', { message: e })
-    } finally {
-      commit('setLoading', { type, v: false })
-    }
-  },
-
   /** バッチ書き込み(update) */
-   async batchUpdateCollections({ commit }, { itemSnippets, itemDetails }) {
-    const type = 'update'
+   async batchUpdateCollections({ commit }, { userId, itemRequest, itemDetail }) {
     const batch = writeBatch(db)
-    commit('setLoading', { type, v: true })
-    try {
-      // item*.idに対応するドキュメントを取得
-      const docSnippets = doc(db, 'request_snippets', itemSnippets.id)
-      const docDetails = doc(db, 'request_details', itemDetails.id)
-      // バッチ書き込みを実行
-      batch.set(docSnippets, itemSnippets)
-      batch.set(docDetails, itemDetails)
-      await batch.commit()
-    } catch (e) {
-      commit('setErrorMessage', { message: e })
-    } finally {
-      commit('setLoading', { type, v: false })
-    }
+
+    // item*.idに対応するドキュメントを取得
+    const docRequest = doc(db, 'users', userId, 'requests', itemRequest.id)
+    const docDetail = doc(db, 'users', userId, 'requests', itemRequest.id, 'details', itemDetail.id)
+
+    // バッチ書き込みを実行
+    batch.set(docRequest, itemRequest)
+    batch.set(docDetail, itemDetail)
+    await batch.commit()
+
+    commit('tes', {})
   },
 
   /** userIdを渡してユーザー情報を取得する */

@@ -166,6 +166,7 @@ export default {
 
   computed: {
     ...mapState({
+      requests: state => state.firestore.requests,
       details: state => state.firestore.details,
     }),
 
@@ -197,10 +198,16 @@ export default {
     ...mapActions({
       fetchCollectionsByOneQuery: 'firestore/fetchCollectionsByOneQuery',
       fetchDetail: 'firestore/fetchDetail',
+      fetchRequest: 'firestore/fetchRequest',
       batchUpdateCollections: 'firestore/batchUpdateCollections',
     }),
 
     async fetchRequestDetail() {
+
+      // クリックされたタブによって userId の中身を変える
+      // myRequestの場合はgetUserEmailから取得し、
+      // othersRequestの場合はitem.emailから取得する
+
       const userId = this.getUserEmail
       const docId = this.$route.params.id
       await this.fetchDetail({ userId, docId })
@@ -271,23 +278,26 @@ export default {
     },
 
     async batchUpdate() {
-      // itemSnippetsを取得
-      const currentTableName = 'request_snippets'
+      // requestドキュメントを取得し変数に格納する
+      const userId = this.getUserEmail
       const docId = this.$route.params.id
-      await this.fetchCollectionByDocId({ currentTableName, docId })
-      const itemSnippets = this.request_snippets
+      await this.fetchRequest({ userId, docId })
+      const itemRequest = this.requests
 
-      // itemSnippetsに最新のステータスを格納する
-      itemSnippets.status = this.latestStatus
-      // itemSnippetsに最新の承認者メールアドレスを格納する
-      itemSnippets.approver_email = this.latestApproverEmail
+      // IDを格納
+      itemRequest.id = docId
+      // 最新のステータスを格納する
+      itemRequest.status = this.latestStatus
+      // 最新の承認者メールアドレスを格納する
+      itemRequest.current_approver_email = this.latestApproverEmail
 
-      // itemDetailsを作成
-      let itemDetails = this.data
-      itemDetails.current_step = this.currentStep
+      // itemDetailを作成
+      let itemDetail = this.data
+      itemDetail.id = docId
+      itemDetail.current_step = this.currentStep
 
       // Firestoreにバッチ書き込み(update)
-      this.batchUpdateCollections({ itemSnippets, itemDetails })
+      this.batchUpdateCollections({ userId, itemRequest, itemDetail })
     },
   },
 
