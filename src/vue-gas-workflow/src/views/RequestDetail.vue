@@ -69,7 +69,7 @@
             <v-form readonly>
               <v-text-field
                 label="タイトル"
-                v-model="title"
+                v-model="pageTitle"
               />
 
               <v-text-field
@@ -79,37 +79,37 @@
 
               <v-text-field
                 label="申請者"
-                v-model="recipient.name"
+                v-model="name"
               />
 
               <v-text-field
                 label="メールアドレス"
-                v-model="recipient.email"
+                v-model="email"
               />
 
               <v-text-field
                 label="部署"
-                v-model="recipient.department"
+                v-model="department"
               />
 
               <v-text-field
                 label="事由"
-                v-model="detail.reason"
+                v-model="reason"
               />
 
               <v-text-field
                 label="予定日時"
-                v-model="detail.date_between"
+                v-model="date"
               />
 
               <v-text-field
                 label="緊急連絡先"
-                v-model="detail.contact"
+                v-model="contact"
               />
 
               <v-text-field
                 label="備考"
-                v-model="detail.memo"
+                v-model="memo"
               />
 
             </v-form>
@@ -137,16 +137,22 @@ export default {
 
   data() {
     return {
+      pageTitle: '',
       /** 操作対象のテーブル */
-      currentTableName: 'request_details',
+      currentTableName: 'details',
       /** stateのデータを受け取って格納する */
       data: {},
       /** フォームに表示するデータを格納 */
       title: '',
       created_at: '',
-      recipient: {},
-      detail: {},
+      email: '',
+      name: '',
+      department: '',
       routes: {},
+      reason: '',
+      date: '',
+      contact: '',
+      memo: '',
 
       /** ステップの制御に使用 */
       currentStep: null,
@@ -161,8 +167,7 @@ export default {
 
   computed: {
     ...mapState({
-      request_details: state => state.firestore.request_details,
-      request_snippets: state => state.firestore.request_snippets,
+      details: state => state.firestore.details,
     }),
 
     ...mapGetters({
@@ -192,20 +197,15 @@ export default {
   methods: {
     ...mapActions({
       fetchCollectionsByOneQuery: 'firestore/fetchCollectionsByOneQuery',
-      fetchCollectionByDocId: 'firestore/fetchCollectionByDocId',
+      fetchDetail: 'firestore/fetchDetail',
       batchUpdateCollections: 'firestore/batchUpdateCollections',
     }),
 
     async fetchRequestDetail() {
-      const currentTableName = this.currentTableName
-      const customQuery = {
-        field: 'snippet_ref',
-        compare: '==',
-        value: this.$route.params.id
-      }
-
-      await this.fetchCollectionsByOneQuery({ currentTableName, customQuery })
-      this.data = this.request_details[0]
+      const userId = this.getUserEmail
+      const docId = this.$route.params.id
+      await this.fetchDetail({ userId, docId })
+      this.data = this.details
     },
 
     dateToStr24HPad0(date, format) {
@@ -227,11 +227,17 @@ export default {
 
       this.title = this.data.title
       this.created_at = formattedDate
-      this.recipient = this.data.recipient
-      this.detail = this.data.detail
-      this.routes = this.data.route
+      this.email = this.data.email
+      this.name = this.data.name
+      this.department = this.data.department
+      this.routes = this.data.routes
       this.currentStep = this.data.current_step
       this.maxStep = this.data.max_step
+
+      this.reason = this.data.reason
+      this.date = this.data.date
+      this.contact = this.data.contact
+      this.memo = this.data.memo
     },
 
     onClickApprove() {
@@ -289,6 +295,7 @@ export default {
   async created() {
     await this.fetchRequestDetail()
     this.setData()
+    console.log(this.currentStep)
   },
 }
 </script>

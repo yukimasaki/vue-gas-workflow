@@ -24,7 +24,7 @@ const routes = [
     meta: {requiresAuth: true}
   },
   {
-    path: '/request_detail/:id',
+    path: '/requests/:id',
     name: 'RequestDetail',
     component: RequestDetail,
     meta: {requiresAuth: true}

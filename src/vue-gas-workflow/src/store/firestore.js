@@ -29,6 +29,7 @@ const state = {
 
   /** コレクション */
   requests: [],
+  details: [],
   users: [],
   departments: [],
   routes: [],
@@ -222,6 +223,14 @@ const actions = {
     } finally {
       commit('setLoading', { type, v: false})
     }
+  },
+
+  /** userIdとdocIdを渡して申請詳細（detailsサブコレクション）を取得する */
+  async fetchDetail({ commit }, { userId, docId }) {
+    const docRef = doc(db, 'users', userId, 'requests', docId, 'details', docId)
+    const snapshot = await getDoc(docRef)
+    const detail = snapshot.data()
+    commit('setCollections', { collections: detail, currentTableName: 'details' })
   },
 
   /** userIdを渡して当該ユーザーの申請（requestsサブコレクション）を取得する */
