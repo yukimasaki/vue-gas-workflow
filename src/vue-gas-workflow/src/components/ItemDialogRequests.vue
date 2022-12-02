@@ -221,6 +221,7 @@ export default {
           detail: {
             title: this.title,
             status: '保留中',
+            current_approver_email: routes.approvers[0].email,
             created_at: serverTimestamp(),
             email: this.userInfo.id,
             name: this.userInfo.name,
