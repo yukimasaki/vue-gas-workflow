@@ -13,7 +13,6 @@ import {
   writeBatch,
   collectionGroup,
 } from 'firebase/firestore'
-import { v4 as uuidv4} from 'uuid'
 
 const state = {
   /** ローディング状態 */
@@ -293,9 +292,8 @@ const actions = {
   },
 
   /** 2階層のサブコレクションをusersコレクションにバッチ書き込み(add)する */
-  async batchAddSubCollectionsToUsers({ commit }, { userId, item }) {
+  async batchAddSubCollectionsToUsers({ commit }, { uid, userId, item }) {
     const batch = writeBatch(db)
-    const uid = uuidv4()
 
     // uuidをドキュメントIDとして指定し、空のドキュメントを作成しておく
     // doc関数の引数は、dbを除き偶数個で指定する必要がある

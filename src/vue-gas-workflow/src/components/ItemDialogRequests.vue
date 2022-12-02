@@ -90,6 +90,7 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
 import { serverTimestamp } from '@firebase/firestore'
+import { v4 as uuidv4} from 'uuid'
 
 export default {
   name: 'ItemDialogRequests',
@@ -193,6 +194,7 @@ export default {
 
         // 申請ルート情報をarray型に格納する
         // ↓ごちゃごちゃしてるのでキレイにする！
+        const uid = uuidv4()
         const userId = this.getUserEmail()
         const requestType = this.requestType
         await this.fetchUserInfo({ userId })
@@ -219,6 +221,7 @@ export default {
             department: this.userInfo.department
           },
           detail: {
+            id: uid,
             title: this.title,
             status: '保留中',
             current_approver_email: routes.approvers[0].email,
@@ -236,7 +239,7 @@ export default {
             comments: ['comment1', 'comment2', 'comment3']
           }
         }
-        await this.batchAddSubCollectionsToUsers({ userId, item })
+        await this.batchAddSubCollectionsToUsers({ uid, userId, item })
 
         this.show = false
       }
