@@ -6,10 +6,10 @@
         <v-tabs grow color="green">
           <v-tab @click="onClickTab('myRequests')">自分の申請</v-tab>
           <v-tab @click="onClickTab('othersRequests')">
-            <template v-if="getNumberOfOthersRequest">
+            <template v-if="numberOfOthersRequests">
               <v-badge
                 color="red"
-                :content="getNumberOfOthersRequest"
+                :content="numberOfOthersRequests"
               >承認依頼</v-badge>
             </template>
             <template v-else>承認依頼</template>
@@ -115,10 +115,6 @@ export default {
       selectedTabName: state => state.firestore.selectedTabName,
     }),
 
-    ...mapGetters({
-      getNumberOfOthersRequest: 'firestore/getNumberOfOthersRequest',
-    }),
-
     /** 申請日の表示形式をフォーマット */
     formattedTableData () {
       return this.tableData.map((item) => ({
@@ -143,13 +139,16 @@ export default {
       return { itemsPerPageText: '', itemsPerPageOptions: [30, -1] }
     },
 
+    /** 承認依頼タブに表示する件数バッジ */
+    numberOfOthersRequests () {
+      return this.othersRequests.length
+    },
   },
 
   methods: {
     ...mapActions({
       fetchMyRequests: 'firestore/fetchMyRequests',
       fetchOthersRequests: 'firestore/fetchOthersRequests',
-      countOthersRequest: 'firestore/countOthersRequest',
       setSelectedTabName: 'firestore/setSelectedTabName',
     }),
 
@@ -184,7 +183,6 @@ export default {
           this.tableData = this.myRequests
           break
         case 'othersRequests':
-          await this.fetchOthersRequests({ userId })
           this.tableData = this.othersRequests
           break
       }
@@ -229,9 +227,12 @@ export default {
 
   async created() {
     this.setSelectedTabName({ selectedTabName: 'myRequests' })
+
     const userId = this.getUserEmail()
     await this.fetchMyRequests({ userId })
+    await this.fetchOthersRequests({ userId })
     this.tableData = this.myRequests
+
   },
 
 }
