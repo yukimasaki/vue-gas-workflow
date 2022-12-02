@@ -231,12 +231,30 @@ const actions = {
     }
   },
 
-  /** userIdとdocIdを渡して申請詳細（detailsサブコレクション）を取得する */
-  async fetchDetail({ commit }, { userId, docId }) {
+  /** userIdとdocIdを渡して自分の申請詳細（detailsサブコレクション）を取得する */
+  async fetchMyDetail({ commit }, { userId, docId }) {
     const docRef = doc(db, 'users', userId, 'requests', docId, 'details', docId)
     const snapshot = await getDoc(docRef)
     const detail = snapshot.data()
     commit('setCollections', { collections: detail, currentTableName: 'details' })
+  },
+
+  /** userIdとdocIdを渡して他ユーザーの申請詳細（detailsサブコレクション）を取得する */
+  async fetchOthersDetail({ commit }, { userId, docId }) {
+    const requestForMe = query(
+      collectionGroup(db, 'details'),
+      // セキュリティルールは current_approver_email == request.auth.token.email というクエリを想定しているため、そのクエリを実装する必要がある
+      where('id', '==', docId),
+      where('current_approver_email', '==', userId)
+    )
+    const snapshot = await getDocs(requestForMe)
+    const docs = []
+    snapshot.forEach(doc => {
+      docs.push({ ...doc.data(), id: doc.id })
+    })
+    const result = docs[0]
+
+    commit('setCollections', { collections: result, currentTableName: 'details' })
   },
 
   /** userIdとdocIdを渡して申請概要（requestsサブコレクション）を取得する */
