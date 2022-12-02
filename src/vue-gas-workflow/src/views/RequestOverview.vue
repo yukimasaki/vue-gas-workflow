@@ -98,8 +98,6 @@ export default {
     return {
       /** 操作対象のテーブル */
       currentTableName: 'myRequests',
-      /** 現在開いているタブ */
-      currentTabName: 'myRequests',
       /* 申請書タイトル */
       title: '申請一覧',
       /** 検索文字 */
@@ -113,6 +111,7 @@ export default {
     ...mapState({
       loading: state => state.workflow.loading.fetch,
       requests: state => state.firestore.requests,
+      selectedTabName: state => state.firestore.selectedTabName,
     }),
 
     ...mapGetters({
@@ -150,6 +149,7 @@ export default {
       fetchMyRequests: 'firestore/fetchMyRequests',
       fetchOthersRequests: 'firestore/fetchOthersRequests',
       countOthersRequest: 'firestore/countOthersRequest',
+      setSelectedTabName: 'firestore/setSelectedTabName',
     }),
 
     ...mapGetters({
@@ -165,10 +165,10 @@ export default {
       this.$router.push({ path: `/requests/${item.id}` })
     },
 
-    async onClickTab(currentTabName) {
+    async onClickTab(selectedTabName) {
+      this.setSelectedTabName({ selectedTabName })
       const userId = this.getUserEmail()
-
-      switch(currentTabName) {
+      switch(selectedTabName) {
         case 'myRequests':
           await this.fetchMyRequests({ userId })
           break
@@ -217,6 +217,7 @@ export default {
   },
 
   async created() {
+    this.setSelectedTabName({ selectedTabName: 'myRequests' })
     const userId = this.getUserEmail()
     await this.fetchMyRequests({ userId })
     this.tableData = this.requests

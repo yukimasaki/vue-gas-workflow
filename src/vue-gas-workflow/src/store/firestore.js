@@ -37,10 +37,8 @@ const state = {
 
   userInfo: '',
   arrayRoute: [],
-
-  /** バッジに表示する承認依頼の件数 */
   numberOfOthersRequest: null,
-
+  selectedTabName: '',
 }
 
 const mutations = {
@@ -92,6 +90,11 @@ const mutations = {
   /** バッジに表示する承認依頼の件数をセットする */
   setNumberOfOtersRequest(state, { val }) {
     state.numberOfOthersRequest = val
+  },
+
+  /** 選択したタブ情報を保持する */
+  setSelectedTabName(state, { selectedTabName }) {
+    state.selectedTabName = selectedTabName
   },
 
 }
@@ -330,6 +333,11 @@ const actions = {
       val = count
     }
     commit('setNumberOfOtersRequest', { val })
+  },
+
+  /** 選択したタブ情報を保持する */
+  setSelectedTabName({ commit }, { selectedTabName }) {
+    commit('setSelectedTabName', { selectedTabName })
   },
 
 }
