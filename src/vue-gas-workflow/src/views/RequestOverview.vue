@@ -110,7 +110,8 @@ export default {
   computed: {
     ...mapState({
       loading: state => state.workflow.loading.fetch,
-      requests: state => state.firestore.requests,
+      myRequests: state => state.firestore.myRequests,
+      othersRequests: state => state.firestore.othersRequests,
       selectedTabName: state => state.firestore.selectedTabName,
     }),
 
@@ -162,7 +163,16 @@ export default {
     },
 
     onClickRow(item) {
-      this.$router.push({ path: `/requests/${item.id}` })
+      // セキュリティルールによってクエリを出しわける必要があるため、
+      // selectedTabNameによってルーティングを切り替えておく
+      switch(this.selectedTabName) {
+        case 'myRequests':
+          this.$router.push({ path: `/my/requests/${item.id}` })
+          break
+        case 'othersRequests':
+          this.$router.push({ path: `/others/requests/${item.id}` })
+          break
+      }
     },
 
     async onClickTab(selectedTabName) {
@@ -171,12 +181,13 @@ export default {
       switch(selectedTabName) {
         case 'myRequests':
           await this.fetchMyRequests({ userId })
+          this.tableData = this.myRequests
           break
         case 'othersRequests':
           await this.fetchOthersRequests({ userId })
+          this.tableData = this.othersRequests
           break
       }
-      this.tableData = this.requests
     },
 
     dateToStr24HPad0(date, format) {
@@ -220,9 +231,7 @@ export default {
     this.setSelectedTabName({ selectedTabName: 'myRequests' })
     const userId = this.getUserEmail()
     await this.fetchMyRequests({ userId })
-    this.tableData = this.requests
-
-    // await this.countOthersRequest()
+    this.tableData = this.myRequests
   },
 
 }
