@@ -37,9 +37,14 @@ service cloud.firestore {
       }
     }
 
-    // 承認依頼に対するルール
+    // 承認依頼に対するルール 一覧画面
     match /{path=**}/requests/{requestId} {
-      allow read, update: if isRequestForMe();
+      allow list: if isRequestForMe();
+    }
+
+    // 承認依頼に対するルール 詳細画面
+    match /{path=**}/details/{detailId} {
+      allow list, update: if isRequestForMe();
     }
 
     match /routes/{routeId} {
