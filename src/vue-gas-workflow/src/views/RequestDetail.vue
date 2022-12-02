@@ -134,7 +134,6 @@ import { mapActions, mapState, mapGetters } from 'vuex';
 
 export default {
   name: 'RequestDetail',
-
   data() {
     return {
       /** 操作対象のテーブル */
@@ -168,6 +167,7 @@ export default {
     ...mapState({
       requests: state => state.firestore.requests,
       details: state => state.firestore.details,
+      selectedTabName: state => state.firestore.selectedTabName,
     }),
 
     ...mapGetters({
@@ -197,20 +197,22 @@ export default {
   methods: {
     ...mapActions({
       fetchCollectionsByOneQuery: 'firestore/fetchCollectionsByOneQuery',
-      fetchDetail: 'firestore/fetchDetail',
+      fetchMyDetail: 'firestore/fetchMyDetail',
+      fetchOthersDetail: 'firestore/fetchOthersDetail',
       fetchRequest: 'firestore/fetchRequest',
       batchUpdateCollections: 'firestore/batchUpdateCollections',
     }),
 
     async fetchRequestDetail() {
-
-      // クリックされたタブによって userId の中身を変える
-      // myRequestの場合はgetUserEmailから取得し、
-      // othersRequestの場合はitem.emailから取得する
-
+      const path = this.$route.path
       const userId = this.getUserEmail
       const docId = this.$route.params.id
-      await this.fetchDetail({ userId, docId })
+
+      if (path.startsWith('/my/')) {
+        await this.fetchMyDetail({ userId, docId })
+      } else if (path.startsWith('/others/')) {
+        await this.fetchOthersDetail({ userId, docId })
+      }
       this.data = this.details
     },
 
