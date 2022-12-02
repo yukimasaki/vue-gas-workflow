@@ -28,14 +28,16 @@ service cloud.firestore {
       allow read, write: if isAdmin();
     }
 
+    // 自分の申請に対するルール
     match /users/{userId} {
-      allow read, write: if isAdmin();
+      allow read, write: if isMe(userId);
 
       match /requests/{requestId}/{doc=**} {
         allow read, create: if isMe(userId);
       }
     }
 
+    // 承認依頼に対するルール
     match /{path=**}/requests/{requestId} {
       allow read, update: if isRequestForMe();
     }
