@@ -38,7 +38,6 @@ const state = {
 
   userInfo: '',
   arrayRoute: [],
-  numberOfOthersRequest: null,
   selectedTabName: '',
 }
 
@@ -86,11 +85,6 @@ const mutations = {
   /** 申請ルート情報をセットする */
   setArrayRoute(state, { route }) {
     state.arrayRoute = route
-  },
-
-  /** バッジに表示する承認依頼の件数をセットする */
-  setNumberOfOtersRequest(state, { val }) {
-    state.numberOfOthersRequest = val
   },
 
   /** 選択したタブ情報を保持する */
@@ -341,18 +335,6 @@ const actions = {
     commit('setArrayRoute', { route })
   },
 
-  /** バッジに表示する承認依頼の件数を取得する */
-  countOthersRequest({ commit }) {
-    const count = state.request_snippets.length
-    let val = ''
-    if (count == 0) {
-      val = null
-    } else {
-      val = count
-    }
-    commit('setNumberOfOtersRequest', { val })
-  },
-
   /** 選択したタブ情報を保持する */
   setSelectedTabName({ commit }, { selectedTabName }) {
     commit('setSelectedTabName', { selectedTabName })
@@ -391,10 +373,6 @@ async function getRoute(requestType, department) {
 const getters = {
   getArrayRoute(state) {
     return state.arrayRoute
-  },
-
-  getNumberOfOthersRequest(state) {
-    return state.numberOfOthersRequest
   },
 
 }
