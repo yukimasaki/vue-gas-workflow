@@ -281,10 +281,10 @@ export default {
 
     async batchUpdate() {
       // requestドキュメントを取得し変数に格納する
-      const userId = this.getUserEmail
+      const userId = this.data.email
       const docId = this.$route.params.id
       await this.fetchRequest({ userId, docId })
-      const itemRequest = this.requests
+      let itemRequest = this.requests
 
       // IDを格納
       itemRequest.id = docId
