@@ -109,7 +109,7 @@ router.beforeEach( (to, from, next) => {
         next()
       } else {
         // 未認証の場合はログインページへ遷移する
-        next('/login')
+        next({ path: '/login', query: { redirect: to.fullPath } })
       }
     })
   } else {
