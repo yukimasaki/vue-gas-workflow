@@ -284,6 +284,10 @@ export default {
       const userId = this.data.email
       const docId = this.$route.params.id
       await this.fetchRequest({ userId, docId })
+
+      // stateのオブジェクトを参照渡ししているため、下記エラーが出る？
+      // [vuex] unknown local mutation type: tes, global type: firestore/tes
+      // TODO：オブジェクトをコピーする https://qiita.com/c6tower/items/f36201539d94112bee7e
       let itemRequest = this.requests
 
       // IDを格納
