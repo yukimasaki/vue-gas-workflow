@@ -319,8 +319,6 @@ const actions = {
     batch.set(docDetail, itemDetail)
     await batch.commit()
 
-    // [vuex] unknown local mutation type: tes, global type: firestore/tes
-    // 上記エラーの原因？
     commit('setCollections', { collections: itemRequest, currentTableName: 'requests' })
   },
 
