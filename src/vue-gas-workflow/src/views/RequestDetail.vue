@@ -290,20 +290,17 @@ export default {
       // TODO：オブジェクトをコピーする https://qiita.com/c6tower/items/f36201539d94112bee7e
       let itemRequest = this.requests
 
-      // IDを格納
-      itemRequest.id = docId
-      // 最新のステータスを格納する
+        // 最新のステータスを格納する
       itemRequest.status = this.latestStatus
       // 最新の承認者メールアドレスを格納する
       itemRequest.current_approver_email = this.latestApproverEmail
 
       // itemDetailを作成
       let itemDetail = this.data
-      itemDetail.id = docId
       itemDetail.current_step = this.currentStep
 
       // Firestoreにバッチ書き込み(update)
-      this.batchUpdateCollections({ userId, itemRequest, itemDetail })
+      this.batchUpdateCollections({ userId, docId, itemRequest, itemDetail })
     },
   },
 

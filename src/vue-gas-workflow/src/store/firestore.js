@@ -307,19 +307,21 @@ const actions = {
   },
 
   /** バッチ書き込み(update) */
-   async batchUpdateCollections({ commit }, { userId, itemRequest, itemDetail }) {
+   async batchUpdateCollections({ commit }, { userId, docId, itemRequest, itemDetail }) {
     const batch = writeBatch(db)
 
     // item*.idに対応するドキュメントを取得
-    const docRequest = doc(db, 'users', userId, 'requests', itemRequest.id)
-    const docDetail = doc(db, 'users', userId, 'requests', itemRequest.id, 'details', itemDetail.id)
+    const docRequest = doc(db, 'users', userId, 'requests', docId)
+    const docDetail = doc(db, 'users', userId, 'requests', docId, 'details', docId)
 
     // バッチ書き込みを実行
     batch.set(docRequest, itemRequest)
     batch.set(docDetail, itemDetail)
     await batch.commit()
 
-    commit('tes', {})
+    // [vuex] unknown local mutation type: tes, global type: firestore/tes
+    // 上記エラーの原因？
+    commit('setCollections', { collections: itemRequest, currentTableName: 'requests' })
   },
 
   /** userIdを渡してユーザー情報を取得する */
