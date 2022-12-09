@@ -42,7 +42,6 @@
       :items="tableData"
       :search="search"
       :footer-props="footerProps"
-      :loading="loading"
       :sort-by="['department', 'order']"
       :sort-desc="[false, false]"
       :items-per-page="30"
@@ -95,7 +94,6 @@ export default {
   computed: {
     ...mapState({
       routes: state => state.firestore.routes,
-      loading: state => state.workflow.loading.fetch,
     }),
 
     /** テーブルのヘッダー設定 */
