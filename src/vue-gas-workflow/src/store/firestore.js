@@ -129,6 +129,7 @@ const actions = {
     const docRef = doc(db, currentTableName, item.id)
     await deleteDoc(docRef, item)
     commit('deleteDocument', { id, currentTableName })
+    commit('setWorkflowMessage', 'データを削除しました。')
   },
 
   /** 単一のWHEREクエリに合致するコレクションを取得する */
