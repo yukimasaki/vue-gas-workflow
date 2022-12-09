@@ -12,9 +12,6 @@ const state = {
     authToken: '',
   },
 
-  /** 休暇申請データ */
-  paidLeaveData: {},
-
   /** エラーメッセージ */
   errorMessage: '',
 
