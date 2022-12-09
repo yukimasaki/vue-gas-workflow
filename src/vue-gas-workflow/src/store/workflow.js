@@ -56,19 +56,6 @@ const mutations = {
     gasApi.setAuthToken(authToken)
   },
 
-  /** 申請記録をセットする */
-  setPaidLeaveData (state, { list }) {
-    state.paidLeaveData = list
-  },
-
-  /** データを追加する */
-  addPaidLeaveData (state, { item }) {
-    const list = state.paidLeaveData
-    if (list) {
-      list.push(item)
-    }
-  },
-
 }
 
 /**
@@ -84,29 +71,6 @@ const actions = {
   /** 設定を読み込む */
   loadSettings ({ commit }) {
     commit('loadSettings')
-  },
-
-  /** 申請記録を取得する */
-  async fetchPaidLeaveData ({ commit }) {
-    const type = 'fetch'
-    try {
-      const res = await gasApi.fetch()
-      commit('setPaidLeaveData', { list: res.data })
-    } catch(e) {
-      commit('setErrorMessage', { message: e })
-      commit('setPaidLeaveData', { list: [] })
-    }
-  },
-
-  /** 申請記録を作成する */
-  async addPaidLeaveData ({ commit }, { item }) {
-    const type = 'add'
-    try {
-      const res = await gasApi.add(item)
-      commit('addPaidLeaveData', { item: res.data })
-    } catch (e) {
-      commit('setErrorMessage', { message: e })
-    }
   },
 
 }
