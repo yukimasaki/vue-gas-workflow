@@ -15,14 +15,6 @@ const state = {
   /** 休暇申請データ */
   paidLeaveData: {},
 
-  /** ローディング状態 */
-  loading: {
-    fetch: false,
-    add: false,
-    update: false,
-    delete: false
-  },
-
   /** エラーメッセージ */
   errorMessage: '',
 
@@ -33,11 +25,6 @@ const state = {
  * ActionsからStateを更新するときに呼ばれる
  */
 const mutations = {
-
-  /** ローディング状態をセットする */
-  setLoading (state, { type, v }) {
-    state.loading[type] = v
-  },
 
   /** エラーメッセージをセットする */
   setErrorMessage (state, { message }) {
@@ -102,29 +89,23 @@ const actions = {
   /** 申請記録を取得する */
   async fetchPaidLeaveData ({ commit }) {
     const type = 'fetch'
-    commit('setLoading', { type, v: true })
     try {
       const res = await gasApi.fetch()
       commit('setPaidLeaveData', { list: res.data })
     } catch(e) {
       commit('setErrorMessage', { message: e })
       commit('setPaidLeaveData', { list: [] })
-    } finally {
-      commit('setLoading', { type, v: false})
     }
   },
 
   /** 申請記録を作成する */
   async addPaidLeaveData ({ commit }, { item }) {
     const type = 'add'
-    commit('setLoading', { type, v: true })
     try {
       const res = await gasApi.add(item)
       commit('addPaidLeaveData', { item: res.data })
     } catch (e) {
       commit('setErrorMessage', { message: e })
-    } finally {
-      commit('setLoading', { type, v: false })
     }
   },
 
