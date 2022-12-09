@@ -29,8 +29,9 @@ service cloud.firestore {
 
     match /users/{userId} {
       // ユーザー一覧の読み取り・作成を、本人と管理者のみ許可する
-      // ※isAdmin()だと一般ユーザーが申請を作成できなくなってしまう(セキュリティルールは下層のコレクションに連鎖しないのでは？という疑問が残る)
       allow read, create: if isMe(userId) || isAdmin();
+      // ユーザー一覧の更新・削除を管理者のみ許可する
+      allow update, delete: if isAdmin();
 
       match /requests/{requestId}/{doc=**} {
         // 申請の読み取りを、本人と承認者として指定されたユーザーのみ許可する
