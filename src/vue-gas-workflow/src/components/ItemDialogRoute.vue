@@ -188,7 +188,7 @@ export default {
     ...mapActions(
       {
         addDocument: 'firestore/addDocument',
-        UpdateDocument: 'firestore/UpdateDocument',
+        updateDocument: 'firestore/updateDocument',
         fetchAllCollections: 'firestore/fetchAllCollections',
       }
     ),
@@ -227,7 +227,7 @@ export default {
       if (this.actionType === 'add') {
         await this.addDocument({ item, currentTableName })
       } else {
-        await this.UpdateDocument({ item, currentTableName })
+        await this.updateDocument({ item, currentTableName })
       }
 
       this.show = false

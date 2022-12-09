@@ -48,7 +48,7 @@ const mutations = {
   },
 
   /** データを更新する */
-  UpdateDocument(state, { item, currentTableName }) {
+  updateDocument(state, { item, currentTableName }) {
     const list = state[currentTableName]
     const index = list.findIndex(v => v.id === item.id)
     list.splice(index, 1, item)
@@ -115,10 +115,10 @@ const actions = {
   },
 
   /** データを更新する */
-  async UpdateDocument({ commit }, { item, currentTableName }) {
+  async updateDocument({ commit }, { item, currentTableName }) {
     const docRef = doc(db, currentTableName, item.id)
     await updateDoc(docRef, item)
-    commit('UpdateDocument', { item, currentTableName })
+    commit('updateDocument', { item, currentTableName })
   },
 
   /** データを削除する */
@@ -232,7 +232,7 @@ const actions = {
   },
 
   /** バッチ書き込み(update) */
-   async batchUpdateDocuments({ commit }, { userId, docId, itemRequest, itemDetail }) {
+   async batchupdateDocuments({ commit }, { userId, docId, itemRequest, itemDetail }) {
     const batch = writeBatch(db)
 
     // item*.idに対応するドキュメントを取得
