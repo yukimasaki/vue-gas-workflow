@@ -97,8 +97,8 @@
       </v-container>
     </v-main>
 
-    <!-- スナックバー -->
-    <v-snackbar v-model="snackbar" color="error">{{ errorMessage }}</v-snackbar>
+    <!-- スナックバー:認証関連のメッセージ -->
+    <v-snackbar v-model="snackbar" color="info">{{ authMessage }}</v-snackbar>
   </v-app>
 
 </template>
@@ -119,7 +119,7 @@ export default {
   computed: {
     ...mapState({
       appName: state => state.workflow.settings.appName,
-      errorMessage: state => state.workflow.errorMessage,
+      authMessage: state => state.firebase.authMessage,
     }),
 
     ...mapGetters({
@@ -146,7 +146,7 @@ export default {
 
 
   watch: {
-    errorMessage () {
+    authMessage () {
       this.snackbar = true
     }
   },
