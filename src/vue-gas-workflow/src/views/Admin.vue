@@ -33,7 +33,6 @@
         :items="tableData"
         :search="search"
         :footer-props="footerProps"
-        :loading="loading"
         :sort-by="'email'"
         :sort-desc="false"
         :items-per-page="30"
@@ -87,7 +86,6 @@ export default {
   computed: {
     ...mapState({
       administrators: state => state.firestore.administrators,
-      loading: state => state.workflow.loading.fetch,
     }),
 
     /** テーブルのヘッダー設定 */
