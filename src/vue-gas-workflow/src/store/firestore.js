@@ -55,7 +55,7 @@ const mutations = {
   },
 
   /** データを削除する */
-  deleteCollection(state, { id, currentTableName }) {
+  deleteDocument(state, { id, currentTableName }) {
     const list = state[currentTableName]
     const index = list.findIndex(v => v.id === id)
     list.splice(index, 1)
@@ -124,11 +124,11 @@ const actions = {
   },
 
   /** データを削除する */
-  async deleteCollection({ commit }, { item, currentTableName }) {
+  async deleteDocument({ commit }, { item, currentTableName }) {
     const id = item.id
     const docRef = doc(db, currentTableName, item.id)
     await deleteDoc(docRef, item)
-    commit('deleteCollection', { id, currentTableName })
+    commit('deleteDocument', { id, currentTableName })
   },
 
   /** 単一のWHEREクエリに合致するコレクションを取得する */

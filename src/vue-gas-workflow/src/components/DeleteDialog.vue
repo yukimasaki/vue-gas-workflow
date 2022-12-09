@@ -37,7 +37,7 @@ export default {
 
   methods: {
     ...mapActions(
-      {deleteCollection: 'firestore/deleteCollection'}
+      {deleteDocument: 'firestore/deleteDocument'}
     ),
 
     /**
@@ -58,7 +58,7 @@ export default {
       const item = this.item
       const currentTableName = this.currentTableName
 
-      await this.deleteCollection({ item, currentTableName })
+      await this.deleteDocument({ item, currentTableName })
       this.show = false
     }
   }
