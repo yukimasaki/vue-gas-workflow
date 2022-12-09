@@ -42,13 +42,13 @@ const mutations = {
   },
 
   /** データを追加する */
-  addCollection(state, { item, currentTableName }) {
+  addDocument(state, { item, currentTableName }) {
     const list = state[currentTableName]
     list.push(item)
   },
 
   /** データを更新する */
-  updateCollection(state, { item, currentTableName }) {
+  UpdateDocument(state, { item, currentTableName }) {
     const list = state[currentTableName]
     const index = list.findIndex(v => v.id === item.id)
     list.splice(index, 1, item)
@@ -92,7 +92,7 @@ const actions = {
   },
 
   /** データを作成する(IDを自動生成する) */
-  async addCollection({ commit }, { item, currentTableName }) {
+  async addDocument({ commit }, { item, currentTableName }) {
     const colRef = collection(db, currentTableName)
     // addDocでドキュメントを作成し、その際に付与されたIDをdocRefとして取得する
     const docRef = await addDoc(colRef, item)
@@ -100,25 +100,25 @@ const actions = {
     // serverTimestampが付与されたドキュメントを取得しstateにセットする
     const docSnap = await getDoc(docRef)
     const timestampedItem = docSnap.data()
-    commit('addCollection', { item: timestampedItem, currentTableName })
+    commit('addDocument', { item: timestampedItem, currentTableName })
   },
 
   /** データを作成する(IDを任意の文字列に指定する) */
-  async addCollectionWithTextId({ commit }, { item, currentTableName }) {
+  async addDocumentWithTextId({ commit }, { item, currentTableName }) {
     const docRef = doc(db, currentTableName, item.id)
     await setDoc(docRef, item)
     // serverTimestampが付与されていないitemをv-data-tableに表示するとエラーとなるため、
     // serverTimestampが付与されたドキュメントを取得しstateにセットする
     const docSnap = await getDoc(docRef)
     const timestampedItem = docSnap.data()
-    commit('addCollection', { item: timestampedItem, currentTableName })
+    commit('addDocument', { item: timestampedItem, currentTableName })
   },
 
   /** データを更新する */
-  async updateCollection({ commit }, { item, currentTableName }) {
+  async UpdateDocument({ commit }, { item, currentTableName }) {
     const docRef = doc(db, currentTableName, item.id)
     await updateDoc(docRef, item)
-    commit('updateCollection', { item, currentTableName })
+    commit('UpdateDocument', { item, currentTableName })
   },
 
   /** データを削除する */
@@ -227,12 +227,12 @@ const actions = {
     const docSnap = await getDoc(emptyDocRefRequest)
     const timestampedItem = { ...docSnap.data(), id: uid }
 
-    commit('addCollection', { item: timestampedItem, currentTableName: 'myRequests' })
+    commit('addDocument', { item: timestampedItem, currentTableName: 'myRequests' })
     commit('setWorkflowMessage', '申請を提出しました。')
   },
 
   /** バッチ書き込み(update) */
-   async batchUpdateCollections({ commit }, { userId, docId, itemRequest, itemDetail }) {
+   async batchUpdateDocuments({ commit }, { userId, docId, itemRequest, itemDetail }) {
     const batch = writeBatch(db)
 
     // item*.idに対応するドキュメントを取得

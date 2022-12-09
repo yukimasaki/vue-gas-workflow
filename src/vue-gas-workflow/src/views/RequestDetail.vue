@@ -200,7 +200,7 @@ export default {
       fetchMyDetail: 'firestore/fetchMyDetail',
       fetchOthersDetail: 'firestore/fetchOthersDetail',
       fetchRequest: 'firestore/fetchRequest',
-      batchUpdateCollections: 'firestore/batchUpdateCollections',
+      batchUpdateDocuments: 'firestore/batchUpdateDocuments',
     }),
 
     async fetchRequestDetail() {
@@ -297,7 +297,7 @@ export default {
       itemDetail.current_step = this.currentStep
 
       // Firestoreにバッチ書き込み(update)
-      this.batchUpdateCollections({ userId, docId, itemRequest, itemDetail })
+      this.batchUpdateDocuments({ userId, docId, itemRequest, itemDetail })
     },
   },
 
