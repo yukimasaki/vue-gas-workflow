@@ -52,7 +52,6 @@
         :items="formattedTableData"
         :search="search"
         :footer-props="footerProps"
-        :loading="loading"
         :sort-by="'created_at'"
         :sort-desc="true"
         :items-per-page="30"
@@ -109,7 +108,6 @@ export default {
 
   computed: {
     ...mapState({
-      loading: state => state.workflow.loading.fetch,
       myRequests: state => state.firestore.myRequests,
       othersRequests: state => state.firestore.othersRequests,
       selectedTabName: state => state.firestore.selectedTabName,
