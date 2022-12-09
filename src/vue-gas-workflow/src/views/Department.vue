@@ -34,7 +34,6 @@
         :items="tableData"
         :search="search"
         :footer-props="footerProps"
-        :loading="loading"
         :sort-by="'department'"
         :sort-desc="false"
         :items-per-page="30"
@@ -88,7 +87,6 @@ export default {
   computed: {
     ...mapState({
       departments: state => state.firestore.departments,
-      loading: state => state.workflow.loading.fetch,
     }),
 
     /** テーブルのヘッダー設定 */
