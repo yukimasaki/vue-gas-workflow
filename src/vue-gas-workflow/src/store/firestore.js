@@ -101,6 +101,7 @@ const actions = {
     const docSnap = await getDoc(docRef)
     const timestampedItem = docSnap.data()
     commit('addDocument', { item: timestampedItem, currentTableName })
+    commit('setWorkflowMessage', 'データを追加しました。')
   },
 
   /** データを作成する(IDを任意の文字列に指定する) */
@@ -119,6 +120,7 @@ const actions = {
     const docRef = doc(db, currentTableName, item.id)
     await updateDoc(docRef, item)
     commit('updateDocument', { item, currentTableName })
+    commit('setWorkflowMessage', 'データを更新しました。')
   },
 
   /** データを削除する */
