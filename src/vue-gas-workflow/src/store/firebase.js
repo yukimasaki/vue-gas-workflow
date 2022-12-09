@@ -10,16 +10,20 @@ import {
 
 const state = {
   loggedIn: false,
+
   userUid: '',
   userName: '',
   userIcon: '',
-  userEmail: ''
+  userEmail: '',
+
+  authMessage: '',
 }
 
 const mutations = {
   setLoginStatus(state, loggedIn) {
     state.loggedIn = loggedIn
   },
+
   setUserUid(state, userUid) {
     state.userUid = userUid
   },
@@ -31,7 +35,11 @@ const mutations = {
   },
   setUserEmail(state, userEmail) {
     state.userEmail = userEmail
-  }
+  },
+
+  setAuthMessage(state, authMessage) {
+    state.authMessage = authMessage
+  },
 }
 
 const actions = {
@@ -52,6 +60,7 @@ const actions = {
         commit('setUserIcon', user.photoURL)
         commit('setUserEmail', user.email)
 
+        commit('setAuthMessage', 'ログインしました。')
         console.log('login success')
       }).catch((error) => {
         const errorCode = error.code
@@ -77,6 +86,7 @@ const actions = {
   logout ({ commit }) {
     const auth = getAuth()
     signOut(auth).then(() => {
+      commit('setAuthMessage', 'ログアウトしました。')
       console.log('logout success')
       commit('setLoginStatus', false)
     }).catch((error) => {
@@ -95,7 +105,7 @@ const actions = {
       commit('setUserEmail', user.email)
       console.log('onAuth')
     })
-  }
+  },
 }
 
 const getters = {

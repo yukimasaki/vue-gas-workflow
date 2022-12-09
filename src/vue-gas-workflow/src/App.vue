@@ -98,7 +98,12 @@
     </v-main>
 
     <!-- スナックバー:認証関連のメッセージ -->
-    <v-snackbar v-model="snackbar" color="info">{{ authMessage }}</v-snackbar>
+    <v-snackbar v-model="snackbar" color="info">
+      {{ authMessage }}
+      <template v-slot:action="{ attrs }">
+        <v-btn text v-bind="attrs" @click="snackbar = false">Close</v-btn>
+      </template>
+    </v-snackbar>
   </v-app>
 
 </template>
@@ -141,7 +146,8 @@ export default {
     async logout(){
       await this.$store.dispatch('firebase/logout')
       // this.$router.push('/login')
-    }
+    },
+
   },
 
 
