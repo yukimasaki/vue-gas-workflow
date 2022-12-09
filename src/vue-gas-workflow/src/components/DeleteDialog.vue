@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'DeleteDialog',
@@ -34,11 +34,6 @@ export default {
       currentTableName: ''
     }
   },
-
-  computed: mapState({
-    /** ローディング状態 */
-    loading: state => state.workflow.loading.delete
-  }),
 
   methods: {
     ...mapActions(
