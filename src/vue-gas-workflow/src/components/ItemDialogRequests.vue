@@ -68,7 +68,6 @@
         <v-btn
           color="grey darken-1"
           text
-          :disabled="loading"
           @click="onClickClose"
         >
           キャンセル
@@ -77,7 +76,6 @@
           color="blue darken-1"
           text
           :disabled="!valid"
-          :loading="loading"
           @click="onClickAction"
         >
           {{ actionText }}
@@ -146,8 +144,6 @@ export default {
 
   computed: {
     ...mapState({
-      /** ローディング状態 */
-      loading: state => state.workflow.loading.add || state.workflow.loading.update,
       userInfo: state => state.firestore.userInfo
     }),
 
