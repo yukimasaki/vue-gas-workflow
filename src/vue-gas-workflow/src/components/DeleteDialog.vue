@@ -12,8 +12,8 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer/>
-        <v-btn color="grey" text :disabled="loading" @click="onClickClose">キャンセル</v-btn>
-        <v-btn color="red" text :loading="loading" @click="onClickDelete">削除</v-btn>
+        <v-btn color="grey" text @click="onClickClose">キャンセル</v-btn>
+        <v-btn color="red" text @click="onClickDelete">削除</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
