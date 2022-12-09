@@ -46,7 +46,6 @@
             :headers="tableHeaders"
             :items="approvers"
             :footer-props="footerProps"
-            :loading="loading"
             :sort-by="['order']"
             :sort-desc="[false]"
             :items-per-page="30"
@@ -78,7 +77,6 @@
             color="blue darken-1"
             text
             :disabled="!userInfo.id"
-            :loading="loading"
             @click="addApprover"
           >追加</v-btn>
         </v-form>
@@ -89,7 +87,6 @@
         <v-btn
           color="grey darken-1"
           text
-          :disabled="loading"
           @click="onClickClose"
         >
           キャンセル
@@ -98,7 +95,6 @@
           color="blue darken-1"
           text
           :disabled="!valid"
-          :loading="loading"
           @click="onClickAction"
         >
           {{ actionText }}
@@ -158,7 +154,6 @@ export default {
 
   computed: {
     ...mapState({
-      loading: state => state.workflow.loading.add || state.workflow.loading.update,
       departments: state => state.firestore.departments,
       users: state => state.firestore.users,
     }),
