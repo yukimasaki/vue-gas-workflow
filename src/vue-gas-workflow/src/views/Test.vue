@@ -89,7 +89,6 @@ export default {
       users: state => state.firestore.users,
       myRequests: state => state.firestore.myRequests,
       othersRequests: state => state.firestore.othersRequests,
-      loading: state => state.workflow.loading.fetch,
     }),
 
     /** テーブルのヘッダー設定 */
