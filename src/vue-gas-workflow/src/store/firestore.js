@@ -15,17 +15,6 @@ import {
 } from 'firebase/firestore'
 
 const state = {
-  /** ローディング状態 */
-  loading: {
-    fetch: false,
-    add: false,
-    update: false,
-    delete: false
-  },
-
-  /** エラーメッセージ */
-  errorMessage: '',
-
   /** コレクション */
   requests: [],
   myRequests: [],
@@ -42,16 +31,6 @@ const state = {
 }
 
 const mutations = {
-  /** ローディング状態をセットする */
-  setLoading (state, { type, v }) {
-    state.loading[type] = v
-  },
-
-  /** エラーメッセージをセットする */
-  setErrorMessage (state, { message }) {
-    state.errorMessage = message
-  },
-
   /** 取得したデータをセットする */
   setCollections(state, { collections, currentTableName }) {
     state[currentTableName] = collections
@@ -97,131 +76,71 @@ const mutations = {
 const actions = {
   /** データを全件取得する */
   async fetchAllCollections({ commit }, { currentTableName }) {
-    const type = 'fetch'
-    commit('setLoading', { type, v: true })
-    try {
-      const q = query(collection(db, currentTableName))
-      const querySnapshot = await getDocs(q)
-      const collections = []
-      querySnapshot.forEach(doc => {
-        collections.push({...doc.data(), id: doc.id})
-      })
+    const q = query(collection(db, currentTableName))
+    const querySnapshot = await getDocs(q)
+    const collections = []
+    querySnapshot.forEach(doc => {
+      collections.push({...doc.data(), id: doc.id})
+    })
 
-      commit('setCollections', { collections, currentTableName })
-    } catch(e) {
-      commit('setErrorMessage', { message: e })
-      commit('setCollections', { collections: [] })
-    } finally {
-      commit('setLoading', { type, v: false})
-    }
+    commit('setCollections', { collections, currentTableName })
   },
 
   /** データを作成する(IDを自動生成する) */
   async addCollection({ commit }, { item, currentTableName }) {
-    const type = 'add'
-    commit('setLoading', { type, v: true })
-    try {
-      const colRef = collection(db, currentTableName)
-      // addDocでドキュメントを作成し、その際に付与されたIDをdocRefとして取得する
-      const docRef = await addDoc(colRef, item)
-      // serverTimestampが付与されていないitemをv-data-tableに表示するとエラーとなるため、
-      // serverTimestampが付与されたドキュメントを取得しstateにセットする
-      const docSnap = await getDoc(docRef)
-      const timestampedItem = docSnap.data()
-      commit('addCollection', { item: timestampedItem, currentTableName })
-    } catch (e) {
-      commit('setErrorMessage', { message: e })
-    } finally {
-      commit('setLoading', { type, v: false })
-    }
+    const colRef = collection(db, currentTableName)
+    // addDocでドキュメントを作成し、その際に付与されたIDをdocRefとして取得する
+    const docRef = await addDoc(colRef, item)
+    // serverTimestampが付与されていないitemをv-data-tableに表示するとエラーとなるため、
+    // serverTimestampが付与されたドキュメントを取得しstateにセットする
+    const docSnap = await getDoc(docRef)
+    const timestampedItem = docSnap.data()
+    commit('addCollection', { item: timestampedItem, currentTableName })
   },
 
   /** データを作成する(IDを任意の文字列に指定する) */
   async addCollectionWithTextId({ commit }, { item, currentTableName }) {
-    const type = 'add'
-    commit('setLoading', { type, v: true })
-    try {
-      const docRef = doc(db, currentTableName, item.id)
-      await setDoc(docRef, item)
-      // serverTimestampが付与されていないitemをv-data-tableに表示するとエラーとなるため、
-      // serverTimestampが付与されたドキュメントを取得しstateにセットする
-      const docSnap = await getDoc(docRef)
-      const timestampedItem = docSnap.data()
-      commit('addCollection', { item: timestampedItem, currentTableName })
-    } catch (e) {
-      commit('setErrorMessage', { message: e })
-    } finally {
-      commit('setLoading', { type, v: false })
-    }
+    const docRef = doc(db, currentTableName, item.id)
+    await setDoc(docRef, item)
+    // serverTimestampが付与されていないitemをv-data-tableに表示するとエラーとなるため、
+    // serverTimestampが付与されたドキュメントを取得しstateにセットする
+    const docSnap = await getDoc(docRef)
+    const timestampedItem = docSnap.data()
+    commit('addCollection', { item: timestampedItem, currentTableName })
   },
 
   /** データを更新する */
   async updateCollection({ commit }, { item, currentTableName }) {
-    const type = 'update'
-    commit('setLoading', { type, v: true })
-    try {
-      const docRef = doc(db, currentTableName, item.id)
-      await updateDoc(docRef, item)
-      commit('updateCollection', { item, currentTableName })
-    } catch (e) {
-      commit('setErrorMessage', { message: e })
-    } finally {
-      commit('setLoading', { type, v: false })
-    }
+    const docRef = doc(db, currentTableName, item.id)
+    await updateDoc(docRef, item)
+    commit('updateCollection', { item, currentTableName })
   },
 
   /** データを削除する */
   async deleteCollection({ commit }, { item, currentTableName }) {
-    const type = 'delete'
     const id = item.id
-    commit('setLoading', { type, v: true })
-    try {
-      const docRef = doc(db, currentTableName, item.id)
-      await deleteDoc(docRef, item)
-      commit('deleteCollection', { id, currentTableName })
-    } catch (e) {
-      commit('setErrorMessage', { message: e })
-    } finally {
-      commit('setLoading', { type, v: false })
-    }
+    const docRef = doc(db, currentTableName, item.id)
+    await deleteDoc(docRef, item)
+    commit('deleteCollection', { id, currentTableName })
   },
 
   /** 単一のWHEREクエリに合致するコレクションを取得する */
   async fetchCollectionsByOneQuery({ commit }, { currentTableName, customQuery }) {
-    const type = 'fetch'
-    commit('setLoading', { type, v: true })
-    try {
-      const q = query(collection(db, currentTableName), where(customQuery.field, customQuery.compare, customQuery.value))
-      const querySnapshot = await getDocs(q)
-      const collections = []
-      querySnapshot.forEach(doc => {
-        collections.push({...doc.data(), id: doc.id})
-      })
-
-      commit('setCollections', { collections, currentTableName })
-    } catch(e) {
-      commit('setErrorMessage', { message: e })
-      commit('setCollections', { collections: [] })
-    } finally {
-      commit('setLoading', { type, v: false})
-    }
+    const q = query(collection(db, currentTableName), where(customQuery.field, customQuery.compare, customQuery.value))
+    const querySnapshot = await getDocs(q)
+    const collections = []
+    querySnapshot.forEach(doc => {
+      collections.push({...doc.data(), id: doc.id})
+    })
+    commit('setCollections', { collections, currentTableName })
   },
 
   /** ドキュメントIDを指定して単一のドキュメントを取得する */
   async fetchCollectionByDocId({ commit }, { currentTableName, docId }) {
-    const type = 'fetch'
-    commit('setLoading', { type, v: true })
-    try {
-      const docRef = doc(db, currentTableName, docId)
-      const docSnap = await getDoc(docRef)
-      const document = {...docSnap.data(), id: docSnap.id}
-      commit('setCollections', { collections: document, currentTableName })
-    } catch(e) {
-      commit('setErrorMessage', { message: e })
-      commit('setCollections', { collections: [] })
-    } finally {
-      commit('setLoading', { type, v: false})
-    }
+    const docRef = doc(db, currentTableName, docId)
+    const docSnap = await getDoc(docRef)
+    const document = {...docSnap.data(), id: docSnap.id}
+    commit('setCollections', { collections: document, currentTableName })
   },
 
   /** userIdとdocIdを渡して自分の申請詳細（detailsサブコレクション）を取得する */
