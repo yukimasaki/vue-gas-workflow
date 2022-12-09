@@ -99,7 +99,9 @@ const actions = {
     // serverTimestampが付与されていないitemをv-data-tableに表示するとエラーとなるため、
     // serverTimestampが付与されたドキュメントを取得しstateにセットする
     const docSnap = await getDoc(docRef)
-    const timestampedItem = docSnap.data()
+    // timestampedItemにidプロパティを追加
+    // ※この処理をしておかないと、一覧画面で更新時に引数が足りずエラーになる
+    const timestampedItem = { ...docSnap.data(), id: docSnap.id }
     commit('addDocument', { item: timestampedItem, currentTableName })
     commit('setWorkflowMessage', 'データを追加しました。')
   },
