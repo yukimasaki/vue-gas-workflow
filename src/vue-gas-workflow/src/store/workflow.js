@@ -12,9 +12,6 @@ const state = {
     authToken: '',
   },
 
-  /** エラーメッセージ */
-  errorMessage: '',
-
 }
 
 /**
@@ -22,11 +19,6 @@ const state = {
  * ActionsからStateを更新するときに呼ばれる
  */
 const mutations = {
-
-  /** エラーメッセージをセットする */
-  setErrorMessage (state, { message }) {
-    state.errorMessage = message
-  },
 
   /** 設定を保存する */
   saveSettings (state, { settings }) {
