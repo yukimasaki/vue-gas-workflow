@@ -97,9 +97,9 @@
       </v-container>
     </v-main>
 
-    <!-- スナックバー:認証関連のメッセージ -->
+    <!-- スナックバー -->
     <v-snackbar v-model="snackbar" color="info">
-      {{ authMessage }}
+      {{ message }}
       <template v-slot:action="{ attrs }">
         <v-btn text v-bind="attrs" @click="snackbar = false">Close</v-btn>
       </template>
@@ -110,7 +110,6 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
-// import initFirebase from './firebase/firebaseConfig'
 
 export default {
   name: 'App',
@@ -118,6 +117,7 @@ export default {
   data () {
     return {
       snackbar: false,
+      message: '',
     }
   },
 
@@ -125,6 +125,7 @@ export default {
     ...mapState({
       appName: state => state.workflow.settings.appName,
       authMessage: state => state.firebase.authMessage,
+      workflowMessage: state => state.firestore.workflowMessage,
     }),
 
     ...mapGetters({
@@ -153,8 +154,13 @@ export default {
 
   watch: {
     authMessage () {
+      this.message = this.authMessage
       this.snackbar = true
-    }
+    },
+    workflowMessage () {
+      this.message = this.workflowMessage
+      this.snackbar = true
+    },
   },
 
 }

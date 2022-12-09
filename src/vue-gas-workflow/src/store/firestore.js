@@ -15,7 +15,8 @@ import {
 } from 'firebase/firestore'
 
 const state = {
-  /** コレクション */
+  workflowMessage: '',
+
   requests: [],
   myRequests: [],
   othersRequests: [],
@@ -31,6 +32,10 @@ const state = {
 }
 
 const mutations = {
+  setWorkflowMessage(state, workflowMessage) {
+    state.workflowMessage = workflowMessage
+  },
+
   /** 取得したデータをセットする */
   setCollections(state, { collections, currentTableName }) {
     state[currentTableName] = collections
@@ -223,6 +228,7 @@ const actions = {
     const timestampedItem = { ...docSnap.data(), id: uid }
 
     commit('addCollection', { item: timestampedItem, currentTableName: 'myRequests' })
+    commit('setWorkflowMessage', '申請を提出しました。')
   },
 
   /** バッチ書き込み(update) */
