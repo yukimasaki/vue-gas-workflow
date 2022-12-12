@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'Test',
@@ -34,6 +34,9 @@ export default {
   },
 
   computed: {
+    ...mapGetters({
+      getUserEmail: 'firebase/getUserEmail',
+    })
   },
 
   methods: {
@@ -43,13 +46,10 @@ export default {
 
     async onClickSend() {
       const emailConfig = {
-        to: 'hoge@example.com',
+        to: this.getUserEmail,
         subject: 'テストです。',
         body: 'テスト送信です！'
       }
-
-      // 下記コードでAPIの動作確認ができた
-      // console.log(await this.sendEmail({ emailConfig }))
       await this.sendEmail({ emailConfig })
     },
 
