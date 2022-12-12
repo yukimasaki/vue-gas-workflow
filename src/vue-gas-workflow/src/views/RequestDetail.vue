@@ -262,24 +262,27 @@ export default {
         this.latestStatus = '保留中'
         this.latestApproverEmail = this.routes.approvers[this.currentStep - 1].email
       }
-      this.batchUpdate()
+      const operationType = '承認'
+      this.batchUpdate(operationType)
     },
 
     onClickDisapprove() {
       this.routes.approvers[this.currentStep - 1].status = '否認'
       this.latestStatus = '否認'
         this.latestApproverEmail = null
-      this.batchUpdate()
+        const operationType = '否認'
+      this.batchUpdate(operationType)
     },
 
     onClickRemand() {
       this.routes.approvers[this.currentStep - 1].status = '差戻し'
       this.latestStatus = '差戻し'
       this.latestApproverEmail = null
-      this.batchUpdate()
+      const operationType = '差戻し'
+      this.batchUpdate(operationType)
     },
 
-    async batchUpdate() {
+    async batchUpdate(operationType) {
       // requestドキュメントを取得し変数に格納する
       const userId = this.data.email
       const docId = this.$route.params.id
@@ -297,7 +300,7 @@ export default {
       itemDetail.current_step = this.currentStep
 
       // Firestoreにバッチ書き込み(update)
-      this.batchUpdateDocuments({ userId, docId, itemRequest, itemDetail })
+      this.batchUpdateDocuments({ userId, docId, itemRequest, itemDetail, operationType })
     },
   },
 
