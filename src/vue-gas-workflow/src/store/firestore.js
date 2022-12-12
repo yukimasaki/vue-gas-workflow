@@ -274,8 +274,8 @@ const actions = {
 
   /** 送信先・ボディなどの情報をGAS APIにPOST送信しメール送信する */
   async sendEmail({ commit }, { emailConfig }) {
+    await gasApi.sendEmail(emailConfig)
     commit('setWorkflowMessage', 'メール送信しました。')
-    return await gasApi.sendEmail(emailConfig)
   },
 }
 
