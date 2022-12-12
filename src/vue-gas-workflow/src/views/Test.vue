@@ -8,7 +8,7 @@
             <v-spacer></v-spacer>
           </v-card-text>
           <v-card-actions>
-            <v-btn dark color="green" @click="sendEmail">
+            <v-btn dark color="green" @click="onClickSend">
               <v-icon left>mdi-send</v-icon>
               メール送信
             </v-btn>
@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { createTransport } from 'nodemailer'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'Test',
@@ -37,29 +37,22 @@ export default {
   },
 
   methods: {
-    async sendEmail() {
-      const transporter = createTransport({
-        host: process.env.EMAIL_HOST,
-        port: 465,
-        secure: true,
-        auth: {
-          user: process.env.EMAIL_AUTH_USER,
-          pass: process.env.EMAIL_AUTH_PASS
-        }
-      })
+    ...mapActions({
+      sendEmail: 'firestore/sendEmail',
+    }),
 
-      try {
-        await transporter.sendMail({
-          from: `"ワークフロー" <${process.env.EMAIL_FROM}>`,
-          to: `${process.env.EMAIL_TO}`,
-          subject: `申請がありました。`,
-          text: `テスト送信です。`
-        })
-      } catch (error) {
-        console.log(`メール送信に失敗しました。`)
-        throw error
+    async onClickSend() {
+      const emailConfig = {
+        to: 'hoge@example.com',
+        subject: 'テストです。',
+        body: 'テスト送信です！'
       }
-    }
+
+      // 下記コードでAPIの動作確認ができた
+      // console.log(await this.sendEmail({ emailConfig }))
+      await this.sendEmail({ emailConfig })
+    },
+
   },
 
   created() {

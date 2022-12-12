@@ -35,50 +35,22 @@ const setAuthToken = token => {
 }
 
 /**
- * 全データを取得する
+ * メールを送信する
+ * @param {Object} emailConfig
  * @returns {Promise}
  */
-const fetch = () => {
-  return gasApi.post(apiUrl, {
-    method: 'GET',
-    authToken,
-  })
-}
-
-/**
- * データを追加する
- * @param {Object} item
- * @returns {Promise}
- */
- const add = item => {
+ const sendEmail = emailConfig => {
   return gasApi.post(apiUrl, {
     method: 'POST',
     authToken,
     params: {
-      item
+      emailConfig
     }
   })
 }
 
-/**
- * 指定年月&idのデータを削除する
- * @param {String} yearMonth
- * @param {String} id
- * @returns {Promise}
- */
-
-/**
- * データを更新する
- * @param {String} beforeYM
- * @param {Object} item
- * @returns {Promise}
- */
-
 export default {
   setUrl,
   setAuthToken,
-  fetch,
-  add,
-  // delete: $delete,
-  // update
+  sendEmail,
 }
