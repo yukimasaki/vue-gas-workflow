@@ -237,7 +237,7 @@ const actions = {
   },
 
   /** バッチ書き込み(update) */
-   async batchupdateDocuments({ commit }, { userId, docId, itemRequest, itemDetail }) {
+   async batchUpdateDocuments({ commit }, { userId, docId, itemRequest, itemDetail, operationType }) {
     const batch = writeBatch(db)
 
     // item*.idに対応するドキュメントを取得
@@ -250,6 +250,7 @@ const actions = {
     await batch.commit()
 
     commit('setCollections', { collections: itemRequest, currentTableName: 'requests' })
+    commit('setWorkflowMessage', `申請を${operationType}しました。`)
   },
 
   /** userIdを渡してユーザー情報を取得する */
