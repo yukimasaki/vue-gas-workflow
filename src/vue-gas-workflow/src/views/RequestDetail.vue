@@ -201,6 +201,7 @@ export default {
       fetchOthersDetail: 'firestore/fetchOthersDetail',
       fetchRequest: 'firestore/fetchRequest',
       batchUpdateDocuments: 'firestore/batchUpdateDocuments',
+      sendEmail: 'firestore/sendEmail',
     }),
 
     async fetchRequestDetail() {
@@ -248,21 +249,47 @@ export default {
       this.memo = this.data.memo
     },
 
-    onClickApprove() {
+    async onClickApprove() {
+      const operationType = '承認'
+
       // フロント側の表示を更新
       // 最終ステップの場合
       if (this.currentStep == this.maxStep) {
         this.routes.approvers[this.currentStep - 1].status = '完了'
         this.latestStatus = this.routes.approvers[this.currentStep - 1].status
         this.latestApproverEmail = null
+
+        // to: 申請者メールアドレスをセットする
+        const emailTo = this.email
+        // subject: 申請が承認された旨を題名に記載する
+        const emailSubject = `申請が${operationType}されました [${this.title}]`
+        // body: 詳細画面へのリンクを記載する
+        const url = window.location.href
+        const detailPageUrl = url.replace('/others', '/my')
+        const emailBody = this.createEmailBody(emailSubject, detailPageUrl)
+        // メール送信
+        const emailConfig = { to: emailTo, subject: emailSubject, body: emailBody }
+        await this.sendEmail({ emailConfig })
+
       // それ以外のステップの場合
       } else {
         this.routes.approvers[this.currentStep - 1].status = '完了'
         this.currentStep++
         this.latestStatus = '保留中'
         this.latestApproverEmail = this.routes.approvers[this.currentStep - 1].email
+
+        // to: 次の承認者メールアドレスをセットする
+        const emailTo = this.latestApproverEmail
+        // subject: 申請が承認された旨を題名に記載する
+        const emailSubject = `[承認依頼] [${this.title}]`
+        // body: 詳細画面へのリンクを記載する
+        const detailPageUrl = window.location.href
+        const emailBody = this.createEmailBody(emailSubject, detailPageUrl)
+        // メール送信
+        const emailConfig = { to: emailTo, subject: emailSubject, body: emailBody }
+        await this.sendEmail({ emailConfig })
       }
-      const operationType = '承認'
+
       this.batchUpdate(operationType)
     },
 
@@ -301,6 +328,12 @@ export default {
 
       // Firestoreにバッチ書き込み(update)
       this.batchUpdateDocuments({ userId, docId, itemRequest, itemDetail, operationType })
+    },
+
+    createEmailBody(emailSubject, detailPageUrl) {
+      const emailBody =
+        `${emailSubject}<br><br>詳細は下記リンクからご確認ください。<br><br><a href="${detailPageUrl}">${detailPageUrl}</a>`
+      return emailBody
     },
   },
 
