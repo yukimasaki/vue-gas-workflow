@@ -6,7 +6,7 @@ module.exports = defineConfig({
   ],
   outputDir: 'docs',
   assetsDir: './',
-  publicPath: './',
+  publicPath: '/vue-gas-workflow',
   filenameHashing: false,
   productionSourceMap: false
 })
