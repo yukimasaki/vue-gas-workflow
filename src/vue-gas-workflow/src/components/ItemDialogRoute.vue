@@ -202,7 +202,7 @@ export default {
       this.actionType = actionType
       this.currentTabName = currentTabName
       this.getDepartments()
-      this.getEmployees()
+      this.getUsers()
       this.resetForm(item)
     },
 
@@ -273,7 +273,7 @@ export default {
     },
 
     /** プルダウンメニュー用 従業員情報を取得する */
-    async getEmployees() {
+    async getUsers() {
       const currentTableName = 'users'
       await this.fetchAllCollections({ currentTableName })
     },
