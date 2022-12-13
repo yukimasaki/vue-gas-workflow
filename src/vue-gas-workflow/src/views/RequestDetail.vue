@@ -258,6 +258,7 @@ export default {
         this.routes.approvers[this.currentStep - 1].status = '完了'
         this.latestStatus = this.routes.approvers[this.currentStep - 1].status
         this.latestApproverEmail = null
+        this.batchUpdate(operationType)
 
         // to: 申請者メールアドレスをセットする
         const emailTo = this.email
@@ -277,6 +278,7 @@ export default {
         this.currentStep++
         this.latestStatus = '保留中'
         this.latestApproverEmail = this.routes.approvers[this.currentStep - 1].email
+        this.batchUpdate(operationType)
 
         // to: 次の承認者メールアドレスをセットする
         const emailTo = this.latestApproverEmail
@@ -289,8 +291,6 @@ export default {
         const emailConfig = { to: emailTo, subject: emailSubject, body: emailBody }
         await this.sendEmail({ emailConfig })
       }
-
-      this.batchUpdate(operationType)
     },
 
     async onClickDisapprove() {
@@ -313,7 +313,7 @@ export default {
         await this.sendEmail({ emailConfig })
     },
 
-    onClickRemand() {
+    async onClickRemand() {
       this.routes.approvers[this.currentStep - 1].status = '差戻し'
       this.latestStatus = '差戻し'
       this.latestApproverEmail = null
