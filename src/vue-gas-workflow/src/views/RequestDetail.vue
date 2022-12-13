@@ -300,17 +300,17 @@ export default {
         const operationType = '否認'
       this.batchUpdate(operationType)
 
-        // to: 申請者メールアドレスをセットする
-        const emailTo = this.email
-        // subject: 申請が否認された旨を題名に記載する
-        const emailSubject = `申請が${operationType}されました [${this.title}]`
-        // body: 詳細画面へのリンクを記載する
-        const url = window.location.href
-        const detailPageUrl = url.replace('/others', '/my')
-        const emailBody = this.createEmailBody(emailSubject, detailPageUrl)
-        // メール送信
-        const emailConfig = { to: emailTo, subject: emailSubject, body: emailBody }
-        await this.sendEmail({ emailConfig })
+      // to: 申請者メールアドレスをセットする
+      const emailTo = this.email
+      // subject: 申請が否認された旨を題名に記載する
+      const emailSubject = `申請が${operationType}されました [${this.title}]`
+      // body: 詳細画面へのリンクを記載する
+      const url = window.location.href
+      const detailPageUrl = url.replace('/others', '/my')
+      const emailBody = this.createEmailBody(emailSubject, detailPageUrl)
+      // メール送信
+      const emailConfig = { to: emailTo, subject: emailSubject, body: emailBody }
+      await this.sendEmail({ emailConfig })
     },
 
     async onClickRemand() {
@@ -319,6 +319,18 @@ export default {
       this.latestApproverEmail = null
       const operationType = '差戻し'
       this.batchUpdate(operationType)
+
+      // to: 申請者メールアドレスをセットする
+      const emailTo = this.email
+      // subject: 申請が否認された旨を題名に記載する
+      const emailSubject = `申請が${operationType}されました [${this.title}]`
+      // body: 詳細画面へのリンクを記載する
+      const url = window.location.href
+      const detailPageUrl = url.replace('/others', '/my')
+      const emailBody = this.createEmailBody(emailSubject, detailPageUrl)
+      // メール送信
+      const emailConfig = { to: emailTo, subject: emailSubject, body: emailBody }
+      await this.sendEmail({ emailConfig })
     },
 
     async batchUpdate(operationType) {
