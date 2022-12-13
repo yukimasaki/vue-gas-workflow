@@ -10,7 +10,7 @@ import RequestOverview from '../views/RequestOverview.vue'
 import RequestDetail from '../views/RequestDetail.vue'
 import Department from '../views/Department.vue'
 import Route from '../views/Route.vue'
-import Admin from '../views/Admin.vue'
+import Admins from '../views/Admins.vue'
 import Users from '../views/Users.vue'
 import Test from '../views/Test.vue'
 
@@ -72,8 +72,8 @@ const routes = [
   },
   {
     path: '/admin',
-    name: 'Admin',
-    component: Admin,
+    name: 'Admins',
+    component: Admins,
     meta: {requiresAuth: true}
   },
   {
