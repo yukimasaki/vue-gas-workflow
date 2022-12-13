@@ -55,7 +55,7 @@
     </v-data-table>
 
     <!-- 追加／編集ダイアログ -->
-    <ItemDialogRoute ref="ItemDialogRoute"/>
+    <ItemDialogRoutes ref="ItemDialogRoutes"/>
 
     <!-- 削除ダイアログ -->
     <DeleteDialog ref="deleteDialog"/>
@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import ItemDialogRoute from '../components/ItemDialogRoute.vue'
+import ItemDialogRoutes from '../components/ItemDialogRoutes.vue'
 import DeleteDialog from '../components/DeleteDialog.vue'
 import { mapActions, mapState } from 'vuex'
 
@@ -87,7 +87,7 @@ export default {
   },
 
   components: {
-    ItemDialogRoute,
+    ItemDialogRoutes,
     DeleteDialog,
   },
 
@@ -125,13 +125,13 @@ export default {
     /** 追加ボタンがクリックされたとき */
     onClickAdd () {
       const currentTabName = this.currentTabName
-      this.$refs.ItemDialogRoute.open('add', {}, currentTabName)
+      this.$refs.ItemDialogRoutes.open('add', {}, currentTabName)
     },
 
     /** 編集ボタンがクリックされたとき */
     onClickEdit (item) {
       const currentTabName = this.currentTabName
-      this.$refs.ItemDialogRoute.open('edit', item, currentTabName)
+      this.$refs.ItemDialogRoutes.open('edit', item, currentTabName)
     },
 
     /** 削除ボタンがクリックされたとき */

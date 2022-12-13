@@ -108,7 +108,7 @@
 import { mapState, mapActions } from 'vuex'
 
 export default {
-  name: 'ItemDialogRoute',
+  name: 'ItemDialogRoutes',
 
   data () {
     return {
