@@ -59,19 +59,19 @@ const routes = [
     meta: {requiresAuth: true}
   },
   {
-    path: '/department',
+    path: '/departments',
     name: 'Departments',
     component: Departments,
     meta: {requiresAuth: true}
   },
   {
     path: '/route',
-    name: 'Route',
-    component: Route,
+    name: 'Routes',
+    component: Routes,
     meta: {requiresAuth: true}
   },
   {
-    path: '/admin',
+    path: '/admins',
     name: 'Admins',
     component: Admins,
     meta: {requiresAuth: true}

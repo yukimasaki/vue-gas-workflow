@@ -69,7 +69,7 @@ import DeleteDialog from '../components/DeleteDialog.vue'
 import { mapActions, mapState } from 'vuex'
 
 export default {
-  name: 'Route',
+  name: 'Routes',
 
   data() {
     return {
