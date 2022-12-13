@@ -3,7 +3,7 @@ import {
   getAuth,
   signInWithPopup,
   setPersistence,
-  browserSessionPersistence,
+  browserLocalPersistence,
   onAuthStateChanged,
   signOut
 } from "firebase/auth"
@@ -71,7 +71,7 @@ const actions = {
         console.log('login error: ', errorCode, errorMessage)
       })
 
-    await setPersistence(auth, browserSessionPersistence)
+    await setPersistence(auth, browserLocalPersistence)
       .then(() => {
         console.log('keeping state')
       })
