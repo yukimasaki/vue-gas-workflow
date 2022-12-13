@@ -12,11 +12,15 @@
       <v-divider/>
       <v-card-text>
         <v-form ref="form" v-model="valid">
+          <!-- 承認者テーブルにデータを追加するためのフォーム
+               プルダウンメニューで「氏名(メールアドレス)」を選択すると、
+               v-model:userInfoにオブジェクトが代入される。
+           -->
           <v-select
             label="管理者"
-            v-model="employeeInfo"
-            :items="employees"
-            :item-text="employees => `${employees.name} (${employees.email})`"
+            v-model="userInfo"
+            :items="users"
+            :item-text="users => `${users.name} (${users.id})`"
             return-object
           />
         </v-form>
@@ -53,7 +57,7 @@ export default {
   data () {
     return {
       /** 操作対象のテーブル */
-      currentTableName: 'administrators',
+      currentTableName: 'admins',
       /** ダイアログの表示状態 */
       show: false,
       /** 入力したデータが有効かどうか */
@@ -63,21 +67,16 @@ export default {
       /** 操作タイプ 'add' or 'edit' */
       actionType: 'add',
 
-      employeeInfo: '',
+      userInfo: '',
       id: '',
       email: '',
       name: '',
-
-      /** バリデーションルール */
-      employeeInfoRules: [
-        v => v.trim().length > 0 || '管理者は必須です',
-      ],
     }
   },
 
   computed: {
     ...mapState({
-      employees: state => state.firestore.employees,
+      users: state => state.firestore.users,
     }),
 
     /** ダイアログのタイトル */
@@ -94,7 +93,7 @@ export default {
     ...mapActions(
       {
         fetchAllCollections: 'firestore/fetchAllCollections',
-        addDocument: 'firestore/addDocument',
+        addDocumentWithTextId: 'firestore/addDocumentWithTextId',
         updateDocument: 'firestore/updateDocument',
       }
     ),
@@ -106,7 +105,7 @@ export default {
     open (actionType, item) {
       this.show = true
       this.actionType = actionType
-      this.getEmployees()
+      this.getUsers()
       this.resetForm(item)
     },
 
@@ -118,14 +117,13 @@ export default {
     /** 追加／更新がクリックされたとき */
     async onClickAction () {
       const item = {
-        id: this.id,
-        email: this.employeeInfo.email,
-        name: this.employeeInfo.name,
+        id: this.userInfo.id,
+        name: this.userInfo.name,
       }
       const currentTableName = this.currentTableName
 
       if (this.actionType === 'add') {
-        await this.addDocument({ item, currentTableName })
+        await this.addDocumentWithTextId({ item, currentTableName })
       } else {
         await this.updateDocument({ item, currentTableName })
       }
@@ -136,14 +134,14 @@ export default {
     /** フォームの内容を初期化します */
     resetForm (item = {}) {
       this.id = item.id || ''
-      this.employeeInfo = {email: item.email, name: item.name} || ''
+      this.userInfo = { name: item.name, email: item.email } || ''
 
       this.$refs.form.resetValidation()
     },
 
     /** プルダウンメニュー用 従業員情報を取得する */
-    async getEmployees() {
-      const currentTableName = 'employees'
+    async getUsers() {
+      const currentTableName = 'users'
       await this.fetchAllCollections({ currentTableName })
     },
 
