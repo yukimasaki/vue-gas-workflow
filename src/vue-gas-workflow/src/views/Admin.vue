@@ -48,7 +48,7 @@
     </v-card>
 
     <!-- 追加／編集ダイアログ -->
-    <ItemDialogAdmin ref="ItemDialogAdmin"/>
+    <ItemDialogAdmins ref="ItemDialogAdmins"/>
 
     <!-- 削除ダイアログ -->
     <DeleteDialog ref="deleteDialog"/>
@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import ItemDialogAdmin from '../components/ItemDialogAdmin.vue'
+import ItemDialogAdmins from '../components/ItemDialogAdmins.vue'
 import DeleteDialog from '../components/DeleteDialog.vue'
 import { mapActions, mapState } from 'vuex'
 
@@ -65,7 +65,7 @@ export default {
   name: 'Admin',
 
   components: {
-    ItemDialogAdmin,
+    ItemDialogAdmins,
     DeleteDialog
   },
 
@@ -108,12 +108,12 @@ export default {
 
     /** 追加ボタンがクリックされたとき */
     onClickAdd () {
-      this.$refs.ItemDialogAdmin.open('add')
+      this.$refs.ItemDialogAdmins.open('add')
     },
 
     /** 編集ボタンがクリックされたとき */
     onClickEdit (item) {
-      this.$refs.ItemDialogAdmin.open('edit', item)
+      this.$refs.ItemDialogAdmins.open('edit', item)
     },
 
     /** 削除ボタンがクリックされたとき */

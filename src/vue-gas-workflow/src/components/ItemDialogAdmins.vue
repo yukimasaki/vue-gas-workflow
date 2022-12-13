@@ -52,7 +52,7 @@
 import { mapState, mapActions } from 'vuex'
 
 export default {
-  name: 'ItemDialogAdmin',
+  name: 'ItemDialogAdmins',
 
   data () {
     return {
