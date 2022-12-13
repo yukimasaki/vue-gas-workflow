@@ -232,7 +232,7 @@ export default {
             contact: this.contact,
             memo: this.memo,
             routes: routes,
-            comments: ['comment1', 'comment2', 'comment3']
+            comments: []
           }
         }
         await this.batchAddSubCollectionsToUsers({ uid, userId, item })
