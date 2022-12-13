@@ -50,7 +50,7 @@
     </v-card>
 
     <!-- 追加／編集ダイアログ -->
-    <ItemDialogDepartment ref="ItemDialogDepartment"/>
+    <ItemDialogDepartments ref="ItemDialogDepartments"/>
 
     <!-- 削除ダイアログ -->
     <DeleteDialog ref="deleteDialog"/>
@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import ItemDialogDepartment from '../components/ItemDialogDepartment.vue'
+import ItemDialogDepartments from '../components/ItemDialogDepartmentss.vue'
 import DeleteDialog from '../components/DeleteDialog.vue'
 import { mapActions, mapState } from 'vuex'
 
@@ -67,7 +67,7 @@ export default {
   name: 'Department',
 
   components: {
-    ItemDialogDepartment,
+    ItemDialogDepartments,
     DeleteDialog
   },
 
@@ -110,12 +110,12 @@ export default {
 
     /** 追加ボタンがクリックされたとき */
     onClickAdd () {
-      this.$refs.ItemDialogDepartment.open('add')
+      this.$refs.ItemDialogDepartments.open('add')
     },
 
     /** 編集ボタンがクリックされたとき */
     onClickEdit (item) {
-      this.$refs.ItemDialogDepartment.open('edit', item)
+      this.$refs.ItemDialogDepartments.open('edit', item)
     },
 
     /** 削除ボタンがクリックされたとき */
