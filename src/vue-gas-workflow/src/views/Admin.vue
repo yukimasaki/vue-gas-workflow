@@ -33,7 +33,7 @@
         :items="tableData"
         :search="search"
         :footer-props="footerProps"
-        :sort-by="'email'"
+        :sort-by="'name'"
         :sort-desc="false"
         :items-per-page="30"
         mobile-breakpoint="0"
@@ -41,7 +41,6 @@
 
         <!-- 操作列 -->
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon class="mr-2" @click="onClickEdit(item)">mdi-pencil</v-icon>
           <v-icon @click="onClickDelete(item)">mdi-delete</v-icon>
         </template>
 
@@ -73,7 +72,7 @@ export default {
   data() {
     return {
       /** 操作対象のテーブル */
-      currentTableName: 'administrators',
+      currentTableName: 'admins',
       /** 申請書タイトル */
       title: '管理者一覧',
       /** 検索文字 */
@@ -85,13 +84,12 @@ export default {
 
   computed: {
     ...mapState({
-      administrators: state => state.firestore.administrators,
+      admins: state => state.firestore.admins,
     }),
 
     /** テーブルのヘッダー設定 */
     tableHeaders () {
       return [
-        { text: 'メールアドレス', value: 'email', sortable: true },
         { text: '氏名', value: 'name', sortable: false },
         { text: '操作', value: 'actions', sortable: false },
       ]
@@ -128,7 +126,7 @@ export default {
     async getRecords() {
       const currentTableName = this.currentTableName
       await this.fetchAllCollections({ currentTableName })
-      this.tableData = this.administrators
+      this.tableData = this.admins
     },
 
   },
