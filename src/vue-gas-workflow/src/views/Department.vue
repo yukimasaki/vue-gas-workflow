@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import ItemDialogDepartments from '../components/ItemDialogDepartmentss.vue'
+import ItemDialogDepartments from '../components/ItemDialogDepartments.vue'
 import DeleteDialog from '../components/DeleteDialog.vue'
 import { mapActions, mapState } from 'vuex'
 
