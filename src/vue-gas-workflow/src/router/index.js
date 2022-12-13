@@ -9,7 +9,7 @@ import Settings from '../views/Settings.vue'
 import RequestOverview from '../views/RequestOverview.vue'
 import RequestDetail from '../views/RequestDetail.vue'
 import Departments from '../views/Departments.vue'
-import Route from '../views/Route.vue'
+import Routes from '../views/Routes.vue'
 import Admins from '../views/Admins.vue'
 import Users from '../views/Users.vue'
 import Test from '../views/Test.vue'
@@ -65,7 +65,7 @@ const routes = [
     meta: {requiresAuth: true}
   },
   {
-    path: '/route',
+    path: '/routes',
     name: 'Routes',
     component: Routes,
     meta: {requiresAuth: true}

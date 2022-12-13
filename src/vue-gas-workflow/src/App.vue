@@ -41,14 +41,14 @@
           </template>
           <v-list>
             <!-- 管理者設定 -->
-            <v-list-item link to="/admin">
+            <v-list-item link to="/admins">
               <v-list-item-content>
                 <v-list-item-title>管理者設定</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
 
             <!-- 従業員設定 -->
-            <v-list-item link to="/department">
+            <v-list-item link to="/departments">
               <v-list-item-content>
                 <v-list-item-title>部署設定</v-list-item-title>
               </v-list-item-content>
@@ -62,7 +62,7 @@
             </v-list-item>
 
             <!-- 申請ルート設定 -->
-            <v-list-item link to="/route">
+            <v-list-item link to="/routes">
               <v-list-item-content>
                 <v-list-item-title>申請ルート設定</v-list-item-title>
               </v-list-item-content>
