@@ -33,12 +33,23 @@
 export default {
   name: 'Login',
 
+  data() {
+    return {
+      redirect: null
+    }
+  },
+
   methods: {
     // Googleアカウントでログイン
     async loginWithGoogle() {
+      this.redirect = this.$route.query.redirect
       await this.$store.dispatch('firebase/login')
-      this.$router.push('/')
+      if (this.redirect) {
+        this.$router.push(this.redirect)
+      } else {
+        this.$router.push('/')
+      }
     }
-  }
+  },
 }
 </script>
