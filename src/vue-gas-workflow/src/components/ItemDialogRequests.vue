@@ -167,6 +167,7 @@ export default {
       batchAddSubCollectionsToUsers: 'firestore/batchAddSubCollectionsToUsers',
       fetchUserInfo: 'firestore/fetchUserInfo',
       createArrayRoute: 'firestore/createArrayRoute',
+      sendEmail: 'firestore/sendEmail',
     }),
 
     /**
@@ -237,6 +238,17 @@ export default {
         }
         await this.batchAddSubCollectionsToUsers({ uid, userId, item })
 
+        // to: 承認者メールアドレスをセットする
+        const emailTo = routes.approvers[0].email
+        // subject: 申請が否認された旨を題名に記載する
+        const emailSubject = `申請が提出されました [${this.title}]`
+        // body: 詳細画面へのリンクを記載する
+        const detailPageUrl = `${window.location.href}others/requests/${uid}`
+        const emailBody = this.createEmailBody(emailSubject, detailPageUrl)
+        // メール送信
+        const emailConfig = { to: emailTo, subject: emailSubject, body: emailBody }
+        await this.sendEmail({ emailConfig })
+
         this.show = false
       }
     },
@@ -251,6 +263,12 @@ export default {
       this.memo = item.memo || ''
 
       this.$refs.form.resetValidation()
+    },
+
+    createEmailBody(emailSubject, detailPageUrl) {
+      const emailBody =
+        `${emailSubject}<br><br>詳細は下記リンクからご確認ください。<br><br><a href="${detailPageUrl}">${detailPageUrl}</a>`
+      return emailBody
     },
 
   }
