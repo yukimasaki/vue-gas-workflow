@@ -373,7 +373,7 @@ export default {
 
     onClickEdit() {
       const item = {}
-      this.$refs.ItemDialogRequestDetail.open('edit', item, 'paid_leave')
+      this.$refs.ItemDialogRequestDetail.open('edit', item)
     },
   },
 
