@@ -79,8 +79,6 @@
 
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
-import { serverTimestamp } from '@firebase/firestore'
-import { v4 as uuidv4} from 'uuid'
 
 export default {
   name: 'ItemDialogRequestDetail',
@@ -97,6 +95,8 @@ export default {
       menu: false,
       /** 操作タイプ 'add' or 'edit' */
       actionType: 'edit',
+      /** 親コンポーネントから受け取ったitemを格納 */
+      item: {},
       /** ID */
       id: '',
       /** タイトル */
@@ -159,6 +159,11 @@ export default {
      * このメソッドは親から呼び出されます。
      */
     open (actionType, item, requestType) {
+      this.item = item
+      console.log(`this.item.itemRequest:`)
+      console.log(this.item.itemRequest)
+      console.log(`this.item.itemDetail:`)
+      console.log(this.item.itemDetail)
       this.show = true
       this.actionType = actionType
       this.requestType = requestType
@@ -170,69 +175,50 @@ export default {
       this.show = false
     },
 
-    /** 追加がクリックされたとき */
+    /** 更新がクリックされたとき */
     async onClickAction () {
-      if (this.actionType === 'add') {
+      if (this.actionType === 'edit') {
+        //
 
-        // 申請ルート情報をarray型に格納する
-        // ↓ごちゃごちゃしてるのでキレイにする！
-        const uid = uuidv4()
-        const userId = this.getUserEmail()
-        const requestType = this.requestType
-        await this.fetchUserInfo({ userId })
-        const department = this.userInfo.department
-        await this.createArrayRoute({ requestType, department })
-        const routes = this.getArrayRoute()[0]
-        const arrayAddedStatus = []
-        routes.approvers.forEach(element => {
-          arrayAddedStatus.push({...element, status: '保留中'})
-        })
-        routes.approvers = arrayAddedStatus
-        // ステップ数を格納する
-        const currentStep = 1
-        const maxStep = routes.approvers.length
+        // 1ステップ目の承認者をリセットする
+        this.item.itemRequest.current_approver_email = this.item.itemDetail.routes.approvers[0].email
+        this.item.itemDetail.current_approver_email = this.item.itemDetail.routes.approvers[0].email
 
-        const item = {
-          request: {
-            title: this.title,
-            status: '保留中',
-            current_approver_email: routes.approvers[0].email,
-            created_at: serverTimestamp(),
-            email: this.userInfo.id,
-            name: this.userInfo.name,
-            department: this.userInfo.department
-          },
-          detail: {
-            id: uid,
-            title: this.title,
-            status: '保留中',
-            current_approver_email: routes.approvers[0].email,
-            created_at: serverTimestamp(),
-            email: this.userInfo.id,
-            name: this.userInfo.name,
-            department: this.userInfo.department,
-            current_step: currentStep,
-            max_step: maxStep,
-            reason: this.reason,
-            date: this.date,
-            contact: this.contact,
-            memo: this.memo,
-            routes: routes,
-            comments: []
-          }
-        }
-        await this.batchAddSubCollectionsToUsers({ uid, userId, item })
+        // ステータスをリセットする
+        this.item.itemRequest.status = '保留中'
+        this.item.itemDetail.status = '保留中'
 
-        // to: 承認者メールアドレスをセットする
-        const emailTo = routes.approvers[0].email
-        // subject: 申請が否認された旨を題名に記載する
-        const emailSubject = `申請が提出されました [${this.title}]`
-        // body: 詳細画面へのリンクを記載する
-        const detailPageUrl = `${window.location.href}others/requests/${uid}`
-        const emailBody = this.createEmailBody(emailSubject, detailPageUrl)
-        // メール送信
-        const emailConfig = { to: emailTo, subject: emailSubject, body: emailBody }
-        await this.sendEmail({ emailConfig })
+        // 現在のステップ数をリセットする
+        this.item.itemDetail.current_step = 1
+
+        // 申請ルート情報のステータスを保留中にリセットする
+        this.item.itemDetail.routes.approvers.map(element => element.status = '保留中')
+
+        // フォームに入力された内容に差し替える
+        this.item.itemRequest = { ...this.item.itemRequest, title: this.title }
+        this.item.itemDetail = { ...this.item.itemDetail, title: this.title, reason: this.reason, date: this.date, contact: this.contact, memo: this.memo }
+
+        // 正常にデータが格納されていることを確認できた。
+        console.log(this.item)
+
+        // TODO: このままでは親コンポーネントのフォームに表示されるデータが更新されない
+        // ～流れ～
+        // 更新ボタンを押すと同時にstate.firestore.detailsが更新される
+        // computedプロパティにdata() {return this.details}を移動する
+        // フォームの各要素はdataの各プロパティを参照するようにする
+
+        // this.batchUpdateDocuments({ userId, docId, itemRequest, itemDetail, operationType })
+
+        // // to: 承認者メールアドレスをセットする
+        // const emailTo = routes.approvers[0].email
+        // // subject: 申請が否認された旨を題名に記載する
+        // const emailSubject = `申請が提出されました [${this.title}]`
+        // // body: 詳細画面へのリンクを記載する
+        // const detailPageUrl = `${window.location.href}others/requests/${uid}`
+        // const emailBody = this.createEmailBody(emailSubject, detailPageUrl)
+        // // メール送信
+        // const emailConfig = { to: emailTo, subject: emailSubject, body: emailBody }
+        // await this.sendEmail({ emailConfig })
 
         this.show = false
       }
