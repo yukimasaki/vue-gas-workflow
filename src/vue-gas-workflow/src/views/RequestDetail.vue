@@ -187,10 +187,12 @@ export default {
 
     /** 各種ボタンの表示/非表示ルール */
     isDisabledApproveBtn() {
-      // 各種ボタンを非活性にする際の条件を列挙する
+      // 画面生成直後だとthis.currentStepがnullのため、下記コード内でインデックスを取得できずエラーとなる。
+      // そのため、if文で一時的にtrueを返しておく。
       if (!this.currentStep) {
         return true
       } else {
+        // 各種ボタンを非活性にする際の条件を列挙する
         const rules = [
           this.routes.approvers[this.currentStep - 1].email != this.getUserEmail ? true : false,
           this.routes.approvers[this.maxStep - 1].status == '完了' ? true : false,
