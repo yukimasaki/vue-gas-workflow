@@ -15,7 +15,7 @@ service cloud.firestore {
              request.auth.token.email == userId;
     }
 
-    function isRequestForMe() {
+    function isApprover() {
       return isAuth() &&
              request.auth.token.email == resource.data.current_approver_email;
     }
@@ -34,21 +34,21 @@ service cloud.firestore {
       allow update, delete: if isAdmin();
 
       match /requests/{requestId}/{doc=**} {
-        // 申請の読み取りを、本人と承認者として指定されたユーザーのみ許可する
-        allow read: if isMe(userId) || isRequestForMe();
+        // 申請の読み取りを、本人または承認者として指定されたユーザーのみ許可する
+        allow read: if isMe(userId) || isApprover();
         // 申請の作成を、本人のみ許可する
         allow create: if isMe(userId);
         // 申請の更新を、承認者として指定されたユーザーのみ許可する
-        allow update: if isRequestForMe();
+        allow update: if isApprover();
       }
     }
 
     // 他ユーザーからの承認依頼に対するルールを定義 一覧画面・詳細画面
     match /{path=**}/requests/{requestId} {
-      allow list: if isRequestForMe();
+      allow list: if isApprover();
     }
     match /{path=**}/details/{detailId} {
-      allow list: if isRequestForMe();
+      allow list: if isApprover();
     }
 
     // ユーザーが所属する部署から申請ルート情報を取得するために使用
