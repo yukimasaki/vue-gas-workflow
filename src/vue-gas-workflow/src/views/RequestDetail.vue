@@ -361,7 +361,6 @@ export default {
       const userId = this.data.email
       const docId = this.$route.params.id
       await this.fetchRequest({ userId, docId })
-
       let itemRequest = this.requests
 
       // 最新のステータスを格納する
@@ -383,16 +382,25 @@ export default {
       return emailBody
     },
 
-    onClickEdit() {
+    async onClickEdit() {
+      const userId = this.data.email
+      const docId = this.$route.params.id
+      await this.fetchRequest({ userId, docId })
+      const itemRequest = this.requests
+      const itemDetail = this.data
+
       const requestType = 'paid_leave'
       const item = {
         title: this.title,
         reason: this.reason,
         date: this.date,
         contact: this.contact,
-        memo: this.memo
+        memo: this.memo,
+
+        itemRequest: itemRequest,
+        itemDetail: itemDetail
       }
-      this.$refs.ItemDialogRequestDetail.open('edit', item, requestType)
+      await this.$refs.ItemDialogRequestDetail.open('edit', item, requestType)
     },
   },
 
