@@ -205,6 +205,16 @@ export default {
       }
     },
 
+    isDisabledEditBtn() {
+      // 編集ボタンを非活性にする際の条件を列挙する
+      const rules = [
+        this.email != this.getUserEmail ? true : false,
+      ]
+
+      // 配列「rules」に1つでも「true」の要素があったら「true」を返す
+      return rules.some(v => v == true)
+    },
+
   },
 
   methods: {
