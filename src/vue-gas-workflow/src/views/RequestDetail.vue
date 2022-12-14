@@ -384,8 +384,9 @@ export default {
     },
 
     onClickEdit() {
+      const requestType = 'paid_leave'
       const item = {}
-      this.$refs.ItemDialogRequestDetail.open('edit', item)
+      this.$refs.ItemDialogRequestDetail.open('edit', item, requestType)
     },
   },
 

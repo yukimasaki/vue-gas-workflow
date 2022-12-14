@@ -12,14 +12,6 @@
       <v-divider/>
       <v-card-text>
         <v-form ref="form" v-model="valid">
-          <!-- 申請書の種類 -->
-          <v-select
-            label="申請書の種類"
-            v-model="requestType"
-            :items="items"
-            :rules="requestTypeRules"
-          />
-
           <!-- タイトル -->
           <v-text-field
             label="タイトル"
@@ -95,11 +87,8 @@ export default {
 
   data () {
     return {
-      /** 申請書の種類 */
-      items: [
-        {text: '休暇申請', value: 'paid_leave'},
-        {text: '備品申請', value: 'equipment'},
-      ],
+      /** フォームの出し分け */
+      requestType: '',
       /** ダイアログの表示状態 */
       show: false,
       /** 入力したデータが有効かどうか */
@@ -107,9 +96,7 @@ export default {
       /** 日付選択メニューの表示状態 */
       menu: false,
       /** 操作タイプ 'add' or 'edit' */
-      actionType: 'add',
-      /** 申請書の種類 */
-      requestType: '',
+      actionType: 'edit',
       /** ID */
       id: '',
       /** タイトル */
@@ -124,9 +111,6 @@ export default {
       memo: '',
 
       /** バリデーションルール */
-      requestTypeRules: [
-        v => v.trim().length > 0 || '申請書の種類は必須です',
-      ],
       titleRules: [
         v => v.trim().length > 0 || 'タイトルは必須です',
       ],
@@ -174,9 +158,10 @@ export default {
      * ダイアログを表示します。
      * このメソッドは親から呼び出されます。
      */
-    open (actionType, item) {
+    open (actionType, item, requestType) {
       this.show = true
       this.actionType = actionType
+      this.requestType = requestType
       this.resetForm(item)
     },
 
