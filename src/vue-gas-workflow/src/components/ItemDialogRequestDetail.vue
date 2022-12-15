@@ -201,20 +201,20 @@ export default {
         const docId = this.$route.params.id
         const itemRequest = this.item.itemRequest
         const itemDetail = this.item.itemDetail
-        const operationType = '再申請'
+        const operationType = '再提出'
 
         this.batchUpdateDocuments({ userId, docId, itemRequest, itemDetail, operationType })
 
-        // // to: 承認者メールアドレスをセットする
-        // const emailTo = routes.approvers[0].email
-        // // subject: 申請が否認された旨を題名に記載する
-        // const emailSubject = `申請が提出されました [${this.title}]`
-        // // body: 詳細画面へのリンクを記載する
-        // const detailPageUrl = `${window.location.href}others/requests/${uid}`
-        // const emailBody = this.createEmailBody(emailSubject, detailPageUrl)
-        // // メール送信
-        // const emailConfig = { to: emailTo, subject: emailSubject, body: emailBody }
-        // await this.sendEmail({ emailConfig })
+        // to: 承認者メールアドレスをセットする
+        const emailTo = this.item.itemDetail.routes.approvers[0].email
+        // subject: 申請が再提出された旨を題名に記載する
+        const emailSubject = `申請が再提出されました [${this.title}]`
+        // body: 詳細画面へのリンクを記載する
+        const detailPageUrl = window.location.href
+        const emailBody = this.createEmailBody(emailSubject, detailPageUrl)
+        // メール送信
+        const emailConfig = { to: emailTo, subject: emailSubject, body: emailBody }
+        await this.sendEmail({ emailConfig })
 
         this.show = false
       }
