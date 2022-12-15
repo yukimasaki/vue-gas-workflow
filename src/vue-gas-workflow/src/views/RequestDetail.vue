@@ -276,10 +276,6 @@ export default {
         return format
     },
 
-    // 不要なので削除する
-    setData() {
-    },
-
     async onClickApprove() {
       const operationType = '承認'
 
@@ -415,8 +411,6 @@ export default {
 
   async created() {
     await this.fetchRequestDetail()
-    this.setData()
-    console.log(this.requestType)
   },
 }
 </script>
