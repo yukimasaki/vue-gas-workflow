@@ -210,7 +210,8 @@ export default {
         // subject: 申請が再提出された旨を題名に記載する
         const emailSubject = `申請が再提出されました [${this.title}]`
         // body: 詳細画面へのリンクを記載する
-        const detailPageUrl = window.location.href
+        const url = window.location.href
+        const detailPageUrl = url.replace('/others', '/my')
         const emailBody = this.createEmailBody(emailSubject, detailPageUrl)
         // メール送信
         const emailConfig = { to: emailTo, subject: emailSubject, body: emailBody }
