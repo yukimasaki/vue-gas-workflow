@@ -251,6 +251,7 @@ const actions = {
     await batch.commit()
 
     commit('setCollections', { collections: itemRequest, currentTableName: 'requests' })
+    commit('setCollections', { collections: itemDetail, currentTableName: 'details' })
     commit('setWorkflowMessage', `申請を${operationType}しました。`)
   },
 
