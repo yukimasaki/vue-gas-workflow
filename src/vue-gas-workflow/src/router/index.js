@@ -92,7 +92,6 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  mode: 'history',
   base: '/vue-gas-workflow/',
   routes
 })
