@@ -210,7 +210,6 @@ export default {
         // ↓ごちゃごちゃしてるのでキレイにする！
         const uid = uuidv4()
         const userId = this.getUserEmail()
-        const requestTypeText = this.requestType.text
         const requestTypeValue = this.requestType.value
 
         await this.fetchUserInfo({ userId })
@@ -228,7 +227,7 @@ export default {
 
         let item = {
           request: {
-            request_type: requestTypeText,
+            request_type: this.requestType,
             title: this.title,
             status: '保留中',
             current_approver_email: routes.approvers[0].email,
@@ -239,7 +238,7 @@ export default {
           },
           detail: {
             id: uid,
-            request_type: requestTypeText,
+            request_type: this.requestType,
             title: this.title,
             status: '保留中',
             current_approver_email: routes.approvers[0].email,

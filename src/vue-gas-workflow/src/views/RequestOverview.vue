@@ -125,7 +125,7 @@ export default {
     tableHeaders () {
       return [
         { text: '作成日時', value: 'created_at' },
-        { text: '申請種別', value: 'request_type', sortable: false },
+        { text: '申請種別', value: 'request_type.text', sortable: false },
         { text: 'ステータス', value: 'status', sortable: false },
         { text: 'タイトル', value: 'title', sortable: false },
         { text: '申請者', value: 'name', sortable: false },
