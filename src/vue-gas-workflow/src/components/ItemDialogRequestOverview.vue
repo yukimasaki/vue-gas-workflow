@@ -279,7 +279,7 @@ export default {
         const uniqueItem = createUniqueItem(requestTypeValue)
         item.detail = { ...item.detail, ...uniqueItem }
 
-        // await this.batchAddSubCollectionsToUsers({ uid, userId, item })
+        await this.batchAddSubCollectionsToUsers({ uid, userId, item })
 
         // // to: 承認者メールアドレスをセットする
         // const emailTo = routes.approvers[0].email
