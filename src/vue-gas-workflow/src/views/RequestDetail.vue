@@ -92,25 +92,41 @@
                 v-model="data.department"
               />
 
-              <v-text-field
-                label="事由"
-                v-model="data.reason"
-              />
-
-              <v-text-field
-                label="予定日時"
-                v-model="data.date"
-              />
-
-              <v-text-field
-                label="緊急連絡先"
-                v-model="data.contact"
-              />
-
-              <v-text-field
-                label="備考"
-                v-model="data.memo"
-              />
+              <!-- 選択した申請書ごとに項目を出し分けする -->
+              <!-- 休暇申請 -->
+              <div v-if="requestTypeValue == 'paid_leave'">
+                <v-text-field
+                  label="事由"
+                  v-model="data.reason"
+                />
+                <v-text-field
+                  label="予定日時"
+                  v-model="data.date"
+                />
+                <v-text-field
+                  label="緊急連絡先"
+                  v-model="data.contact"
+                />
+                <v-text-field
+                  label="備考"
+                  v-model="data.memo"
+                />
+              </div>
+              <!-- 備品申請 -->
+              <div v-else-if="requestTypeValue == 'equipment'">
+                <v-text-field
+                  label="商品名"
+                  v-model="data.item_name"
+                />
+                <v-text-field
+                  label="購入理由"
+                  v-model="data.reason"
+                />
+                <v-text-field
+                  label="備考"
+                  v-model="data.memo"
+                />
+              </div>
 
             </v-form>
           </v-card-text>
@@ -173,11 +189,19 @@ export default {
       return this.details
     },
     formattedDate() {
+      // 画面描画直後はthis.dataが空値のためif文でエラー回避しておく
       if (this.data == '') {
         return false
       } else {
         const date = this.data.created_at.toDate()
         return this.dateToStr24HPad0(date)
+      }
+    },
+    requestTypeValue() {
+      if(this.details == '') {
+        return false
+      } else {
+        return this.details.request_type.value
       }
     },
 
@@ -252,6 +276,7 @@ export default {
         return format
     },
 
+    // 不要なので削除する
     setData() {
     },
 
@@ -391,6 +416,7 @@ export default {
   async created() {
     await this.fetchRequestDetail()
     this.setData()
+    console.log(this.requestType)
   },
 }
 </script>
