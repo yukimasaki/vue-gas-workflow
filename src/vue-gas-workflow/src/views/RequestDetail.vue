@@ -259,8 +259,8 @@ export default {
       // 最終ステップの場合
       if (this.data.current_step == this.data.max_step) {
         this.data.routes.approvers[this.data.current_step - 1].status = '完了'
-        this.data.latest_status = this.data.routes.approvers[this.data.current_step - 1].status
-        this.data.latest_approver_email = ''
+        this.latestStatus = this.data.routes.approvers[this.data.current_step - 1].status
+        this.latestApproverEmail = ''
         this.batchUpdate(operationType)
 
         // to: 申請者メールアドレスをセットする
@@ -279,12 +279,12 @@ export default {
       } else {
         this.data.routes.approvers[this.data.current_step - 1].status = '完了'
         this.data.current_step++
-        this.data.latest_status = '保留中'
-        this.data.latest_approver_email = this.data.routes.approvers[this.data.current_step - 1].email
+        this.latestStatus = '保留中'
+        this.latestApproverEmail = this.data.routes.approvers[this.data.current_step - 1].email
         this.batchUpdate(operationType)
 
         // to: 次の承認者メールアドレスをセットする
-        const emailTo = this.data.latest_approver_email
+        const emailTo = this.latestApproverEmail
         // subject: 申請が承認された旨を題名に記載する
         const emailSubject = `[承認依頼] [${this.data.title}]`
         // body: 詳細画面へのリンクを記載する
@@ -298,8 +298,8 @@ export default {
 
     async onClickDisapprove() {
       this.data.routes.approvers[this.data.current_step - 1].status = '否認'
-      this.data.latest_status = '否認'
-        this.data.latest_approver_email = ''
+      this.latestStatus = '否認'
+        this.latestApproverEmail = ''
         const operationType = '否認'
       this.batchUpdate(operationType)
 
@@ -318,8 +318,8 @@ export default {
 
     async onClickRemand() {
       this.data.routes.approvers[this.data.current_step - 1].status = '差戻し'
-      this.data.latest_status = '差戻し'
-      this.data.latest_approver_email = ''
+      this.latestStatus = '差戻し'
+      this.latestApproverEmail = ''
       const operationType = '差戻し'
       this.batchUpdate(operationType)
 
@@ -344,9 +344,9 @@ export default {
       let itemRequest = this.requests
 
       // 最新のステータスを格納する
-      itemRequest.status = this.data.latest_status
+      itemRequest.status = this.latestStatus
       // 最新の承認者メールアドレスを格納する
-      itemRequest.current_approver_email = this.data.latest_approver_email
+      itemRequest.current_approver_email = this.latestApproverEmail
 
       // itemDetailを作成
       let itemDetail = this.data
