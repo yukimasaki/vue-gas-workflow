@@ -204,7 +204,10 @@ export default {
     isDisabledEditBtn() {
       // 編集ボタンを非活性にする際の条件を列挙する
       const rules = [
-        this.data.email != this.getUserEmail ? true : false,
+        this.data.email != this.getUserEmail ? true : false, // 申請者とログイン中ユーザーが異なる
+        this.data.status == '保留中' ? true: false,
+        this.data.status == '完了' ? true: false,
+        this.data.status == '否認' ? true: false
       ]
 
       // 配列「rules」に1つでも「true」の要素があったら「true」を返す
@@ -341,16 +344,17 @@ export default {
       const userId = this.data.email
       const docId = this.$route.params.id
       await this.fetchRequest({ userId, docId })
-      let itemRequest = this.requests
+      const itemRequest = this.requests
+
+      // itemDetailを作成
+      const itemDetail = this.data
+      itemDetail.current_step = this.data.current_step
 
       // 最新のステータスを格納する
       itemRequest.status = this.latestStatus
+      itemDetail.status = this.latestStatus
       // 最新の承認者メールアドレスを格納する
       itemRequest.current_approver_email = this.latestApproverEmail
-
-      // itemDetailを作成
-      let itemDetail = this.data
-      itemDetail.current_step = this.data.current_step
 
       // Firestoreにバッチ書き込み(update)
       this.batchUpdateDocuments({ userId, docId, itemRequest, itemDetail, operationType })
