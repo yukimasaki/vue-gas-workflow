@@ -241,7 +241,7 @@ export default {
         // to: 承認者メールアドレスをセットする
         const emailTo = routes.approvers[0].email
         // subject: 申請が否認された旨を題名に記載する
-        const emailSubject = `申請が提出されました [${this.title}]`
+        const emailSubject = `[承認依頼] [${this.title}]`
         // body: 詳細画面へのリンクを記載する
         const detailPageUrl = `${window.location.href}others/requests/${uid}`
         const emailBody = this.createEmailBody(emailSubject, detailPageUrl)
