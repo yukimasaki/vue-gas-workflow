@@ -211,7 +211,7 @@ export default {
         const emailSubject = `申請が再提出されました [${this.title}]`
         // body: 詳細画面へのリンクを記載する
         const url = window.location.href
-        const detailPageUrl = url.replace('/others', '/my')
+        const detailPageUrl = url.replace('/my', '/others')
         const emailBody = this.createEmailBody(emailSubject, detailPageUrl)
         // メール送信
         const emailConfig = { to: emailTo, subject: emailSubject, body: emailBody }
