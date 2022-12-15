@@ -12,15 +12,14 @@
       <v-divider/>
       <v-card-text>
         <v-form ref="form" v-model="valid">
-          <!-- 申請種別 -->
           <v-select
             label="申請種別"
             v-model="requestType"
             :items="items"
             :rules="requestTypeRules"
+            return-object
           />
 
-          <!-- タイトル -->
           <v-text-field
             label="タイトル"
             v-model="title"
@@ -29,8 +28,7 @@
 
           <!-- 選択した申請書ごとに項目を出し分けする -->
           <!-- 休暇申請 -->
-          <div v-if="requestType == 'paid_leave'">
-            <!-- 事由 -->
+          <div v-if="requestType.value == 'paid_leave'">
             <v-textarea
               label="事由"
               v-model="reason"
@@ -38,7 +36,6 @@
               rows="3"
             />
 
-            <!-- 予定日時 -->
             <v-textarea
               label="予定日時"
               v-model="date"
@@ -46,14 +43,12 @@
               rows="3"
             />
 
-            <!-- 緊急連絡先 -->
             <v-text-field
               label="緊急連絡先"
               v-model="contact"
               :rules="contactRules"
             />
 
-            <!-- 備考 -->
             <v-textarea
               label="備考"
               v-model="memo"
@@ -62,7 +57,7 @@
           </div>
 
           <!-- 備品申請 -->
-          <div v-else-if="requestType == 'equipment'">
+          <div v-else-if="requestType.value == 'equipment'">
             <v-textarea
               label="商品名"
               v-model="itemName"
@@ -133,7 +128,7 @@ export default {
       /** 操作タイプ 'add' or 'edit' */
       actionType: 'add',
       /** 申請種別 */
-      requestType: '',
+      requestType: {},
 
       id: '',
       title: '',
@@ -145,7 +140,7 @@ export default {
 
       /** バリデーションルール */
       requestTypeRules: [
-        v => v.trim().length > 0 || '申請種別は必須です',
+        // v => v != '' || '申請種別は必須です',
       ],
       titleRules: [
         v => v.trim().length > 0 || 'タイトルは必須です',
@@ -211,21 +206,12 @@ export default {
     /** 追加がクリックされたとき */
     async onClickAction () {
       if (this.actionType === 'add') {
-
         // 申請ルート情報をarray型に格納する
         // ↓ごちゃごちゃしてるのでキレイにする！
         const uid = uuidv4()
         const userId = this.getUserEmail()
-        const requestTypeValue = this.requestType
-        const toTextRequestType = (requestTypeValue) => {
-          switch (requestTypeValue) {
-            case 'paid_leave':
-              return '休暇申請'
-            case 'equipment':
-              return '備品申請'
-          }
-        }
-        const requestTypeText = toTextRequestType(requestTypeValue)
+        const requestTypeText = this.requestType.text
+        const requestTypeValue = this.requestType.value
 
         await this.fetchUserInfo({ userId })
         const department = this.userInfo.department
@@ -240,7 +226,7 @@ export default {
         const currentStep = 1
         const maxStep = routes.approvers.length
 
-        const item = {
+        let item = {
           request: {
             request_type: requestTypeText,
             title: this.title,
@@ -253,6 +239,7 @@ export default {
           },
           detail: {
             id: uid,
+            request_type: requestTypeText,
             title: this.title,
             status: '保留中',
             current_approver_email: routes.approvers[0].email,
@@ -262,26 +249,48 @@ export default {
             department: this.userInfo.department,
             current_step: currentStep,
             max_step: maxStep,
-            reason: this.reason,
-            date: this.date,
-            contact: this.contact,
-            memo: this.memo,
             routes: routes,
             comments: []
           }
         }
-        await this.batchAddSubCollectionsToUsers({ uid, userId, item })
 
-        // to: 承認者メールアドレスをセットする
-        const emailTo = routes.approvers[0].email
-        // subject: 申請が否認された旨を題名に記載する
-        const emailSubject = `[承認依頼] [${this.title}]`
-        // body: 詳細画面へのリンクを記載する
-        const detailPageUrl = `${window.location.href}others/requests/${uid}`
-        const emailBody = this.createEmailBody(emailSubject, detailPageUrl)
-        // メール送信
-        const emailConfig = { to: emailTo, subject: emailSubject, body: emailBody }
-        await this.sendEmail({ emailConfig })
+        // itemオブジェクトに各申請に固有のプロパティを挿入する
+        const createUniqueItem = (requestTypeValue) => {
+          switch(requestTypeValue) {
+            case 'paid_leave': {
+              const uniqueItem = {
+                reason: this.reason,
+                date: this.date,
+                contact: this.contact,
+                memo: this.memo
+              }
+              return uniqueItem
+            }
+            case 'equipment': {
+              const uniqueItem = {
+                item_name: this.itemName,
+                reason: this.reason,
+                memo: this.memo
+              }
+              return uniqueItem
+            }
+          }
+        }
+        const uniqueItem = createUniqueItem(requestTypeValue)
+        item.detail = { ...item.detail, ...uniqueItem }
+
+        // await this.batchAddSubCollectionsToUsers({ uid, userId, item })
+
+        // // to: 承認者メールアドレスをセットする
+        // const emailTo = routes.approvers[0].email
+        // // subject: 申請が否認された旨を題名に記載する
+        // const emailSubject = `[承認依頼] [${this.title}]`
+        // // body: 詳細画面へのリンクを記載する
+        // const detailPageUrl = `${window.location.href}others/requests/${uid}`
+        // const emailBody = this.createEmailBody(emailSubject, detailPageUrl)
+        // // メール送信
+        // const emailConfig = { to: emailTo, subject: emailSubject, body: emailBody }
+        // await this.sendEmail({ emailConfig })
 
         this.show = false
       }
@@ -295,6 +304,7 @@ export default {
       this.date = item.date || ''
       this.contact = item.contact || ''
       this.memo = item.memo || ''
+      this.itemName = item.itemName || ''
 
       this.$refs.form.resetValidation()
     },
