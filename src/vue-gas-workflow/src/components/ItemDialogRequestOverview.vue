@@ -12,9 +12,9 @@
       <v-divider/>
       <v-card-text>
         <v-form ref="form" v-model="valid">
-          <!-- 申請書の種類 -->
+          <!-- 申請種別 -->
           <v-select
-            label="申請書の種類"
+            label="申請種別"
             v-model="requestType"
             :items="items"
             :rules="requestTypeRules"
@@ -95,7 +95,7 @@ export default {
 
   data () {
     return {
-      /** 申請書の種類 */
+      /** 申請種別 */
       items: [
         {text: '休暇申請', value: 'paid_leave'},
         {text: '備品申請', value: 'equipment'},
@@ -108,7 +108,7 @@ export default {
       menu: false,
       /** 操作タイプ 'add' or 'edit' */
       actionType: 'add',
-      /** 申請書の種類 */
+      /** 申請種別 */
       requestType: '',
       /** ID */
       id: '',
@@ -125,7 +125,7 @@ export default {
 
       /** バリデーションルール */
       requestTypeRules: [
-        v => v.trim().length > 0 || '申請書の種類は必須です',
+        v => v.trim().length > 0 || '申請種別は必須です',
       ],
       titleRules: [
         v => v.trim().length > 0 || 'タイトルは必須です',
@@ -193,10 +193,25 @@ export default {
         // ↓ごちゃごちゃしてるのでキレイにする！
         const uid = uuidv4()
         const userId = this.getUserEmail()
-        const requestType = this.requestType
+        const requestTypeValue = this.requestType
+        const toTextRequestType = (requestTypeValue) => {
+          switch (requestTypeValue) {
+            case 'paid_leave':
+              return '休暇申請'
+            case 'equipment':
+              return '備品申請'
+          }
+        }
+        const requestTypeText = toTextRequestType(requestTypeValue)
+
+        console.log(`requestTypeValue:`)
+        console.log(requestTypeValue)
+        console.log(`requestTypeText:`)
+        console.log(requestTypeText)
+
         await this.fetchUserInfo({ userId })
         const department = this.userInfo.department
-        await this.createArrayRoute({ requestType, department })
+        await this.createArrayRoute({ requestTypeValue, department })
         const routes = this.getArrayRoute()[0]
         const arrayAddedStatus = []
         routes.approvers.forEach(element => {
@@ -209,6 +224,7 @@ export default {
 
         const item = {
           request: {
+            request_type: requestTypeText,
             title: this.title,
             status: '保留中',
             current_approver_email: routes.approvers[0].email,
