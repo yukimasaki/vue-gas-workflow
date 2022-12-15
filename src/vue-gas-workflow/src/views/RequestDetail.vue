@@ -6,26 +6,26 @@
         <v-card >
           <!-- スマホは縦型のステップを表示 -->
           <template v-if="$vuetify.breakpoint.xs || $vuetify.breakpoint.sm">
-            <v-stepper v-if="currentStep" v-model="currentStep" vertical>
-              <template v-for="( n, index ) in maxStep">
+            <v-stepper v-if="data.current_step" v-model="data.current_step" vertical>
+              <template v-for="( n, index ) in data.max_step">
                 <v-stepper-step
                   :key="`${n}-step`"
-                  :complete="routes.approvers[index].status == '完了'"
+                  :complete="data.routes.approvers[index].status == '完了'"
                   :step="n"
                   :rules="[() => {
                     const rules = [
-                      routes.approvers[index].status == '否認' ? true : false,
-                      routes.approvers[index].status == '差戻し' ? true : false,
+                      data.routes.approvers[index].status == '否認' ? true : false,
+                      data.routes.approvers[index].status == '差戻し' ? true : false,
                     ]
                     return !rules.some(v => v == true)
                   }]"
                   >
-                  {{ routes.approvers[index].name }}
-                  <small class="mt-2">{{ routes.approvers[index].status }}</small>
+                  {{ data.routes.approvers[index].name }}
+                  <small class="mt-2">{{ data.routes.approvers[index].status }}</small>
                 </v-stepper-step>
                 <div
                   :key="`${n}-div`"
-                  v-if="n < maxStep"
+                  v-if="n < data.max_step"
                   style="border-left:1px solid rgba(0,0,0,.25); height:30px; margin-left:36px;"
                 ></div>
               </template>
@@ -34,25 +34,25 @@
 
           <!-- その他の端末は横型のステップを表示 -->
           <template v-else>
-            <v-stepper v-if="currentStep" v-model="currentStep" alt-labels>
+            <v-stepper v-if="data.current_step" v-model="data.current_step" alt-labels>
               <v-stepper-header>
-                <template v-for="( n, index ) in maxStep">
+                <template v-for="( n, index ) in data.max_step">
                   <v-stepper-step
                     :key="`${n}-step`"
-                    :complete="routes.approvers[index].status == '完了'"
+                    :complete="data.routes.approvers[index].status == '完了'"
                     :step="n"
                     :rules="[() => {
                       const rules = [
-                        routes.approvers[index].status == '否認' ? true : false,
-                        routes.approvers[index].status == '差戻し' ? true : false,
+                        data.routes.approvers[index].status == '否認' ? true : false,
+                        data.routes.approvers[index].status == '差戻し' ? true : false,
                       ]
                       return !rules.some(v => v == true)
                     }]"
                     >
-                    {{ routes.approvers[index].name }}
-                    <small class="mt-2">{{ routes.approvers[index].status }}</small>
+                    {{ data.routes.approvers[index].name }}
+                    <small class="mt-2">{{ data.routes.approvers[index].status }}</small>
                   </v-stepper-step>
-                  <v-divider :key="`${n}-divider`" v-if="n < maxStep" />
+                  <v-divider :key="`${n}-divider`" v-if="n < data.max_step" />
                 </template>
               </v-stepper-header>
             </v-stepper>
@@ -69,47 +69,47 @@
             <v-form readonly>
               <v-text-field
                 label="タイトル"
-                v-model="title"
+                v-model="data.title"
               />
 
               <v-text-field
                 label="作成日時"
-                v-model="created_at"
+                v-model="formattedDate"
               />
 
               <v-text-field
                 label="申請者"
-                v-model="name"
+                v-model="data.name"
               />
 
               <v-text-field
                 label="メールアドレス"
-                v-model="email"
+                v-model="data.email"
               />
 
               <v-text-field
                 label="部署"
-                v-model="department"
+                v-model="data.department"
               />
 
               <v-text-field
                 label="事由"
-                v-model="reason"
+                v-model="data.reason"
               />
 
               <v-text-field
                 label="予定日時"
-                v-model="date"
+                v-model="data.date"
               />
 
               <v-text-field
                 label="緊急連絡先"
-                v-model="contact"
+                v-model="data.contact"
               />
 
               <v-text-field
                 label="備考"
-                v-model="memo"
+                v-model="data.memo"
               />
 
             </v-form>
@@ -149,23 +149,6 @@ export default {
     return {
       /** 操作対象のテーブル */
       currentTableName: 'details',
-      /** stateのデータを受け取って格納する */
-      data: {},
-      /** フォームに表示するデータを格納 */
-      title: '',
-      created_at: '',
-      email: '',
-      name: '',
-      department: '',
-      routes: {},
-      reason: '',
-      date: '',
-      contact: '',
-      memo: '',
-
-      /** ステップの制御に使用 */
-      currentStep: null,
-      maxStep: null,
 
       /** Firestoreにバッチ書き込みするデータを格納 */
       latestStatus: '',
@@ -185,19 +168,32 @@ export default {
       getUserEmail: 'firebase/getUserEmail',
     }),
 
+    /** stateのデータを受け取って格納する */
+    data() {
+      return this.details
+    },
+    formattedDate() {
+      if (this.data == '') {
+        return false
+      } else {
+        const date = this.data.created_at.toDate()
+        return this.dateToStr24HPad0(date)
+      }
+    },
+
     /** 各種ボタンの表示/非表示ルール */
     isDisabledApproveBtn() {
       // 画面生成直後だとthis.currentStepがnullのため、下記コード内でインデックスを取得できずエラーとなる。
       // そのため、if文で一時的にtrueを返しておく。
-      if (!this.currentStep) {
+      if (!this.data.current_step) {
         return true
       } else {
         // 各種ボタンを非活性にする際の条件を列挙する
         const rules = [
-          this.routes.approvers[this.currentStep - 1].email != this.getUserEmail ? true : false,
-          this.routes.approvers[this.maxStep - 1].status == '完了' ? true : false,
-          this.routes.approvers[this.currentStep - 1].status == '否認' ? true : false,
-          this.routes.approvers[this.currentStep - 1].status == '差戻し' ? true : false,
+          this.data.routes.approvers[this.data.current_step - 1].email != this.getUserEmail ? true : false,
+          this.data.routes.approvers[this.data.max_step - 1].status == '完了' ? true : false,
+          this.data.routes.approvers[this.data.current_step - 1].status == '否認' ? true : false,
+          this.data.routes.approvers[this.data.current_step - 1].status == '差戻し' ? true : false,
         ]
 
         // 配列「rules」に1つでも「true」の要素があったら「true」を返す
@@ -208,7 +204,7 @@ export default {
     isDisabledEditBtn() {
       // 編集ボタンを非活性にする際の条件を列挙する
       const rules = [
-        this.email != this.getUserEmail ? true : false,
+        this.data.email != this.getUserEmail ? true : false,
       ]
 
       // 配列「rules」に1つでも「true」の要素があったら「true」を返す
@@ -237,7 +233,7 @@ export default {
       } else if (path.startsWith('/others/')) {
         await this.fetchOthersDetail({ userId, docId })
       }
-      this.data = this.details
+      // this.data = this.details
     },
 
     dateToStr24HPad0(date, format) {
@@ -254,22 +250,6 @@ export default {
     },
 
     setData() {
-      const date = this.data.created_at.toDate()
-      const formattedDate = this.dateToStr24HPad0(date)
-
-      this.title = this.data.title
-      this.created_at = formattedDate
-      this.email = this.data.email
-      this.name = this.data.name
-      this.department = this.data.department
-      this.routes = this.data.routes
-      this.currentStep = this.data.current_step
-      this.maxStep = this.data.max_step
-
-      this.reason = this.data.reason
-      this.date = this.data.date
-      this.contact = this.data.contact
-      this.memo = this.data.memo
     },
 
     async onClickApprove() {
@@ -277,16 +257,16 @@ export default {
 
       // フロント側の表示を更新
       // 最終ステップの場合
-      if (this.currentStep == this.maxStep) {
-        this.routes.approvers[this.currentStep - 1].status = '完了'
-        this.latestStatus = this.routes.approvers[this.currentStep - 1].status
-        this.latestApproverEmail = null
+      if (this.data.current_step == this.data.max_step) {
+        this.data.routes.approvers[this.data.current_step - 1].status = '完了'
+        this.data.latest_status = this.data.routes.approvers[this.data.current_step - 1].status
+        this.data.latest_approver_email = ''
         this.batchUpdate(operationType)
 
         // to: 申請者メールアドレスをセットする
-        const emailTo = this.email
+        const emailTo = this.data.email
         // subject: 申請が承認された旨を題名に記載する
-        const emailSubject = `申請が${operationType}されました [${this.title}]`
+        const emailSubject = `申請が${operationType}されました [${this.data.title}]`
         // body: 詳細画面へのリンクを記載する
         const url = window.location.href
         const detailPageUrl = url.replace('/others', '/my')
@@ -297,16 +277,16 @@ export default {
 
       // それ以外のステップの場合
       } else {
-        this.routes.approvers[this.currentStep - 1].status = '完了'
-        this.currentStep++
-        this.latestStatus = '保留中'
-        this.latestApproverEmail = this.routes.approvers[this.currentStep - 1].email
+        this.data.routes.approvers[this.data.current_step - 1].status = '完了'
+        this.data.current_step++
+        this.data.latest_status = '保留中'
+        this.data.latest_approver_email = this.data.routes.approvers[this.data.current_step - 1].email
         this.batchUpdate(operationType)
 
         // to: 次の承認者メールアドレスをセットする
-        const emailTo = this.latestApproverEmail
+        const emailTo = this.data.latest_approver_email
         // subject: 申請が承認された旨を題名に記載する
-        const emailSubject = `[承認依頼] [${this.title}]`
+        const emailSubject = `[承認依頼] [${this.data.title}]`
         // body: 詳細画面へのリンクを記載する
         const detailPageUrl = window.location.href
         const emailBody = this.createEmailBody(emailSubject, detailPageUrl)
@@ -317,16 +297,16 @@ export default {
     },
 
     async onClickDisapprove() {
-      this.routes.approvers[this.currentStep - 1].status = '否認'
-      this.latestStatus = '否認'
-        this.latestApproverEmail = null
+      this.data.routes.approvers[this.data.current_step - 1].status = '否認'
+      this.data.latest_status = '否認'
+        this.data.latest_approver_email = ''
         const operationType = '否認'
       this.batchUpdate(operationType)
 
       // to: 申請者メールアドレスをセットする
-      const emailTo = this.email
+      const emailTo = this.data.email
       // subject: 申請が否認された旨を題名に記載する
-      const emailSubject = `申請が${operationType}されました [${this.title}]`
+      const emailSubject = `申請が${operationType}されました [${this.data.title}]`
       // body: 詳細画面へのリンクを記載する
       const url = window.location.href
       const detailPageUrl = url.replace('/others', '/my')
@@ -337,16 +317,16 @@ export default {
     },
 
     async onClickRemand() {
-      this.routes.approvers[this.currentStep - 1].status = '差戻し'
-      this.latestStatus = '差戻し'
-      this.latestApproverEmail = null
+      this.data.routes.approvers[this.data.current_step - 1].status = '差戻し'
+      this.data.latest_status = '差戻し'
+      this.data.latest_approver_email = ''
       const operationType = '差戻し'
       this.batchUpdate(operationType)
 
       // to: 申請者メールアドレスをセットする
-      const emailTo = this.email
+      const emailTo = this.data.email
       // subject: 申請が否認された旨を題名に記載する
-      const emailSubject = `申請が${operationType}されました [${this.title}]`
+      const emailSubject = `申請が${operationType}されました [${this.data.title}]`
       // body: 詳細画面へのリンクを記載する
       const url = window.location.href
       const detailPageUrl = url.replace('/others', '/my')
@@ -364,13 +344,13 @@ export default {
       let itemRequest = this.requests
 
       // 最新のステータスを格納する
-      itemRequest.status = this.latestStatus
+      itemRequest.status = this.data.latest_status
       // 最新の承認者メールアドレスを格納する
-      itemRequest.current_approver_email = this.latestApproverEmail
+      itemRequest.current_approver_email = this.data.latest_approver_email
 
       // itemDetailを作成
       let itemDetail = this.data
-      itemDetail.current_step = this.currentStep
+      itemDetail.current_step = this.data.current_step
 
       // Firestoreにバッチ書き込み(update)
       this.batchUpdateDocuments({ userId, docId, itemRequest, itemDetail, operationType })
@@ -391,11 +371,11 @@ export default {
 
       const requestType = 'paid_leave'
       const item = {
-        title: this.title,
-        reason: this.reason,
-        date: this.date,
-        contact: this.contact,
-        memo: this.memo,
+        title: this.data.title,
+        reason: this.data.reason,
+        date: this.data.date,
+        contact: this.data.contact,
+        memo: this.data.memo,
 
         itemRequest: itemRequest,
         itemDetail: itemDetail
