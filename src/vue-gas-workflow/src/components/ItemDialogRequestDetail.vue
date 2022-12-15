@@ -152,6 +152,7 @@ export default {
       fetchUserInfo: 'firestore/fetchUserInfo',
       createArrayRoute: 'firestore/createArrayRoute',
       sendEmail: 'firestore/sendEmail',
+      batchUpdateDocuments: 'firestore/batchUpdateDocuments',
     }),
 
     /**
@@ -160,10 +161,10 @@ export default {
      */
     open (actionType, item, requestType) {
       this.item = item
-      console.log(`this.item.itemRequest:`)
-      console.log(this.item.itemRequest)
-      console.log(`this.item.itemDetail:`)
-      console.log(this.item.itemDetail)
+
+      console.log(`this.item:`)
+      console.log(this.item)
+
       this.show = true
       this.actionType = actionType
       this.requestType = requestType
@@ -178,8 +179,6 @@ export default {
     /** 更新がクリックされたとき */
     async onClickAction () {
       if (this.actionType === 'edit') {
-        //
-
         // 1ステップ目の承認者をリセットする
         this.item.itemRequest.current_approver_email = this.item.itemDetail.routes.approvers[0].email
         this.item.itemDetail.current_approver_email = this.item.itemDetail.routes.approvers[0].email
@@ -198,16 +197,13 @@ export default {
         this.item.itemRequest = { ...this.item.itemRequest, title: this.title }
         this.item.itemDetail = { ...this.item.itemDetail, title: this.title, reason: this.reason, date: this.date, contact: this.contact, memo: this.memo }
 
-        // 正常にデータが格納されていることを確認できた。
-        console.log(this.item)
+        const userId = this.item.itemRequest.email
+        const docId = this.$route.params.id
+        const itemRequest = this.item.itemRequest
+        const itemDetail = this.item.itemDetail
+        const operationType = '再申請'
 
-        // TODO: このままでは親コンポーネントのフォームに表示されるデータが更新されない
-        // ～流れ～
-        // 更新ボタンを押すと同時にstate.firestore.detailsが更新される
-        // computedプロパティにdata() {return this.details}を移動する
-        // フォームの各要素はdataの各プロパティを参照するようにする
-
-        // this.batchUpdateDocuments({ userId, docId, itemRequest, itemDetail, operationType })
+        this.batchUpdateDocuments({ userId, docId, itemRequest, itemDetail, operationType })
 
         // // to: 承認者メールアドレスをセットする
         // const emailTo = routes.approvers[0].email
