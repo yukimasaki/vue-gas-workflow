@@ -28,6 +28,7 @@
           />
 
           <!-- 選択した申請書ごとに項目を出し分けする -->
+          <!-- 休暇申請 -->
           <div v-if="requestType == 'paid_leave'">
             <!-- 事由 -->
             <v-textarea
@@ -53,6 +54,29 @@
             />
 
             <!-- 備考 -->
+            <v-textarea
+              label="備考"
+              v-model="memo"
+              rows="3"
+            />
+          </div>
+
+          <!-- 備品申請 -->
+          <div v-else-if="requestType == 'equipment'">
+            <v-textarea
+              label="商品名"
+              v-model="itemName"
+              :rules="itemNameRules"
+              rows="3"
+            />
+
+            <v-textarea
+              label="購入理由"
+              v-model="reason"
+              :rules="reasonRules"
+              rows="3"
+            />
+
             <v-textarea
               label="備考"
               v-model="memo"
@@ -110,18 +134,14 @@ export default {
       actionType: 'add',
       /** 申請種別 */
       requestType: '',
-      /** ID */
+
       id: '',
-      /** タイトル */
       title: '',
-      /** 事由 */
       reason: '',
-      /** 予定日時 */
       date: '',
-      /** 緊急連絡先 */
       contact: '',
-      /** 備考 */
       memo: '',
+      itemName: '',
 
       /** バリデーションルール */
       requestTypeRules: [
@@ -138,6 +158,9 @@ export default {
       ],
       contactRules: [
         v => v.trim().length > 0 || '緊急連絡先は必須です',
+      ],
+      itemNameRules: [
+        v => v.trim().length > 0 || '商品名は必須です',
       ],
     }
   },
