@@ -227,11 +227,6 @@ export default {
         }
         const requestTypeText = toTextRequestType(requestTypeValue)
 
-        console.log(`requestTypeValue:`)
-        console.log(requestTypeValue)
-        console.log(`requestTypeText:`)
-        console.log(requestTypeText)
-
         await this.fetchUserInfo({ userId })
         const department = this.userInfo.department
         await this.createArrayRoute({ requestTypeValue, department })
