@@ -299,8 +299,8 @@ export default {
     async onClickDisapprove() {
       this.data.routes.approvers[this.data.current_step - 1].status = '否認'
       this.latestStatus = '否認'
-        this.latestApproverEmail = ''
-        const operationType = '否認'
+      this.latestApproverEmail = ''
+      const operationType = '否認'
       this.batchUpdate(operationType)
 
       // to: 申請者メールアドレスをセットする
