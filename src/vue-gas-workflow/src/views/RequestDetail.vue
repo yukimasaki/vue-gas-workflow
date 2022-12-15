@@ -114,7 +114,7 @@
               </div>
               <!-- 備品申請 -->
               <div v-else-if="requestTypeValue == 'equipment'">
-                <v-text-field
+                <v-textarea
                   label="商品名"
                   v-model="data.item_name"
                 />
@@ -191,7 +191,7 @@ export default {
     formattedDate() {
       // 画面描画直後はthis.dataが空値のためif文でエラー回避しておく
       if (this.data == '') {
-        return false
+        return null
       } else {
         const date = this.data.created_at.toDate()
         return this.dateToStr24HPad0(date)
@@ -199,7 +199,7 @@ export default {
     },
     requestTypeValue() {
       if(this.details == '') {
-        return false
+        return null
       } else {
         return this.details.request_type.value
       }
