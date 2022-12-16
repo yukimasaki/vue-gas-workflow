@@ -95,11 +95,15 @@
               <!-- 選択した申請書ごとに項目を出し分けする -->
               <!-- 休暇申請 -->
               <div v-if="requestTypeValue == 'paid_leave'">
-                <v-text-field
+                <v-textarea
+                  auto-grow
+                  rows="1"
                   label="事由"
                   v-model="data.reason"
                 />
-                <v-text-field
+                <v-textarea
+                  auto-grow
+                  rows="1"
                   label="予定日時"
                   v-model="data.date"
                 />
@@ -107,7 +111,9 @@
                   label="緊急連絡先"
                   v-model="data.contact"
                 />
-                <v-text-field
+                <v-textarea
+                  auto-grow
+                  rows="1"
                   label="備考"
                   v-model="data.memo"
                 />
@@ -115,14 +121,20 @@
               <!-- 備品申請 -->
               <div v-else-if="requestTypeValue == 'equipment'">
                 <v-textarea
+                  auto-grow
+                  rows="1"
                   label="商品名"
                   v-model="data.item_name"
                 />
-                <v-text-field
+                <v-textarea
+                  auto-grow
+                  rows="1"
                   label="購入理由"
                   v-model="data.reason"
                 />
-                <v-text-field
+                <v-textarea
+                  auto-grow
+                  rows="1"
                   label="備考"
                   v-model="data.memo"
                 />
