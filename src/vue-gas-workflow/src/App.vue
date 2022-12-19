@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <!-- ツールバー -->
-    <v-app-bar app color="green" dark>
+    <v-app-bar app color="primary" dark>
 
       <!-- タイトル -->
       <v-toolbar-title
@@ -72,13 +72,6 @@
             <v-list-item link to="/settings">
               <v-list-item-content>
                 <v-list-item-title>アプリ設定</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-
-            <!-- テスト -->
-            <v-list-item link to="/test">
-              <v-list-item-content>
-                <v-list-item-title>テスト</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
 
