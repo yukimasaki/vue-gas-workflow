@@ -11,7 +11,7 @@
         <v-spacer/>
         <!-- 追加ボタン -->
         <v-col class="text-right" cols="4">
-          <v-btn dark color="green" @click="onClickAdd">
+          <v-btn dark color="secondary" @click="onClickAdd">
             <v-icon>mdi-plus</v-icon>
           </v-btn>
         </v-col>

@@ -149,10 +149,10 @@
     <!-- 承認・否認等のボタン -->
     <v-footer app padless>
       <v-col col="12" class="text-center">
-        <v-btn class="mx-2" color="green" :dark="isDisabledApproveBtn? false : true" @click="onClickApprove" :disabled="isDisabledApproveBtn">承認</v-btn>
-        <v-btn class="mx-2" color="green" :dark="isDisabledApproveBtn? false : true" @click="onClickDisapprove" :disabled="isDisabledApproveBtn">否認</v-btn>
-        <v-btn class="mx-2" color="green" :dark="isDisabledApproveBtn? false : true" @click="onClickRemand" :disabled="isDisabledApproveBtn">差戻し</v-btn>
-        <v-btn class="mx-2" color="green" :dark="isDisabledEditBtn? false : true" @click="onClickEdit" :disabled="isDisabledEditBtn">編集</v-btn>
+        <v-btn class="mx-2" color="primary" :dark="isDisabledApproveBtn? false : true" @click="onClickApprove" :disabled="isDisabledApproveBtn">承認</v-btn>
+        <v-btn class="mx-2" color="primary" :dark="isDisabledApproveBtn? false : true" @click="onClickDisapprove" :disabled="isDisabledApproveBtn">否認</v-btn>
+        <v-btn class="mx-2" color="primary" :dark="isDisabledApproveBtn? false : true" @click="onClickRemand" :disabled="isDisabledApproveBtn">差戻し</v-btn>
+        <v-btn class="mx-2" color="primary" :dark="isDisabledEditBtn? false : true" @click="onClickEdit" :disabled="isDisabledEditBtn">編集</v-btn>
       </v-col>
     </v-footer>
 

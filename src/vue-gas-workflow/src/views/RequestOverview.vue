@@ -3,12 +3,12 @@
     <!-- タブレイアウト -->
     <v-row>
       <v-col cols="12" md="6" xs="12">
-        <v-tabs grow color="green">
+        <v-tabs grow color="primaryDarken">
           <v-tab @click="onClickTab('myRequests')">自分の申請</v-tab>
           <v-tab @click="onClickTab('othersRequests')">
             <template v-if="numberOfOthersRequests">
               <v-badge
-                color="red"
+                color="info"
                 :content="numberOfOthersRequests"
               >承認依頼</v-badge>
             </template>
@@ -30,7 +30,7 @@
         <v-spacer/>
         <!-- 追加ボタン -->
         <v-col class="text-right" cols="4">
-          <v-btn dark color="green" @click="onClickAdd">
+          <v-btn dark color="secondary" @click="onClickAdd">
             <v-icon>mdi-plus</v-icon>
           </v-btn>
         </v-col>
@@ -203,10 +203,10 @@ export default {
     statusColor(item) {
       let color = ''
       switch (item.status) {
-        case '完了': color =  'green' ; break
-        case '保留中': color =  'blue' ; break
-        case '否認': color =  'red' ; break
-        case '差戻し': color =  'orange' ; break
+        case '完了': color =  'success' ; break
+        case '保留中': color =  'info' ; break
+        case '否認': color =  'error' ; break
+        case '差戻し': color =  'warning' ; break
       }
       return color
     },

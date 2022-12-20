@@ -2,7 +2,7 @@
   <!-- 申請ルートテーブルを表示させる -->
   <v-card>
     <!-- タブレイアウト -->
-    <v-tabs grow color="green">
+    <v-tabs grow color="primary">
       <v-tab @click="onClickTab('paid_leave')">休暇申請</v-tab>
       <v-tab @click="onClickTab('equipment')">備品申請</v-tab>
     </v-tabs>
@@ -19,7 +19,7 @@
       <v-spacer/>
       <!-- 追加ボタン -->
       <v-col class="text-right" cols="4">
-        <v-btn dark color="green" @click="onClickAdd">
+        <v-btn dark color="secondary" @click="onClickAdd">
           <v-icon>mdi-plus</v-icon>
         </v-btn>
       </v-col>
