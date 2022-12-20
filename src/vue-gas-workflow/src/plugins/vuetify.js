@@ -15,7 +15,7 @@ export default new Vuetify({
               secondaryDarken: '#40241a',
               error: '#e53935',   // red
               warning: '#ffb300', // orange
-              info: '#3949ab',    // blue
+              info: '#1e88e5',    // blue
               success: '#7cb342', // green
             },
         },
