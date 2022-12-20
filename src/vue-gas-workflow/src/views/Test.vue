@@ -8,49 +8,42 @@
             <v-spacer></v-spacer>
           </v-card-text>
           <v-card-actions>
-            <v-btn dark color="green" @click="onClickSend">
-              <v-icon left>mdi-send</v-icon>
-              メール送信
+            <v-btn dark color="secondary" @click="onClickAdd">
+              <v-icon left>mdi-plus</v-icon>
+              追加テスト
             </v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
     </v-row>
 
+    <ItemDialogCreateRequest ref="ItemDialogCreateRequest"/>
   </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import ItemDialogCreateRequest from '../components/ItemDialogCreateRequest.vue'
 
 export default {
   name: 'Test',
 
+  components: {
+    ItemDialogCreateRequest
+  },
+
   data() {
     return {
       /** 申請書タイトル */
-      title: 'メールテスト',
+      title: 'テスト',
     }
   },
 
   computed: {
-    ...mapGetters({
-      getUserEmail: 'firebase/getUserEmail',
-    })
   },
 
   methods: {
-    ...mapActions({
-      sendEmail: 'firestore/sendEmail',
-    }),
-
-    async onClickSend() {
-      const emailConfig = {
-        to: this.getUserEmail,
-        subject: 'テストです。',
-        body: 'テスト送信です！'
-      }
-      await this.sendEmail({ emailConfig })
+    onClickAdd() {
+      this.$refs.ItemDialogCreateRequest.open('add')
     },
 
   },
