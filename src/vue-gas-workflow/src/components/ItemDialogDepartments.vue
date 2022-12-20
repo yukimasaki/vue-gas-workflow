@@ -32,7 +32,7 @@
           キャンセル
         </v-btn>
         <v-btn
-          color="blue darken-1"
+          color="primary"
           text
           :disabled="!valid"
           @click="onClickAction"

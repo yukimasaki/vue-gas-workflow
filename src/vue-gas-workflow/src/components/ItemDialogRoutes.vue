@@ -74,7 +74,7 @@
           <v-spacer/>
           <!-- 追加ボタン -->
           <v-btn
-            color="blue darken-1"
+            color="primary"
             text
             :disabled="!userInfo.id"
             @click="addApprover"
@@ -92,7 +92,7 @@
           キャンセル
         </v-btn>
         <v-btn
-          color="blue darken-1"
+          color="primary"
           text
           :disabled="!valid"
           @click="onClickAction"
