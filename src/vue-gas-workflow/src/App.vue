@@ -40,38 +40,39 @@
             <v-btn text v-on="on" style="cursor: default">設定</v-btn>
           </template>
           <v-list>
-            <!-- 管理者設定 -->
             <v-list-item link to="/admins">
               <v-list-item-content>
                 <v-list-item-title>管理者設定</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
 
-            <!-- 従業員設定 -->
             <v-list-item link to="/departments">
               <v-list-item-content>
                 <v-list-item-title>部署設定</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
 
-            <!-- 従業員設定 -->
             <v-list-item link to="/users">
               <v-list-item-content>
                 <v-list-item-title>従業員設定</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
 
-            <!-- 申請ルート設定 -->
             <v-list-item link to="/routes">
               <v-list-item-content>
                 <v-list-item-title>申請ルート設定</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
 
-            <!-- アプリ設定 -->
             <v-list-item link to="/settings">
               <v-list-item-content>
                 <v-list-item-title>アプリ設定</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-list-item link to="/test">
+              <v-list-item-content>
+                <v-list-item-title>テスト</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
 
