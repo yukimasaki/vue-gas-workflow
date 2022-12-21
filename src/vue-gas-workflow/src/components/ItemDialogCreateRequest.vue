@@ -13,45 +13,67 @@
         <v-form ref="form" v-model="valid">
           <v-select
             label="申請種別"
-            v-model="requestType"
-            :items="items"
+            v-model="formBind.common.requestType"
+            :items="selectReqestType"
             :rules="requestTypeRules"
             return-object
           />
 
           <v-text-field
             label="タイトル"
-            v-model="title"
+            v-model="formBind.common.title"
             :rules="titleRules"
           />
 
           <!-- 選択した申請書ごとに項目を出し分けする -->
           <!-- 休暇申請 -->
-          <div v-if="requestType.value == 'paid_leave'">
-            <!-- 子コンポーネントを挿入する -->
-            <ItemDialogCreateRequestFormPaidLeave ref="ItemDialogCreateRequestFormPaidLeave"/>
-            <p>{{ message }}</p>
+          <div v-if="formBind.common.requestType.value == 'paid_leave'">
+            <v-textarea
+              label="事由"
+              v-model="formBind.unique.paidLeave.reason"
+              :rules="reasonRules"
+              rows="3"
+            />
+
+            <v-textarea
+              label="予定日時"
+              v-model="formBind.unique.paidLeave.date"
+              :rules="dateRules"
+              rows="3"
+            />
+
+            <v-text-field
+              label="緊急連絡先"
+              v-model="formBind.unique.paidLeave.contact"
+              :rules="contactRules"
+            />
+
+            <v-textarea
+              label="備考"
+              v-model="formBind.unique.paidLeave.memo"
+              rows="3"
+            />
           </div>
 
           <!-- 備品申請 -->
-          <div v-else-if="requestType.value == 'equipment'">
+          <div v-else-if="formBind.common.requestType.value == 'equipment'">
             <v-textarea
               label="商品名"
-              v-model="itemName"
+              v-model="formBind.unique.equipment.itemName"
               :rules="itemNameRules"
               rows="3"
             />
 
             <v-textarea
               label="購入理由"
-              v-model="reason"
+              v-model="formBind.unique.equipment.reason"
               :rules="reasonRules"
               rows="3"
             />
 
             <v-textarea
               label="備考"
-              v-model="memo"
+              v-model="formBind.unique.equipment.memo"
               rows="3"
             />
           </div>
@@ -82,7 +104,6 @@
 </template>
 
 <script>
-import ItemDialogCreateRequestFormPaidLeave from '../components/ItemDialogCreateRequestFormPaidLeave.vue'
 import { mapState, mapActions, mapGetters } from 'vuex'
 import { serverTimestamp } from '@firebase/firestore'
 import { v4 as uuidv4} from 'uuid'
@@ -90,14 +111,10 @@ import { v4 as uuidv4} from 'uuid'
 export default {
   name: 'ItemDialogRequestOverview',
 
-  components: {
-    ItemDialogCreateRequestFormPaidLeave
-  },
-
   data () {
     return {
       /** 申請種別 */
-      items: [
+      selectReqestType: [
         {text: '休暇申請', value: 'paid_leave'},
         {text: '備品申請', value: 'equipment'},
       ],
@@ -109,16 +126,27 @@ export default {
       menu: false,
       /** 操作タイプ 'add' or 'edit' */
       actionType: 'add',
-      /** 申請種別 */
-      requestType: {},
 
-      id: '',
-      title: '',
-      reason: '',
-      date: '',
-      contact: '',
-      memo: '',
-      itemName: '',
+      /** フォームのバインディング */
+      formBind: {
+        common: {
+          requestType: '',
+          title: '',
+        },
+        unique: {
+          paidLeave: {
+            reason: '',
+            date: '',
+            contact: '',
+            memo: ''
+          },
+          equipment: {
+            itemName: '',
+            reason: '',
+            memo: ''
+          },
+        },
+      },
 
       /** バリデーションルール */
       requestTypeRules: [
@@ -174,10 +202,10 @@ export default {
      * ダイアログを表示します。
      * このメソッドは親から呼び出されます。
      */
-    open (actionType, item) {
+    open (actionType) {
       this.show = true
       this.actionType = actionType
-      this.resetForm(item)
+      this.resetForm()
     },
 
     /** キャンセルがクリックされたとき */
@@ -188,79 +216,91 @@ export default {
     /** 追加がクリックされたとき */
     async onClickAction () {
       if (this.actionType === 'add') {
-        // 申請ルート情報をarray型に格納する
-        // ↓ごちゃごちゃしてるのでキレイにする！
+        // TODO: ↓ごちゃごちゃしてるのでキレイにする！
+
+        // ドキュメントを追加する際に必要な引数を生成する
         const uid = uuidv4()
         const userId = this.getUserEmail()
-        const requestTypeValue = this.requestType.value
 
+        // プルダウンで選択された申請種別のvalueを変数へ格納
+        const requestTypeValue = this.formBind.common.requestType.value
+
+        // 申請者のユーザー情報を取得
         await this.fetchUserInfo({ userId })
+
+        // 所属部署を変数へ格納
         const department = this.userInfo.department
+
+        // TODO: 以下の2文は、「fetchRoutes」という新たなActionsにまとめても良いかも
+        // 申請種別と所属部署を引数として、stateに申請経路情報を生成する
         await this.createArrayRoute({ requestTypeValue, department })
+        // getters経由で申請経路情報を取得し、変数へ格納する
         const routes = this.getArrayRoute()[0]
+
+        // 取得した申請経路情報には、各申請のステータス情報が含まれていないため、フロント側で付加しておく
         const arrayAddedStatus = []
         routes.approvers.forEach(element => {
           arrayAddedStatus.push({...element, status: '保留中'})
+          routes.approvers = arrayAddedStatus
         })
-        routes.approvers = arrayAddedStatus
+
         // ステップ数を格納する
         const currentStep = 1
         const maxStep = routes.approvers.length
 
-        let item = {
-          request: {
-            request_type: this.requestType,
-            title: this.title,
-            status: '保留中',
-            current_approver_email: routes.approvers[0].email,
-            created_at: serverTimestamp(),
-            email: this.userInfo.id,
-            name: this.userInfo.name,
-            department: this.userInfo.department
-          },
-          detail: {
-            id: uid,
-            request_type: this.requestType,
-            title: this.title,
-            status: '保留中',
-            current_approver_email: routes.approvers[0].email,
-            created_at: serverTimestamp(),
-            email: this.userInfo.id,
-            name: this.userInfo.name,
-            department: this.userInfo.department,
-            current_step: currentStep,
-            max_step: maxStep,
-            routes: routes,
-            comments: []
-          }
-        }
-
-        // itemオブジェクトに各申請に固有のプロパティを挿入する
+        // 申請種別に固有の情報を生成する
         const createUniqueItem = (requestTypeValue) => {
           switch(requestTypeValue) {
             case 'paid_leave': {
               const uniqueItem = {
-                reason: this.reason,
-                date: this.date,
-                contact: this.contact,
-                memo: this.memo
+                reason: this.formBind.unique.paidLeave.reason,
+                date: this.formBind.unique.paidLeave.date,
+                contact: this.formBind.unique.paidLeave.contact,
+                memo: this.formBind.unique.paidLeave.memo
               }
               return uniqueItem
             }
             case 'equipment': {
               const uniqueItem = {
-                item_name: this.itemName,
-                reason: this.reason,
-                memo: this.memo
+                item_name: this.formBind.unique.equipment.itemName,
+                reason: this.formBind.unique.equipment.reason,
+                memo: this.formBind.unique.equipment.memo
               }
               return uniqueItem
             }
           }
         }
         const uniqueItem = createUniqueItem(requestTypeValue)
-        item.detail = { ...item.detail, ...uniqueItem }
 
-        await this.batchAddSubCollectionsToUsers({ uid, userId, item })
+        const item = {
+          common: {
+            request_type: this.formBind.common.requestType,
+            current_step: currentStep,
+            max_step: maxStep,
+            status: '保留中',
+            current_approver_email: routes.approvers[0].email,
+            created_at: serverTimestamp(),
+            email: this.userInfo.id,
+            name: this.userInfo.name,
+            department: this.userInfo.department,
+            title: this.formBind.unique.paidLeave.title,
+
+            routes: {
+                approvers: routes.approvers,
+                // readers: routes.readers ?? ''
+              },
+
+            comments: []
+          },
+
+          unique: {
+            ...uniqueItem
+          }
+        }
+
+        // await this.addDocumentIntoSubCollection({ uid, userId, item })
+        console.log(`uid: ${uid}`)
+        console.log(item)
 
         // // to: 承認者メールアドレスをセットする
         // const emailTo = routes.approvers[0].email
@@ -278,14 +318,27 @@ export default {
     },
 
     /** フォームの内容を初期化します */
-    resetForm (item = {}) {
-      this.id = item.id || ''
-      this.title = item.title || ''
-      this.reason = item.reason || ''
-      this.date = item.date || ''
-      this.contact = item.contact || ''
-      this.memo = item.memo || ''
-      this.itemName = item.itemName || ''
+    resetForm () {
+      //this.formBind.common配下のプロパティに空値をセットする
+      // キーを取得する
+      const commonPorpKeys = Object.keys(this.formBind.common)
+      // キーの数の分だけ、空値をセットする処理を繰り返す
+      commonPorpKeys.forEach(key => {
+        this.formBind.common[key] = ''
+      })
+
+      //this.formBind.unique.[申請種別]配下のプロパティに空値をセットする
+      // 申請種別キーを取得する
+      const uniquePropRequestTypeKeys = Object.keys(this.formBind.unique)
+      // 申請種別キーの数の分だけ、ネストされた処理を繰り返す
+      uniquePropRequestTypeKeys.forEach(requestTypeKey => {
+        // 項目名キーを取得する
+        const uniquePropItemNameKeys = Object.keys(this.formBind.unique[requestTypeKey])
+        // 項目名キーの数の分だけ、空値をセットする処理を繰り返す
+        uniquePropItemNameKeys.forEach(itemNameKey => {
+          this.formBind.unique[requestTypeKey][itemNameKey] = ''
+        })
+      })
 
       this.$refs.form.resetValidation()
     },
