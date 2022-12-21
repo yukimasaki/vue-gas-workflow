@@ -219,8 +219,8 @@ export default {
         const arrayAddedStatus = []
         routes.approvers.forEach(element => {
           arrayAddedStatus.push({...element, status: '保留中'})
+          routes.approvers = arrayAddedStatus
         })
-        routes.approvers = arrayAddedStatus
         // ステップ数を格納する
         const currentStep = 1
         const maxStep = routes.approvers.length
