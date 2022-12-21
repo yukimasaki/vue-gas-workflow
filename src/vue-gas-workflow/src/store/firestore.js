@@ -215,6 +215,24 @@ const actions = {
     commit('setCollections', { collections: docs, currentTableName: 'othersRequests' })
   },
 
+  /** users配下のサブコレクションにドキュメントを追加する */
+  async addDocumentIntoSubCollection({ commit }, { uid, userId, item }) {
+    // uuidをドキュメントIDとして指定し、空のドキュメントを作成しておく
+    // doc関数の引数は、dbを除き偶数個で指定する必要がある
+    const docRef = doc(db, 'users', userId, 'requests', uid)
+
+    // itemをdocRefで指定したドキュメントパスへ保存
+    await setDoc(docRef, item)
+
+    // serverTimestampが付与されていないitemをv-data-tableに表示するとエラーとなるため、
+    // serverTimestampが付与されたドキュメントを取得しstateにセットする
+    const docSnap = await getDoc(docRef)
+    const timestampedItem = docSnap.data()
+
+    commit('addDocument', { item: timestampedItem, currentTableName: 'myRequests' })
+    commit('setWorkflowMessage', '申請を提出しました。')
+  },
+
   /** 2階層のサブコレクションをusersコレクションにバッチ書き込み(add)する */
   async batchAddSubCollectionsToUsers({ commit }, { uid, userId, item }) {
     const batch = writeBatch(db)
