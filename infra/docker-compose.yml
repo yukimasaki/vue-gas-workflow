@@ -1,7 +1,7 @@
 version: '3'
 services:
-  vue:
-    container_name: vue
+  vue-gas-workflow:
+    container_name: vue-gas-workflow
     build: .
     ports:
       - "8079:8080"
