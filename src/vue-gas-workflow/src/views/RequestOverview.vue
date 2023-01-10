@@ -49,7 +49,7 @@
       <v-data-table
         class="text-no-wrap"
         :headers="tableHeaders"
-        :items="formattedTableData"
+        :items="tableData"
         :search="search"
         :footer-props="footerProps"
         :sort-by="'common.created_at'"
@@ -58,18 +58,22 @@
         mobile-breakpoint="0"
         @click:row="onClickRow"
       >
-      <template v-slot:[`item.common.status`]="{ item }">
-        <v-chip
-          class="ma-2"
-          :color="statusColor(item)"
-          text-color="white"
-        >
-          <v-icon left>
-            {{ statusIcon(item) }}
-          </v-icon>
-          {{ item.common.status }}
-        </v-chip>
-      </template>
+
+        <template v-slot:[`item.common.created_at`]="{ item }">{{ formatDate(item) }}</template>
+
+        <template v-slot:[`item.common.status`]="{ item }">
+          <v-chip
+            class="ma-2"
+            :color="statusColor(item)"
+            text-color="white"
+          >
+            <v-icon left>
+              {{ statusIcon(item) }}
+            </v-icon>
+            {{ item.common.status }}
+          </v-chip>
+        </template>
+
       </v-data-table>
     </v-card>
 
@@ -110,14 +114,6 @@ export default {
       othersRequests: state => state.firestore.othersRequests,
       selectedTabName: state => state.firestore.selectedTabName,
     }),
-
-    /** 申請日の表示形式をフォーマット */
-    formattedTableData () {
-      return this.tableData.map((item) => ({
-        ...item,
-        // common: { created_at: this.dateToStr24HPad0(item.common.created_at.toDate()) }
-      }))
-    },
 
     /** テーブルのヘッダー設定 */
     tableHeaders () {
@@ -196,6 +192,10 @@ export default {
         format = format.replace(/mm/g, ('0' + date.getMinutes()).slice(-2))
         format = format.replace(/ss/g, ('0' + date.getSeconds()).slice(-2))
         return format
+    },
+
+    formatDate(item) {
+      return this.dateToStr24HPad0(item.common.created_at.toDate())
     },
 
     statusColor(item) {
