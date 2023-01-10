@@ -1,8 +1,8 @@
-FROM node:17-alpine3.14
+FROM node:latest
 
 WORKDIR /var/www/html
 
-RUN apk update && \
+RUN apt update && \
     npm install -g npm && \
     npm install -g @vue/cli
 
