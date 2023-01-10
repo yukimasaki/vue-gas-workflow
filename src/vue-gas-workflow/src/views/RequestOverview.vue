@@ -52,14 +52,13 @@
         :items="formattedTableData"
         :search="search"
         :footer-props="footerProps"
-        :sort-by="'created_at'"
+        :sort-by="'common.created_at'"
         :sort-desc="true"
         :items-per-page="30"
         mobile-breakpoint="0"
         @click:row="onClickRow"
       >
-
-      <template v-slot:[`item.status`]="{ item }">
+      <template v-slot:[`item.common.status`]="{ item }">
         <v-chip
           class="ma-2"
           :color="statusColor(item)"
@@ -68,15 +67,14 @@
           <v-icon left>
             {{ statusIcon(item) }}
           </v-icon>
-          {{ item.status }}
+          {{ item.common.status }}
         </v-chip>
       </template>
-
       </v-data-table>
     </v-card>
 
     <!-- 追加／編集ダイアログ -->
-    <ItemDialogRequestOverview ref="ItemDialogRequestOverview"/>
+    <ItemDialogCreateRequest ref="ItemDialogCreateRequest"/>
 
   </div>
 
@@ -84,13 +82,13 @@
 
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
-import ItemDialogRequestOverview from '../components/ItemDialogRequestOverview.vue'
+import ItemDialogCreateRequest from '../components/ItemDialogCreateRequest.vue'
 
 export default {
   name: 'RequestOverView',
 
   components: {
-    ItemDialogRequestOverview
+    ItemDialogCreateRequest
   },
 
   data() {
@@ -117,19 +115,19 @@ export default {
     formattedTableData () {
       return this.tableData.map((item) => ({
         ...item,
-        created_at: this.dateToStr24HPad0(item.created_at.toDate())
+        // common: { created_at: this.dateToStr24HPad0(item.common.created_at.toDate()) }
       }))
     },
 
     /** テーブルのヘッダー設定 */
     tableHeaders () {
       return [
-        { text: '作成日時', value: 'created_at' },
-        { text: '申請種別', value: 'request_type.text', sortable: false },
-        { text: 'ステータス', value: 'status', sortable: false },
-        { text: 'タイトル', value: 'title', sortable: false },
-        { text: '申請者', value: 'name', sortable: false },
-        { text: '部署', value: 'department', sortable: false },
+        { text: '作成日時', value: 'common.created_at' },
+        { text: '申請種別', value: 'common.request_type.text', sortable: false },
+        { text: 'ステータス', value: 'common.status', sortable: false },
+        { text: 'タイトル', value: 'common.title', sortable: false },
+        { text: '申請者', value: 'common.name', sortable: false },
+        { text: '部署', value: 'common.department', sortable: false },
       ]
     },
 
@@ -157,7 +155,7 @@ export default {
 
     /** 追加ボタンがクリックされたとき */
     onClickAdd () {
-      this.$refs.ItemDialogRequestOverview.open('add')
+      this.$refs.ItemDialogCreateRequest.open('add')
     },
 
     onClickRow(item) {
@@ -202,7 +200,7 @@ export default {
 
     statusColor(item) {
       let color = ''
-      switch (item.status) {
+      switch (item.common.status) {
         case '完了': color =  'success' ; break
         case '保留中': color =  'info' ; break
         case '否認': color =  'error' ; break
@@ -213,7 +211,7 @@ export default {
 
     statusIcon(item) {
       let icon = ''
-      switch (item.status) {
+      switch (item.common.status) {
         case '完了': icon =  'mdi-check' ; break
         case '保留中': icon =  'mdi-timer-sand' ; break
         case '否認': icon =  'mdi-cancel' ; break
