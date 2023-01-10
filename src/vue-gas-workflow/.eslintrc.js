@@ -14,6 +14,6 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'vue/multi-word-component-names': 0,
-    "vue/no-v-for-template-key-on-child": 0
+    'no-v-for-template-key': 1
   }
 }
