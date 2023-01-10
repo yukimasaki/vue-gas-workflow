@@ -152,7 +152,7 @@ export default {
       fetchUserInfo: 'firestore/fetchUserInfo',
       createArrayRoute: 'firestore/createArrayRoute',
       sendEmail: 'firestore/sendEmail',
-      batchUpdateDocuments: 'firestore/batchUpdateDocuments',
+      updateSubCollection: 'firestore/updateSubCollection',
     }),
 
     /**
@@ -203,7 +203,7 @@ export default {
         const itemDetail = this.item.itemDetail
         const operationType = '再提出'
 
-        this.batchUpdateDocuments({ userId, docId, itemRequest, itemDetail, operationType })
+        this.updateSubCollection({ userId, docId, itemRequest, itemDetail, operationType })
 
         // to: 承認者メールアドレスをセットする
         const emailTo = this.item.itemDetail.routes.approvers[0].email

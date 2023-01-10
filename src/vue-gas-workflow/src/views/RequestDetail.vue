@@ -259,7 +259,7 @@ export default {
       fetchMyDetail: 'firestore/fetchMyDetail',
       fetchOthersDetail: 'firestore/fetchOthersDetail',
       fetchRequest: 'firestore/fetchRequest',
-      batchUpdateDocuments: 'firestore/batchUpdateDocuments',
+      updateSubCollection: 'firestore/updateSubCollection',
       sendEmail: 'firestore/sendEmail',
     }),
 
@@ -391,7 +391,7 @@ export default {
       itemRequest.current_approver_email = this.latestApproverEmail
 
       // Firestoreにバッチ書き込み(update)
-      this.batchUpdateDocuments({ userId, docId, itemRequest, itemDetail, operationType })
+      this.updateSubCollection({ userId, docId, itemRequest, itemDetail, operationType })
     },
 
     createEmailBody(emailSubject, detailPageUrl) {

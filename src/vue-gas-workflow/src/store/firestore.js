@@ -254,21 +254,11 @@ const actions = {
     commit('setWorkflowMessage', '申請を提出しました。')
   },
 
-  /** バッチ書き込み(update) */
-   async batchUpdateDocuments({ commit }, { userId, docId, itemRequest, itemDetail, operationType }) {
-    const batch = writeBatch(db)
-
-    // item*.idに対応するドキュメントを取得
-    const docRequest = doc(db, 'users', userId, 'requests', docId)
-    const docDetail = doc(db, 'users', userId, 'requests', docId, 'details', docId)
-
-    // バッチ書き込みを実行
-    batch.set(docRequest, itemRequest)
-    batch.set(docDetail, itemDetail)
-    await batch.commit()
-
-    commit('setCollections', { collections: itemRequest, currentTableName: 'requests' })
-    commit('setCollections', { collections: itemDetail, currentTableName: 'details' })
+  /** サブコレクションを更新する */
+  async updateSubCollection({ commit }, { userId, docId, item, operationType }) {
+    const docRef = doc(db, 'users', userId, 'requests', docId)
+    await updateDoc(docRef, item)
+    commit('updateDocument', { item, currentTableName: 'requests' })
     commit('setWorkflowMessage', `申請を${operationType}しました。`)
   },
 
