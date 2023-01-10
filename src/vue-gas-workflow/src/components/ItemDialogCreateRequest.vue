@@ -273,6 +273,7 @@ export default {
         const uniqueItem = createUniqueItem(requestTypeValue)
 
         const item = {
+          id: uid,
           common: {
             request_type: this.formBind.common.requestType,
             current_step: currentStep,
@@ -298,8 +299,6 @@ export default {
           }
         }
 
-        console.log(`uid: ${uid}`)
-        console.log(item)
         await this.addDocumentAsSubCollection({ uid, userId, item })
 
         // // to: 承認者メールアドレスをセットする
