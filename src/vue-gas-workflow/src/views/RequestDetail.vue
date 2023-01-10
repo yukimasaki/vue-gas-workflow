@@ -373,7 +373,10 @@ export default {
       // await this.sendEmail({ emailConfig })
     },
 
+    // TODO: 適切な関数名にリネームする
     async batchUpdate(operationType) {
+      // TODO: 新しいデータ構造に対応する
+
       // requestドキュメントを取得し変数に格納する
       const userId = this.formData.common.email
       const docId = this.$route.params.id
