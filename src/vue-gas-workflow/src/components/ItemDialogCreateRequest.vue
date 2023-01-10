@@ -109,7 +109,7 @@ import { serverTimestamp } from '@firebase/firestore'
 import { v4 as uuidv4} from 'uuid'
 
 export default {
-  name: 'ItemDialogRequestOverview',
+  name: 'ItemDialogCreateRequest',
 
   data () {
     return {
