@@ -1,31 +1,32 @@
 <template>
-  <div>
+  <div v-if="formData.length != 0">
     <!-- 申請状況 -->
     <v-row justify="center">
       <v-col cols="12" md="6" xs="12">
         <v-card >
           <!-- スマホは縦型のステップを表示 -->
           <template v-if="$vuetify.breakpoint.xs || $vuetify.breakpoint.sm">
-            <v-stepper v-if="data.current_step" v-model="data.current_step" vertical>
-              <template v-for="( n, index ) in data.max_step">
+            <v-stepper v-model="formData.common.current_step" vertical>
+              <template v-for="( n, index ) in formData.common.max_step">
                 <v-stepper-step
+                  v-if="n != undefined"
                   :key="`${n}-step`"
-                  :complete="data.routes.approvers[index].status == '完了'"
+                  :complete="formData.common.routes.approvers[index].status == '完了'"
                   :step="n"
                   :rules="[() => {
                     const rules = [
-                      data.routes.approvers[index].status == '否認' ? true : false,
-                      data.routes.approvers[index].status == '差戻し' ? true : false,
+                      formData.common.routes.approvers[index].status == '否認' ? true : false,
+                      formData.common.routes.approvers[index].status == '差戻し' ? true : false,
                     ]
                     return !rules.some(v => v == true)
                   }]"
                   >
-                  {{ data.routes.approvers[index].name }}
-                  <small class="mt-2">{{ data.routes.approvers[index].status }}</small>
+                  {{ formData.common.routes.approvers[index].name }}
+                  <small class="mt-2">{{ formData.common.routes.approvers[index].status }}</small>
                 </v-stepper-step>
                 <div
                   :key="`${n}-div`"
-                  v-if="n < data.max_step"
+                  v-if="n < formData.common.max_step"
                   style="border-left:1px solid rgba(0,0,0,.25); height:30px; margin-left:36px;"
                 ></div>
               </template>
@@ -34,25 +35,26 @@
 
           <!-- その他の端末は横型のステップを表示 -->
           <template v-else>
-            <v-stepper v-if="data.current_step" v-model="data.current_step" alt-labels>
+            <v-stepper v-model="formData.common.current_step" alt-labels>
               <v-stepper-header>
-                <template v-for="( n, index ) in data.max_step">
+                <template v-for="( n, index ) in formData.common.max_step">
                   <v-stepper-step
+                    v-if="n != undefined"
                     :key="`${n}-step`"
-                    :complete="data.routes.approvers[index].status == '完了'"
+                    :complete="formData.common.routes.approvers[index].status == '完了'"
                     :step="n"
                     :rules="[() => {
                       const rules = [
-                        data.routes.approvers[index].status == '否認' ? true : false,
-                        data.routes.approvers[index].status == '差戻し' ? true : false,
+                        formData.common.routes.approvers[index].status == '否認' ? true : false,
+                        formData.common.routes.approvers[index].status == '差戻し' ? true : false,
                       ]
                       return !rules.some(v => v == true)
                     }]"
                     >
-                    {{ data.routes.approvers[index].name }}
-                    <small class="mt-2">{{ data.routes.approvers[index].status }}</small>
+                    {{ formData.common.routes.approvers[index].name }}
+                    <small class="mt-2">{{ formData.common.routes.approvers[index].status }}</small>
                   </v-stepper-step>
-                  <v-divider :key="`${n}-divider`" v-if="n < data.max_step" />
+                  <v-divider :key="`${n}-divider`" v-if="n < formData.common.max_step" />
                 </template>
               </v-stepper-header>
             </v-stepper>
@@ -69,7 +71,7 @@
             <v-form readonly>
               <v-text-field
                 label="タイトル"
-                v-model="data.title"
+                v-model="formData.common.title"
               />
 
               <v-text-field
@@ -79,17 +81,17 @@
 
               <v-text-field
                 label="申請者"
-                v-model="data.name"
+                v-model="formData.common.name"
               />
 
               <v-text-field
                 label="メールアドレス"
-                v-model="data.email"
+                v-model="formData.common.email"
               />
 
               <v-text-field
                 label="部署"
-                v-model="data.department"
+                v-model="formData.common.department"
               />
 
               <!-- 選択した申請書ごとに項目を出し分けする -->
@@ -99,23 +101,23 @@
                   auto-grow
                   rows="1"
                   label="事由"
-                  v-model="data.reason"
+                  v-model="formData.unique.reason"
                 />
                 <v-textarea
                   auto-grow
                   rows="1"
                   label="予定日時"
-                  v-model="data.date"
+                  v-model="formData.unique.date"
                 />
                 <v-text-field
                   label="緊急連絡先"
-                  v-model="data.contact"
+                  v-model="formData.unique.contact"
                 />
                 <v-textarea
                   auto-grow
                   rows="1"
                   label="備考"
-                  v-model="data.memo"
+                  v-model="formData.unique.memo"
                 />
               </div>
               <!-- 備品申請 -->
@@ -124,19 +126,19 @@
                   auto-grow
                   rows="1"
                   label="商品名"
-                  v-model="data.item_name"
+                  v-model="formData.unique.item_name"
                 />
                 <v-textarea
                   auto-grow
                   rows="1"
                   label="購入理由"
-                  v-model="data.reason"
+                  v-model="formData.unique.reason"
                 />
                 <v-textarea
                   auto-grow
                   rows="1"
                   label="備考"
-                  v-model="data.memo"
+                  v-model="formData.unique.memo"
                 />
               </div>
 
@@ -176,7 +178,7 @@ export default {
   data() {
     return {
       /** 操作対象のテーブル */
-      currentTableName: 'details',
+      currentTableName: 'requests',
 
       /** Firestoreにバッチ書き込みするデータを格納 */
       latestStatus: '',
@@ -188,7 +190,6 @@ export default {
   computed: {
     ...mapState({
       requests: state => state.firestore.requests,
-      details: state => state.firestore.details,
       selectedTabName: state => state.firestore.selectedTabName,
     }),
 
@@ -197,23 +198,23 @@ export default {
     }),
 
     /** stateのデータを受け取って格納する */
-    data() {
-      return this.details
+    formData() {
+      return this.requests
     },
     formattedDate() {
       // 画面描画直後はthis.dataが空値のためif文でエラー回避しておく
-      if (this.data == '') {
+      if (this.formData == '') {
         return null
       } else {
-        const date = this.data.created_at.toDate()
+        const date = this.formData.common.created_at.toDate()
         return this.dateToStr24HPad0(date)
       }
     },
     requestTypeValue() {
-      if(this.details == '') {
+      if(this.formData == '') {
         return null
       } else {
-        return this.details.request_type.value
+        return this.formData.common.request_type.value
       }
     },
 
@@ -221,15 +222,15 @@ export default {
     isDisabledApproveBtn() {
       // 画面生成直後だとthis.currentStepがnullのため、下記コード内でインデックスを取得できずエラーとなる。
       // そのため、if文で一時的にtrueを返しておく。
-      if (!this.data.current_step) {
+      if (!this.formData.common.current_step) {
         return true
       } else {
         // 各種ボタンを非活性にする際の条件を列挙する
         const rules = [
-          this.data.routes.approvers[this.data.current_step - 1].email != this.getUserEmail ? true : false,
-          this.data.routes.approvers[this.data.max_step - 1].status == '完了' ? true : false,
-          this.data.routes.approvers[this.data.current_step - 1].status == '否認' ? true : false,
-          this.data.routes.approvers[this.data.current_step - 1].status == '差戻し' ? true : false,
+          this.formData.common.routes.approvers[this.formData.common.current_step - 1].email != this.getUserEmail ? true : false,
+          this.formData.common.routes.approvers[this.formData.common.max_step - 1].status == '完了' ? true : false,
+          this.formData.common.routes.approvers[this.formData.common.current_step - 1].status == '否認' ? true : false,
+          this.formData.common.routes.approvers[this.formData.common.current_step - 1].status == '差戻し' ? true : false,
         ]
 
         // 配列「rules」に1つでも「true」の要素があったら「true」を返す
@@ -240,10 +241,10 @@ export default {
     isDisabledEditBtn() {
       // 編集ボタンを非活性にする際の条件を列挙する
       const rules = [
-        this.data.email != this.getUserEmail ? true : false, // 申請者とログイン中ユーザーが異なる
-        this.data.status == '保留中' ? true: false,
-        this.data.status == '完了' ? true: false,
-        this.data.status == '否認' ? true: false
+        this.formData.common.email != this.getUserEmail ? true : false, // 申請者とログイン中ユーザーが異なる
+        this.formData.common.status == '保留中' ? true: false,
+        this.formData.common.status == '完了' ? true: false,
+        this.formData.common.status == '否認' ? true: false
       ]
 
       // 配列「rules」に1つでも「true」の要素があったら「true」を返す
@@ -272,7 +273,7 @@ export default {
       } else if (path.startsWith('/others/')) {
         await this.fetchOthersDetail({ userId, docId })
       }
-      // this.data = this.details
+      // this.formData = this.requests
     },
 
     dateToStr24HPad0(date, format) {
@@ -293,16 +294,16 @@ export default {
 
       // フロント側の表示を更新
       // 最終ステップの場合
-      if (this.data.current_step == this.data.max_step) {
-        this.data.routes.approvers[this.data.current_step - 1].status = '完了'
-        this.latestStatus = this.data.routes.approvers[this.data.current_step - 1].status
+      if (this.formData.common.current_step == this.formData.common.max_step) {
+        this.formData.common.routes.approvers[this.formData.common.current_step - 1].status = '完了'
+        this.latestStatus = this.formData.common.routes.approvers[this.formData.common.current_step - 1].status
         this.latestApproverEmail = ''
         this.batchUpdate(operationType)
 
         // to: 申請者メールアドレスをセットする
-        const emailTo = this.data.email
+        const emailTo = this.formData.common.email
         // subject: 申請が承認された旨を題名に記載する
-        const emailSubject = `申請が${operationType}されました [${this.data.title}]`
+        const emailSubject = `申請が${operationType}されました [${this.formData.common.title}]`
         // body: 詳細画面へのリンクを記載する
         const url = window.location.href
         const detailPageUrl = url.replace('/others', '/my')
@@ -313,16 +314,16 @@ export default {
 
       // それ以外のステップの場合
       } else {
-        this.data.routes.approvers[this.data.current_step - 1].status = '完了'
-        this.data.current_step++
+        this.formData.common.routes.approvers[this.formData.common.current_step - 1].status = '完了'
+        this.formData.common.current_step++
         this.latestStatus = '保留中'
-        this.latestApproverEmail = this.data.routes.approvers[this.data.current_step - 1].email
+        this.latestApproverEmail = this.formData.common.routes.approvers[this.formData.common.current_step - 1].email
         this.batchUpdate(operationType)
 
         // to: 次の承認者メールアドレスをセットする
         const emailTo = this.latestApproverEmail
         // subject: 申請が承認された旨を題名に記載する
-        const emailSubject = `[承認依頼] [${this.data.title}]`
+        const emailSubject = `[承認依頼] [${this.formData.common.title}]`
         // body: 詳細画面へのリンクを記載する
         const detailPageUrl = window.location.href
         const emailBody = this.createEmailBody(emailSubject, detailPageUrl)
@@ -333,16 +334,16 @@ export default {
     },
 
     async onClickDisapprove() {
-      this.data.routes.approvers[this.data.current_step - 1].status = '否認'
+      this.formData.common.routes.approvers[this.formData.common.current_step - 1].status = '否認'
       this.latestStatus = '否認'
       this.latestApproverEmail = ''
       const operationType = '否認'
       this.batchUpdate(operationType)
 
       // to: 申請者メールアドレスをセットする
-      const emailTo = this.data.email
+      const emailTo = this.formData.common.email
       // subject: 申請が否認された旨を題名に記載する
-      const emailSubject = `申請が${operationType}されました [${this.data.title}]`
+      const emailSubject = `申請が${operationType}されました [${this.formData.common.title}]`
       // body: 詳細画面へのリンクを記載する
       const url = window.location.href
       const detailPageUrl = url.replace('/others', '/my')
@@ -353,16 +354,16 @@ export default {
     },
 
     async onClickRemand() {
-      this.data.routes.approvers[this.data.current_step - 1].status = '差戻し'
+      this.formData.common.routes.approvers[this.formData.common.current_step - 1].status = '差戻し'
       this.latestStatus = '差戻し'
       this.latestApproverEmail = ''
       const operationType = '差戻し'
       this.batchUpdate(operationType)
 
       // to: 申請者メールアドレスをセットする
-      const emailTo = this.data.email
+      const emailTo = this.formData.common.email
       // subject: 申請が否認された旨を題名に記載する
-      const emailSubject = `申請が${operationType}されました [${this.data.title}]`
+      const emailSubject = `申請が${operationType}されました [${this.formData.common.title}]`
       // body: 詳細画面へのリンクを記載する
       const url = window.location.href
       const detailPageUrl = url.replace('/others', '/my')
@@ -374,14 +375,14 @@ export default {
 
     async batchUpdate(operationType) {
       // requestドキュメントを取得し変数に格納する
-      const userId = this.data.email
+      const userId = this.formData.common.email
       const docId = this.$route.params.id
       await this.fetchRequest({ userId, docId })
       const itemRequest = this.requests
 
       // itemDetailを作成
       const itemDetail = this.data
-      itemDetail.current_step = this.data.current_step
+      itemDetail.current_step = this.formData.common.current_step
 
       // 最新のステータスを格納する
       itemRequest.status = this.latestStatus
@@ -400,7 +401,7 @@ export default {
     },
 
     async onClickEdit() {
-      const userId = this.data.email
+      const userId = this.formData.common.email
       const docId = this.$route.params.id
       await this.fetchRequest({ userId, docId })
       const itemRequest = this.requests
@@ -408,11 +409,11 @@ export default {
 
       const requestType = 'paid_leave'
       const item = {
-        title: this.data.title,
-        reason: this.data.reason,
-        date: this.data.date,
-        contact: this.data.contact,
-        memo: this.data.memo,
+        title: this.formData.common.title,
+        reason: this.formData.common.reason,
+        date: this.formData.common.date,
+        contact: this.formData.common.contact,
+        memo: this.formData.common.memo,
 
         itemRequest: itemRequest,
         itemDetail: itemDetail
@@ -422,6 +423,7 @@ export default {
   },
 
   async created() {
+    // 現在のURLによって使用するActionsを分ける
     await this.fetchRequestDetail()
   },
 }
