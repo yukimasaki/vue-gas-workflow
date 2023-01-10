@@ -204,7 +204,7 @@ const actions = {
   async fetchOthersRequests({ commit }, { userId }) {
     const requestForMe = query(
       collectionGroup(db, 'requests'),
-      where('current_approver_email', '==', userId)
+      where('common.current_approver_email', '==', userId)
     )
     const snapshot = await getDocs(requestForMe)
     const docs = []
@@ -216,7 +216,7 @@ const actions = {
   },
 
   /** users配下のサブコレクションにドキュメントを追加する */
-  async addDocumentIntoSubCollection({ commit }, { uid, userId, item }) {
+  async addDocumentAsSubCollection({ commit }, { uid, userId, item }) {
     // uuidをドキュメントIDとして指定し、空のドキュメントを作成しておく
     // doc関数の引数は、dbを除き偶数個で指定する必要がある
     const docRef = doc(db, 'users', userId, 'requests', uid)

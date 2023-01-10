@@ -192,7 +192,7 @@ export default {
     }),
 
     ...mapActions({
-      batchAddSubCollectionsToUsers: 'firestore/batchAddSubCollectionsToUsers',
+      addDocumentAsSubCollection: 'firestore/addDocumentAsSubCollection',
       fetchUserInfo: 'firestore/fetchUserInfo',
       createArrayRoute: 'firestore/createArrayRoute',
       sendEmail: 'firestore/sendEmail',
@@ -283,7 +283,7 @@ export default {
             email: this.userInfo.id,
             name: this.userInfo.name,
             department: this.userInfo.department,
-            title: this.formBind.unique.paidLeave.title,
+            title: this.formBind.common.title,
 
             routes: {
                 approvers: routes.approvers,
@@ -298,9 +298,9 @@ export default {
           }
         }
 
-        // await this.addDocumentIntoSubCollection({ uid, userId, item })
         console.log(`uid: ${uid}`)
         console.log(item)
+        await this.addDocumentAsSubCollection({ uid, userId, item })
 
         // // to: 承認者メールアドレスをセットする
         // const emailTo = routes.approvers[0].email

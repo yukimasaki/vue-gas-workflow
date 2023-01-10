@@ -17,7 +17,7 @@ service cloud.firestore {
 
     function isApprover() {
       return isAuth() &&
-             request.auth.token.email == resource.data.current_approver_email;
+             request.auth.token.email == resource.data.common.current_approver_email;
     }
 
     function isRemand(userId) {
