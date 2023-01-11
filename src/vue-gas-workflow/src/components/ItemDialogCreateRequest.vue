@@ -13,7 +13,7 @@
         <v-form ref="form" v-model="valid">
           <v-select
             label="申請種別"
-            v-model="formBind.common.requestType"
+            v-model="formBind.common.request_type"
             :items="selectReqestType"
             :rules="requestTypeRules"
             return-object
@@ -27,53 +27,53 @@
 
           <!-- 選択した申請書ごとに項目を出し分けする -->
           <!-- 休暇申請 -->
-          <div v-if="formBind.common.requestType.value == 'paid_leave'">
+          <div v-if="formBind.common.request_type.value == 'paid_leave'">
             <v-textarea
               label="事由"
-              v-model="formBind.unique.paidLeave.reason"
+              v-model="formBind.unique.reason"
               :rules="reasonRules"
               rows="3"
             />
 
             <v-textarea
               label="予定日時"
-              v-model="formBind.unique.paidLeave.date"
+              v-model="formBind.unique.date"
               :rules="dateRules"
               rows="3"
             />
 
             <v-text-field
               label="緊急連絡先"
-              v-model="formBind.unique.paidLeave.contact"
+              v-model="formBind.unique.contact"
               :rules="contactRules"
             />
 
             <v-textarea
               label="備考"
-              v-model="formBind.unique.paidLeave.memo"
+              v-model="formBind.unique.memo"
               rows="3"
             />
           </div>
 
           <!-- 備品申請 -->
-          <div v-else-if="formBind.common.requestType.value == 'equipment'">
+          <div v-else-if="formBind.common.request_type.value == 'equipment'">
             <v-textarea
               label="商品名"
-              v-model="formBind.unique.equipment.itemName"
+              v-model="formBind.unique.item_name"
               :rules="itemNameRules"
               rows="3"
             />
 
             <v-textarea
               label="購入理由"
-              v-model="formBind.unique.equipment.reason"
+              v-model="formBind.unique.reason"
               :rules="reasonRules"
               rows="3"
             />
 
             <v-textarea
               label="備考"
-              v-model="formBind.unique.equipment.memo"
+              v-model="formBind.unique.memo"
               rows="3"
             />
           </div>
@@ -130,8 +130,24 @@ export default {
       /** フォームのバインディング */
       formBind: {
         common: {
-          requestType: '',
+          request_type: {
+            text: '',
+            value: ''
+          },
+          current_step: '',
+          max_step: '',
+          status: '',
+          current_approver_email: '',
+          created_at: '',
+          email: '',
+          name: '',
+          department: '',
           title: '',
+          routes: {
+            approvers: [],
+            // readers: []
+          },
+          comments: []
         },
         unique: {
           paidLeave: {
@@ -141,7 +157,7 @@ export default {
             memo: ''
           },
           equipment: {
-            itemName: '',
+            item_name: '',
             reason: '',
             memo: ''
           },
@@ -202,10 +218,10 @@ export default {
      * ダイアログを表示します。
      * このメソッドは親から呼び出されます。
      */
-    open (actionType) {
+    open (actionType, item = {}) {
       this.show = true
       this.actionType = actionType
-      this.resetForm()
+      this.resetForm(item)
     },
 
     /** キャンセルがクリックされたとき */
@@ -223,7 +239,7 @@ export default {
         const userId = this.getUserEmail()
 
         // プルダウンで選択された申請種別のvalueを変数へ格納
-        const requestTypeValue = this.formBind.common.requestType.value
+        const requestTypeValue = this.formBind.common.request_type.value
 
         // 申請者のユーザー情報を取得
         await this.fetchUserInfo({ userId })
@@ -253,18 +269,18 @@ export default {
           switch(requestTypeValue) {
             case 'paid_leave': {
               const uniqueItem = {
-                reason: this.formBind.unique.paidLeave.reason,
-                date: this.formBind.unique.paidLeave.date,
-                contact: this.formBind.unique.paidLeave.contact,
-                memo: this.formBind.unique.paidLeave.memo
+                reason: this.formBind.unique.reason,
+                date: this.formBind.unique.date,
+                contact: this.formBind.unique.contact,
+                memo: this.formBind.unique.memo
               }
               return uniqueItem
             }
             case 'equipment': {
               const uniqueItem = {
-                item_name: this.formBind.unique.equipment.itemName,
-                reason: this.formBind.unique.equipment.reason,
-                memo: this.formBind.unique.equipment.memo
+                item_name: this.formBind.unique.item_name,
+                reason: this.formBind.unique.reason,
+                memo: this.formBind.unique.memo
               }
               return uniqueItem
             }
@@ -275,7 +291,7 @@ export default {
         const item = {
           id: uid,
           common: {
-            request_type: this.formBind.common.requestType,
+            request_type: this.formBind.common.request_type,
             current_step: currentStep,
             max_step: maxStep,
             status: '保留中',
@@ -317,27 +333,31 @@ export default {
     },
 
     /** フォームの内容を初期化します */
-    resetForm () {
-      //this.formBind.common配下のプロパティに空値をセットする
-      // キーを取得する
-      const commonPorpKeys = Object.keys(this.formBind.common)
-      // キーの数の分だけ、空値をセットする処理を繰り返す
-      commonPorpKeys.forEach(key => {
-        this.formBind.common[key] = ''
-      })
+    resetForm (item) {
+      if (this.actionType == 'edit') {
+        this.formBind = item
+        } else {
+          //this.formBind.common配下のプロパティに空値をセットする
+          // キーを取得する
+          const commonPorpKeys = Object.keys(this.formBind.common)
+          // キーの数の分だけ、空値をセットする処理を繰り返す
+          commonPorpKeys.forEach(key => {
+            this.formBind.common[key] = ''
+          })
 
-      //this.formBind.unique.[申請種別]配下のプロパティに空値をセットする
-      // 申請種別キーを取得する
-      const uniquePropRequestTypeKeys = Object.keys(this.formBind.unique)
-      // 申請種別キーの数の分だけ、ネストされた処理を繰り返す
-      uniquePropRequestTypeKeys.forEach(requestTypeKey => {
-        // 項目名キーを取得する
-        const uniquePropItemNameKeys = Object.keys(this.formBind.unique[requestTypeKey])
-        // 項目名キーの数の分だけ、空値をセットする処理を繰り返す
-        uniquePropItemNameKeys.forEach(itemNameKey => {
-          this.formBind.unique[requestTypeKey][itemNameKey] = ''
-        })
-      })
+          //this.formBind.unique.[申請種別]配下のプロパティに空値をセットする
+          // 申請種別キーを取得する
+          const uniquePropRequestTypeKeys = Object.keys(this.formBind.unique)
+          // 申請種別キーの数の分だけ、ネストされた処理を繰り返す
+          uniquePropRequestTypeKeys.forEach(requestTypeKey => {
+            // 項目名キーを取得する
+            const uniquePropItemNameKeys = Object.keys(this.formBind.unique[requestTypeKey])
+            // 項目名キーの数の分だけ、空値をセットする処理を繰り返す
+            uniquePropItemNameKeys.forEach(itemNameKey => {
+              this.formBind.unique[requestTypeKey][itemNameKey] = ''
+            })
+          })
+      }
 
       this.$refs.form.resetValidation()
     },
