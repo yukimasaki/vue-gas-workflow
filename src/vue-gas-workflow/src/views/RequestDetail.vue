@@ -199,6 +199,10 @@ export default {
 
     /** stateのデータを受け取って格納する */
     formData() {
+      // 本メソッドの処理が無限ループしてしまう
+      console.log(`3.`)
+      console.log(this.formData)
+
       return this.requests
     },
     formattedDate() {
@@ -343,7 +347,16 @@ export default {
       const operationType = '否認'
       const item = this.formData
 
+      // コンソールで下記エラーが出るのはなぜ？
+      // [Vue warn]: Error in render: "TypeError: Cannot read properties of undefined (reading 'length')"
+      console.log(`1.`)
+      console.log(this.formData)
+
       this.updateSubCollection({ userId, docId, item, operationType })
+
+      console.log(`2.`)
+      console.log(this.formData)
+
 
       // // to: 申請者メールアドレスをセットする
       // const emailTo = this.formData.common.email
