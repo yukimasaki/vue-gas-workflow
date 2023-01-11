@@ -258,7 +258,7 @@ const actions = {
   async updateSubCollection({ commit }, { userId, docId, item, operationType }) {
     const docRef = doc(db, 'users', userId, 'requests', docId)
     await updateDoc(docRef, item)
-    commit('updateState', { item, currentTableName: 'requests' })
+    commit('setState', { item, currentTableName: 'requests' })
     commit('setWorkflowMessage', `申請を${operationType}しました。`)
   },
 
