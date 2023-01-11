@@ -295,6 +295,7 @@ const actions = {
     const snapshot = await getDoc(docRef)
     const testFormData = snapshot.data()
     commit('setState', { collections: testFormData, currentTableName: 'testFormData' })
+    commit('setWorkflowMessage', 'データを取得しました。')
   },
 
 }
