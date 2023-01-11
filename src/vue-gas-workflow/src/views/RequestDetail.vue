@@ -351,12 +351,18 @@ export default {
       // await this.sendEmail({ emailConfig })
     },
 
+    //メール以外動作確認済み (onClickDisapproveと統合できるのでは？)
     async onClickRemand() {
       this.formData.common.routes.approvers[this.formData.common.current_step - 1].status = '差戻し'
-      this.latestStatus = '差戻し'
-      this.latestApproverEmail = ''
+      this.formData.common.status = '差戻し'
+      this.formData.common.current_approver_email = ''
+
+      const userId = this.formData.common.email
+      const docId = this.$route.params.id
       const operationType = '差戻し'
-      this.batchUpdate(operationType)
+      const item = this.formData
+
+      this.updateSubCollection({ userId, docId, item, operationType })
 
       // // to: 申請者メールアドレスをセットする
       // const emailTo = this.formData.common.email
