@@ -38,25 +38,25 @@ const mutations = {
   },
 
   /** 取得したデータをセットする */
-  setCollections(state, { collections, currentTableName }) {
+  setState(state, { collections, currentTableName }) {
     state[currentTableName] = collections
   },
 
   /** データを追加する */
-  addDocument(state, { item, currentTableName }) {
+  addState(state, { item, currentTableName }) {
     const list = state[currentTableName]
     list.push(item)
   },
 
   /** データを更新する */
-  updateDocument(state, { item, currentTableName }) {
+  updateState(state, { item, currentTableName }) {
     const list = state[currentTableName]
     const index = list.findIndex(v => v.id === item.id)
     list.splice(index, 1, item)
   },
 
   /** データを削除する */
-  deleteDocument(state, { id, currentTableName }) {
+  deleteState(state, { id, currentTableName }) {
     const list = state[currentTableName]
     const index = list.findIndex(v => v.id === id)
     list.splice(index, 1)
@@ -89,7 +89,7 @@ const actions = {
       collections.push({...doc.data(), id: doc.id})
     })
 
-    commit('setCollections', { collections, currentTableName })
+    commit('setState', { collections, currentTableName })
   },
 
   /** データを作成する(IDを自動生成する) */
@@ -103,7 +103,7 @@ const actions = {
     // timestampedItemにidプロパティを追加
     // ※この処理をしておかないと、一覧画面で更新時に引数が足りずエラーになる
     const timestampedItem = { ...docSnap.data(), id: docSnap.id }
-    commit('addDocument', { item: timestampedItem, currentTableName })
+    commit('addState', { item: timestampedItem, currentTableName })
     commit('setWorkflowMessage', 'データを追加しました。')
   },
 
@@ -115,14 +115,14 @@ const actions = {
     // serverTimestampが付与されたドキュメントを取得しstateにセットする
     const docSnap = await getDoc(docRef)
     const timestampedItem = docSnap.data()
-    commit('addDocument', { item: timestampedItem, currentTableName })
+    commit('addState', { item: timestampedItem, currentTableName })
   },
 
   /** データを更新する */
   async updateDocument({ commit }, { item, currentTableName }) {
     const docRef = doc(db, currentTableName, item.id)
     await updateDoc(docRef, item)
-    commit('updateDocument', { item, currentTableName })
+    commit('updateState', { item, currentTableName })
     commit('setWorkflowMessage', 'データを更新しました。')
   },
 
@@ -131,7 +131,7 @@ const actions = {
     const id = item.id
     const docRef = doc(db, currentTableName, item.id)
     await deleteDoc(docRef, item)
-    commit('deleteDocument', { id, currentTableName })
+    commit('deleteState', { id, currentTableName })
     commit('setWorkflowMessage', 'データを削除しました。')
   },
 
@@ -143,7 +143,7 @@ const actions = {
     querySnapshot.forEach(doc => {
       collections.push({...doc.data(), id: doc.id})
     })
-    commit('setCollections', { collections, currentTableName })
+    commit('setState', { collections, currentTableName })
   },
 
   /** ドキュメントIDを指定して単一のドキュメントを取得する */
@@ -151,7 +151,7 @@ const actions = {
     const docRef = doc(db, currentTableName, docId)
     const docSnap = await getDoc(docRef)
     const document = {...docSnap.data(), id: docSnap.id}
-    commit('setCollections', { collections: document, currentTableName })
+    commit('setState', { collections: document, currentTableName })
   },
 
   /** userIdとdocIdを渡して自分の申請詳細を取得する */
@@ -159,7 +159,7 @@ const actions = {
     const docRef = doc(db, 'users', userId, 'requests', docId)
     const snapshot = await getDoc(docRef)
     const requests = snapshot.data()
-    commit('setCollections', { collections: requests, currentTableName: 'requests' })
+    commit('setState', { collections: requests, currentTableName: 'requests' })
   },
 
   /** userIdとdocIdを渡して他ユーザーの申請詳細を取得する */
@@ -176,7 +176,7 @@ const actions = {
     })
     const result = docs[0]
 
-    commit('setCollections', { collections: result, currentTableName: 'requests' })
+    commit('setState', { collections: result, currentTableName: 'requests' })
   },
 
   /** userIdとdocIdを渡して申請概要（requestsサブコレクション）を取得する */
@@ -184,7 +184,7 @@ const actions = {
     const docRef = doc(db, 'users', userId, 'requests', docId,)
     const snapshot = await getDoc(docRef)
     const request = snapshot.data()
-    commit('setCollections', { collections: request, currentTableName: 'requests' })
+    commit('setState', { collections: request, currentTableName: 'requests' })
   },
 
   /** userIdを渡して当該ユーザーの申請（requestsサブコレクション）を取得する */
@@ -196,7 +196,7 @@ const actions = {
       docs.push({ ...doc.data(), id: doc.id })
     })
 
-    commit('setCollections', { collections: docs, currentTableName: 'myRequests' })
+    commit('setState', { collections: docs, currentTableName: 'myRequests' })
   },
 
   /** userIdを渡して自分宛ての申請（requestsサブコレクション）を取得する */
@@ -211,7 +211,7 @@ const actions = {
       docs.push({ ...doc.data(), id: doc.id })
     })
 
-    commit('setCollections', { collections: docs, currentTableName: 'othersRequests' })
+    commit('setState', { collections: docs, currentTableName: 'othersRequests' })
   },
 
   /** users配下のサブコレクションにドキュメントを追加する */
@@ -228,7 +228,7 @@ const actions = {
     const docSnap = await getDoc(docRef)
     const timestampedItem = docSnap.data()
 
-    commit('addDocument', { item: timestampedItem, currentTableName: 'myRequests' })
+    commit('addState', { item: timestampedItem, currentTableName: 'myRequests' })
     commit('setWorkflowMessage', '申請を提出しました。')
   },
 
@@ -250,7 +250,7 @@ const actions = {
     const docSnap = await getDoc(emptyDocRefRequest)
     const timestampedItem = { ...docSnap.data(), id: uid }
 
-    commit('addDocument', { item: timestampedItem, currentTableName: 'myRequests' })
+    commit('addState', { item: timestampedItem, currentTableName: 'myRequests' })
     commit('setWorkflowMessage', '申請を提出しました。')
   },
 
@@ -258,7 +258,7 @@ const actions = {
   async updateSubCollection({ commit }, { userId, docId, item, operationType }) {
     const docRef = doc(db, 'users', userId, 'requests', docId)
     await updateDoc(docRef, item)
-    commit('updateDocument', { item, currentTableName: 'requests' })
+    commit('updateState', { item, currentTableName: 'requests' })
     commit('setWorkflowMessage', `申請を${operationType}しました。`)
   },
 
