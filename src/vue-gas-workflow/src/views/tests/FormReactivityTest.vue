@@ -13,6 +13,10 @@
               />
             </v-form>
           </v-card-text>
+
+          <v-card-actions>
+            <v-btn @click="updateValue()">値を更新</v-btn>
+          </v-card-actions>
         </v-card>
       </v-col>
     </v-row>
@@ -57,6 +61,11 @@ export default {
 
     onClickAdd() {
       this.$refs.ItemDialogCreateRequest.open('add')
+    },
+
+    // methodsからdataの値を変更し、リアクティブにビューに反映させることができた
+    updateValue() {
+      this.formData.title = '値が変更されました'
     },
 
   },
