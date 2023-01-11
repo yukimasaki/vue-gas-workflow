@@ -335,10 +335,15 @@ export default {
 
     async onClickDisapprove() {
       this.formData.common.routes.approvers[this.formData.common.current_step - 1].status = '否認'
-      this.latestStatus = '否認'
-      this.latestApproverEmail = ''
+      this.formData.common.status = '否認'
+      this.formData.common.current_approver_email = ''
+
+      const userId = this.formData.common.email
+      const docId = this.$route.params.id
       const operationType = '否認'
-      this.batchUpdate(operationType)
+      const item = this.formData
+
+      this.updateSubCollection({ userId, docId, item, operationType })
 
       // // to: 申請者メールアドレスをセットする
       // const emailTo = this.formData.common.email
