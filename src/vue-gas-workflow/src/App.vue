@@ -70,9 +70,9 @@
               </v-list-item-content>
             </v-list-item>
 
-            <v-list-item link to="/test">
+            <v-list-item link to="/item_dialog_test">
               <v-list-item-content>
-                <v-list-item-title>テスト</v-list-item-title>
+                <v-list-item-title>ItemDIalogTest</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
 

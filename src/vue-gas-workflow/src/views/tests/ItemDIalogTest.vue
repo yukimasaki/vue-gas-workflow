@@ -22,10 +22,10 @@
 </template>
 
 <script>
-import ItemDialogCreateRequest from '../components/ItemDialogCreateRequest.vue'
+import ItemDialogCreateRequest from '../../components/ItemDialogCreateRequest.vue'
 
 export default {
-  name: 'Test',
+  name: 'ItemDIalogTest',
 
   components: {
     ItemDialogCreateRequest
