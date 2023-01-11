@@ -159,20 +159,20 @@
     </v-footer>
 
     <!-- 追加／編集ダイアログ -->
-    <ItemDialogRequestDetail ref="ItemDialogRequestDetail"/>
+    <ItemDialogCreateRequest ref="ItemDialogCreateRequest"/>
 
   </div>
 </template>
 
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex'
-import ItemDialogRequestDetail from '../components/ItemDialogRequestDetail.vue'
+import ItemDialogCreateRequest from '../components/ItemDialogCreateRequest.vue'
 
 export default {
   name: 'RequestDetail',
 
   components: {
-    ItemDialogRequestDetail
+    ItemDialogCreateRequest
   },
 
   data() {
@@ -417,25 +417,9 @@ export default {
       return emailBody
     },
 
-    async onClickEdit() {
-      const userId = this.formData.common.email
-      const docId = this.$route.params.id
-      await this.fetchRequest({ userId, docId })
-      const itemRequest = this.requests
-      const itemDetail = this.data
-
-      const requestType = 'paid_leave'
-      const item = {
-        title: this.formData.common.title,
-        reason: this.formData.common.reason,
-        date: this.formData.common.date,
-        contact: this.formData.common.contact,
-        memo: this.formData.common.memo,
-
-        itemRequest: itemRequest,
-        itemDetail: itemDetail
-      }
-      await this.$refs.ItemDialogRequestDetail.open('edit', item, requestType)
+    onClickEdit() {
+      const item = this.formData
+      this.$refs.ItemDialogCreateRequest.open('edit', item)
     },
   },
 
