@@ -177,13 +177,10 @@ export default {
 
   data() {
     return {
-      /** 操作対象のテーブル */
+      formData: [],
       currentTableName: 'requests',
-
-      /** Firestoreにバッチ書き込みするデータを格納 */
       latestStatus: '',
       latestApproverEmail: '',
-
     }
   },
 
@@ -197,14 +194,6 @@ export default {
       getUserEmail: 'firebase/getUserEmail',
     }),
 
-    /** stateのデータを受け取って格納する */
-    formData() {
-      // 本メソッドの処理が無限ループしてしまう
-      console.log(`3.`)
-      console.log(this.formData)
-
-      return this.requests
-    },
     formattedDate() {
       // 画面描画直後はthis.dataが空値のためif文でエラー回避しておく
       if (this.formData == '') {
@@ -277,7 +266,6 @@ export default {
       } else if (path.startsWith('/others/')) {
         await this.fetchOthersDetail({ userId, docId })
       }
-      // this.formData = this.requests
     },
 
     dateToStr24HPad0(date, format) {
@@ -444,8 +432,8 @@ export default {
   },
 
   async created() {
-    // 現在のURLによって使用するActionsを分ける
     await this.fetchRequestDetail()
+    this.formData = this.requests
   },
 }
 </script>
