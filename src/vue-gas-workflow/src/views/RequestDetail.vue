@@ -281,16 +281,20 @@ export default {
         return format
     },
 
+    //メール以外動作確認済み
     async onClickApprove() {
-      const operationType = '承認'
-
-      // フロント側の表示を更新
       // 最終ステップの場合
       if (this.formData.common.current_step == this.formData.common.max_step) {
         this.formData.common.routes.approvers[this.formData.common.current_step - 1].status = '完了'
-        this.latestStatus = this.formData.common.routes.approvers[this.formData.common.current_step - 1].status
-        this.latestApproverEmail = ''
-        this.batchUpdate(operationType)
+        this.formData.common.status = '完了'
+        this.formData.common.current_approver_email = ''
+
+        const userId = this.formData.common.email
+        const docId = this.$route.params.id
+        const operationType = '承認'
+        const item = this.formData
+
+        this.updateSubCollection({ userId, docId, item, operationType })
 
         // // to: 申請者メールアドレスをセットする
         // const emailTo = this.formData.common.email
@@ -307,10 +311,16 @@ export default {
       // それ以外のステップの場合
       } else {
         this.formData.common.routes.approvers[this.formData.common.current_step - 1].status = '完了'
+        this.formData.common.status = '保留中'
+        this.formData.common.current_approver_email = this.formData.common.routes.approvers[this.formData.common.current_step - 1].email
         this.formData.common.current_step++
-        this.latestStatus = '保留中'
-        this.latestApproverEmail = this.formData.common.routes.approvers[this.formData.common.current_step - 1].email
-        this.batchUpdate(operationType)
+
+        const userId = this.formData.common.email
+        const docId = this.$route.params.id
+        const operationType = '承認'
+        const item = this.formData
+
+        this.updateSubCollection({ userId, docId, item, operationType })
 
         // // to: 次の承認者メールアドレスをセットする
         // const emailTo = this.latestApproverEmail
