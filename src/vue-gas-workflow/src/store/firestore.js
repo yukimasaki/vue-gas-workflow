@@ -27,6 +27,9 @@ const state = {
   routes: [],
   admins: [],
 
+  // FormReactivityTest
+  testFormData: [],
+
   userInfo: '',
   arrayRoute: [],
   selectedTabName: '',
@@ -285,6 +288,15 @@ const actions = {
     await gasApi.sendEmail(emailConfig)
     commit('setWorkflowMessage', 'メール送信しました。')
   },
+
+  // FormReactivityTest
+  async fetchMyTestFormData({ commit }, { userId, docId }) {
+    const docRef = doc(db, 'users', userId, 'testFormData', docId)
+    const snapshot = await getDoc(docRef)
+    const testFormData = snapshot.data()
+    commit('setState', { collections: testFormData, currentTableName: 'testFormData' })
+  },
+
 }
 
 /**
