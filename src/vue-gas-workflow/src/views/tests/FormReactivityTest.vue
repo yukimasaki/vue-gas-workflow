@@ -9,7 +9,7 @@
             <v-form readonly>
               <v-text-field
               label="タイトル"
-              v-model="testFormData.title"
+              v-model="formData.title"
               />
             </v-form>
           </v-card-text>
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapGetters, mapState } from 'vuex';
 import ItemDialogCreateRequest from '../../components/ItemDialogCreateRequest.vue'
 
 export default {
@@ -35,11 +35,16 @@ export default {
   data() {
     return {
       title: 'FormReactivityTest',
-      testFormData: {}
+      formData: {}
     }
   },
 
   computed: {
+    ...mapState({
+      testFormData: state => state.firestore.testFormData
+
+    }),
+
     ...mapGetters({
       getUserEmail: 'firebase/getUserEmail'
     }),
@@ -56,10 +61,11 @@ export default {
 
   },
 
-  created() {
+async created() {
     const userId = this.getUserEmail
     const docId = 'spNTUth2YEpRcB4KJEFo'
-    this.fetchMyTestFormData({ userId, docId })
+    await this.fetchMyTestFormData({ userId, docId })
+    this.formData = this.testFormData
   },
 
 }
