@@ -76,6 +76,12 @@
               </v-list-item-content>
             </v-list-item>
 
+            <v-list-item link to="/form_reactivity_test">
+              <v-list-item-content>
+                <v-list-item-title>FormReactivityTest</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+
           </v-list>
         </v-menu>
 

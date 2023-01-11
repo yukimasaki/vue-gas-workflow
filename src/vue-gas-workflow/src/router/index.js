@@ -13,6 +13,7 @@ import Routes from '../views/Routes.vue'
 import Admins from '../views/Admins.vue'
 import Users from '../views/Users.vue'
 import ItemDIalogTest from '../views/tests/ItemDIalogTest.vue'
+import FormReactivityTest from '../views/tests/FormReactivityTest.vue'
 
 Vue.use(VueRouter)
 
@@ -86,6 +87,12 @@ const routes = [
     path: '/item_dialog_test',
     name: 'ItemDIalogTest',
     component: ItemDIalogTest,
+    meta: {requiresAuth: true}
+  },
+  {
+    path: '/form_reactivity_test',
+    name: 'FormReactivityTest',
+    component: FormReactivityTest,
     meta: {requiresAuth: true}
   },
 
