@@ -325,6 +325,7 @@ export default {
       }
     },
 
+    //メール以外動作確認済み
     async onClickDisapprove() {
       this.formData.common.routes.approvers[this.formData.common.current_step - 1].status = '否認'
       this.formData.common.status = '否認'
