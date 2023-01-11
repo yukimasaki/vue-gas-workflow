@@ -150,6 +150,11 @@ export default {
           comments: []
         },
         unique: {
+          /** add時はunique: { reason...}でfirestoreに保存しているが、
+           * 下記コードではunique: { paidLeave: { reason... } }というように
+           * 間にプロパティを1個はさんでいるため、申請種別メニューを押下時に
+           * バリデーション処理のエラーが発生する。
+          */
           paidLeave: {
             reason: '',
             date: '',
@@ -335,28 +340,35 @@ export default {
     /** フォームの内容を初期化します */
     resetForm (item) {
       if (this.actionType == 'edit') {
+        console.log(`edit > before`)
+        console.log(this.formBind)
         this.formBind = item
-        } else {
-          //this.formBind.common配下のプロパティに空値をセットする
-          // キーを取得する
-          const commonPorpKeys = Object.keys(this.formBind.common)
-          // キーの数の分だけ、空値をセットする処理を繰り返す
-          commonPorpKeys.forEach(key => {
-            this.formBind.common[key] = ''
-          })
+        console.log(`edit > after`)
+        console.log(this.formBind)
+      } else {
+        //this.formBind.common配下のプロパティに空値をセットする
+        // キーを取得する
+        const commonPorpKeys = Object.keys(this.formBind.common)
+        // キーの数の分だけ、空値をセットする処理を繰り返す
+        commonPorpKeys.forEach(key => {
+          this.formBind.common[key] = ''
+        })
 
-          //this.formBind.unique.[申請種別]配下のプロパティに空値をセットする
-          // 申請種別キーを取得する
-          const uniquePropRequestTypeKeys = Object.keys(this.formBind.unique)
-          // 申請種別キーの数の分だけ、ネストされた処理を繰り返す
-          uniquePropRequestTypeKeys.forEach(requestTypeKey => {
-            // 項目名キーを取得する
-            const uniquePropItemNameKeys = Object.keys(this.formBind.unique[requestTypeKey])
-            // 項目名キーの数の分だけ、空値をセットする処理を繰り返す
-            uniquePropItemNameKeys.forEach(itemNameKey => {
-              this.formBind.unique[requestTypeKey][itemNameKey] = ''
-            })
+        //this.formBind.unique.[申請種別]配下のプロパティに空値をセットする
+        // 申請種別キーを取得する
+        const uniquePropRequestTypeKeys = Object.keys(this.formBind.unique)
+        // 申請種別キーの数の分だけ、ネストされた処理を繰り返す
+        uniquePropRequestTypeKeys.forEach(requestTypeKey => {
+          // 項目名キーを取得する
+          const uniquePropItemNameKeys = Object.keys(this.formBind.unique[requestTypeKey])
+          // 項目名キーの数の分だけ、空値をセットする処理を繰り返す
+          uniquePropItemNameKeys.forEach(itemNameKey => {
+            this.formBind.unique[requestTypeKey][itemNameKey] = ''
           })
+        })
+
+        console.log(`add > after`)
+        console.log(this.formBind)
       }
 
       this.$refs.form.resetValidation()
