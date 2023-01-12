@@ -30,27 +30,27 @@
           <div v-if="formBind.common.request_type.value == 'paid_leave'">
             <v-textarea
               label="事由"
-              v-model="formBind.unique.reason"
+              v-model="formBind.unique.paidLeave.reason"
               :rules="reasonRules"
               rows="3"
             />
 
             <v-textarea
               label="予定日時"
-              v-model="formBind.unique.date"
+              v-model="formBind.unique.paidLeave.date"
               :rules="dateRules"
               rows="3"
             />
 
             <v-text-field
               label="緊急連絡先"
-              v-model="formBind.unique.contact"
+              v-model="formBind.unique.paidLeave.contact"
               :rules="contactRules"
             />
 
             <v-textarea
               label="備考"
-              v-model="formBind.unique.memo"
+              v-model="formBind.unique.paidLeave.memo"
               rows="3"
             />
           </div>
@@ -59,21 +59,21 @@
           <div v-else-if="formBind.common.request_type.value == 'equipment'">
             <v-textarea
               label="商品名"
-              v-model="formBind.unique.item_name"
+              v-model="formBind.unique.equipment.item_name"
               :rules="itemNameRules"
               rows="3"
             />
 
             <v-textarea
               label="購入理由"
-              v-model="formBind.unique.reason"
+              v-model="formBind.unique.equipment.reason"
               :rules="reasonRules"
               rows="3"
             />
 
             <v-textarea
               label="備考"
-              v-model="formBind.unique.memo"
+              v-model="formBind.unique.equipment.memo"
               rows="3"
             />
           </div>
@@ -150,11 +150,6 @@ export default {
           comments: []
         },
         unique: {
-          /** add時はunique: { reason...}でfirestoreに保存しているが、
-           * 下記コードではunique: { paidLeave: { reason... } }というように
-           * 間にプロパティを1個はさんでいるため、申請種別メニューを押下時に
-           * バリデーション処理のエラーが発生する。
-          */
           paidLeave: {
             reason: '',
             date: '',
@@ -220,8 +215,8 @@ export default {
     }),
 
     /**
-     * ダイアログを表示します。
-     * このメソッドは親から呼び出されます。
+     * ダイアログを表示する。
+     * このメソッドは親から呼び出される。
      */
     open (actionType, item = {}) {
       this.show = true
@@ -274,18 +269,18 @@ export default {
           switch(requestTypeValue) {
             case 'paid_leave': {
               const uniqueItem = {
-                reason: this.formBind.unique.reason,
-                date: this.formBind.unique.date,
-                contact: this.formBind.unique.contact,
-                memo: this.formBind.unique.memo
+                reason: this.formBind.unique.paidLeave.reason,
+                date: this.formBind.unique.paidLeave.date,
+                contact: this.formBind.unique.paidLeave.contact,
+                memo: this.formBind.unique.paidLeave.memo
               }
               return uniqueItem
             }
             case 'equipment': {
               const uniqueItem = {
-                item_name: this.formBind.unique.item_name,
-                reason: this.formBind.unique.reason,
-                memo: this.formBind.unique.memo
+                item_name: this.formBind.unique.equipment.item_name,
+                reason: this.formBind.unique.equipment.reason,
+                memo: this.formBind.unique.equipment.memo
               }
               return uniqueItem
             }
