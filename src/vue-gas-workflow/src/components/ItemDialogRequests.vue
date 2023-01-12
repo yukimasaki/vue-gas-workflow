@@ -233,12 +233,42 @@ export default {
     /** 追加がクリックされたとき */
     async onClickAction () {
       if (this.actionType === 'add') {
-        // TODO: ↓ごちゃごちゃしてるのでキレイにする！
-
-        // ドキュメントを追加する際に必要な引数を生成する
         const uid = uuidv4()
         const userId = this.getUserEmail()
+        const item = await this.createItem(uid, userId)
+        await this.addDocumentAsSubCollection({ uid, userId, item })
 
+        // // to: 承認者メールアドレスをセットする
+        // const emailTo = routes.approvers[0].email
+        // // subject: 申請が否認された旨を題名に記載する
+        // const emailSubject = `[承認依頼] [${this.title}]`
+        // // body: 詳細画面へのリンクを記載する
+        // const detailPageUrl = `${window.location.href}others/requests/${uid}`
+        // const emailBody = this.createEmailBody(emailSubject, detailPageUrl)
+        // // メール送信
+        // const emailConfig = { to: emailTo, subject: emailSubject, body: emailBody }
+        // await this.sendEmail({ emailConfig })
+
+        this.show = false
+      } else {
+        const userId = this.getUserEmail()
+        const docId = this.formBind.id
+        const item = this.updateItem(userId, docId)
+        console.log(item)
+        // await this.updateDocumentAsSubCollection({ userId, docId, item })
+      }
+    },
+
+    /** actionType == 'edit'時にitemを更新する */
+    updateItem(userId, docId) {
+      console.log(userId)
+      console.log(docId)
+      const item = { test: 'Hello World'}
+      return item
+    },
+
+    /** actionType == 'add'時にitemを作成する */
+    async createItem(uid, userId) {
         // プルダウンで選択された申請種別のvalueを変数へ格納
         const requestTypeValue = this.formBind.common.request_type.value
 
@@ -320,22 +350,8 @@ export default {
           }
         }
 
-        await this.addDocumentAsSubCollection({ uid, userId, item })
-
-        // // to: 承認者メールアドレスをセットする
-        // const emailTo = routes.approvers[0].email
-        // // subject: 申請が否認された旨を題名に記載する
-        // const emailSubject = `[承認依頼] [${this.title}]`
-        // // body: 詳細画面へのリンクを記載する
-        // const detailPageUrl = `${window.location.href}others/requests/${uid}`
-        // const emailBody = this.createEmailBody(emailSubject, detailPageUrl)
-        // // メール送信
-        // const emailConfig = { to: emailTo, subject: emailSubject, body: emailBody }
-        // await this.sendEmail({ emailConfig })
-
-        this.show = false
-      }
-    },
+        return item
+    } ,
 
     /** フォームの内容を初期化します */
     resetForm (item) {
