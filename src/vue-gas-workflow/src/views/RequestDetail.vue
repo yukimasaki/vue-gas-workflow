@@ -101,23 +101,23 @@
                   auto-grow
                   rows="1"
                   label="事由"
-                  v-model="formData.unique.paidLeave.reason"
+                  v-model="formData.unique.paid_leave.reason"
                 />
                 <v-textarea
                   auto-grow
                   rows="1"
                   label="予定日時"
-                  v-model="formData.unique.paidLeave.date"
+                  v-model="formData.unique.paid_leave.date"
                 />
                 <v-text-field
                   label="緊急連絡先"
-                  v-model="formData.unique.paidLeave.contact"
+                  v-model="formData.unique.paid_leave.contact"
                 />
                 <v-textarea
                   auto-grow
                   rows="1"
                   label="備考"
-                  v-model="formData.unique.paidLeave.memo"
+                  v-model="formData.unique.paid_leave.memo"
                 />
               </div>
               <!-- 備品申請 -->
