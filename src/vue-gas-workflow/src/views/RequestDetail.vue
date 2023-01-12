@@ -101,23 +101,23 @@
                   auto-grow
                   rows="1"
                   label="事由"
-                  v-model="formData.unique.reason"
+                  v-model="formData.unique.paidLeave.reason"
                 />
                 <v-textarea
                   auto-grow
                   rows="1"
                   label="予定日時"
-                  v-model="formData.unique.date"
+                  v-model="formData.unique.paidLeave.date"
                 />
                 <v-text-field
                   label="緊急連絡先"
-                  v-model="formData.unique.contact"
+                  v-model="formData.unique.paidLeave.contact"
                 />
                 <v-textarea
                   auto-grow
                   rows="1"
                   label="備考"
-                  v-model="formData.unique.memo"
+                  v-model="formData.unique.paidLeave.memo"
                 />
               </div>
               <!-- 備品申請 -->
@@ -126,19 +126,19 @@
                   auto-grow
                   rows="1"
                   label="商品名"
-                  v-model="formData.unique.item_name"
+                  v-model="formData.unique.equipment.item_name"
                 />
                 <v-textarea
                   auto-grow
                   rows="1"
                   label="購入理由"
-                  v-model="formData.unique.reason"
+                  v-model="formData.unique.equipment.reason"
                 />
                 <v-textarea
                   auto-grow
                   rows="1"
                   label="備考"
-                  v-model="formData.unique.memo"
+                  v-model="formData.unique.equipment.memo"
                 />
               </div>
 

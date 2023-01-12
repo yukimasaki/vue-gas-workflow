@@ -30,27 +30,27 @@
           <div v-if="formBind.common.request_type.value == 'paid_leave'">
             <v-textarea
               label="事由"
-              v-model="formBind.unique.paidLeave.reason"
+              v-model="formBind.unique.paid_leave.reason"
               :rules="reasonRules"
               rows="3"
             />
 
             <v-textarea
               label="予定日時"
-              v-model="formBind.unique.paidLeave.date"
+              v-model="formBind.unique.paid_leave.date"
               :rules="dateRules"
               rows="3"
             />
 
             <v-text-field
               label="緊急連絡先"
-              v-model="formBind.unique.paidLeave.contact"
+              v-model="formBind.unique.paid_leave.contact"
               :rules="contactRules"
             />
 
             <v-textarea
               label="備考"
-              v-model="formBind.unique.paidLeave.memo"
+              v-model="formBind.unique.paid_leave.memo"
               rows="3"
             />
           </div>
@@ -150,7 +150,7 @@ export default {
           comments: []
         },
         unique: {
-          paidLeave: {
+          paid_leave: {
             reason: '',
             date: '',
             contact: '',
@@ -269,18 +269,22 @@ export default {
           switch(requestTypeValue) {
             case 'paid_leave': {
               const uniqueItem = {
-                reason: this.formBind.unique.paidLeave.reason,
-                date: this.formBind.unique.paidLeave.date,
-                contact: this.formBind.unique.paidLeave.contact,
-                memo: this.formBind.unique.paidLeave.memo
+                paid_leave: {
+                  reason: this.formBind.unique.paid_leave.reason,
+                  date: this.formBind.unique.paid_leave.date,
+                  contact: this.formBind.unique.paid_leave.contact,
+                  memo: this.formBind.unique.paid_leave.memo
+                }
               }
               return uniqueItem
             }
             case 'equipment': {
               const uniqueItem = {
-                item_name: this.formBind.unique.equipment.item_name,
-                reason: this.formBind.unique.equipment.reason,
-                memo: this.formBind.unique.equipment.memo
+                equipment: {
+                  item_name: this.formBind.unique.equipment.item_name,
+                  reason: this.formBind.unique.equipment.reason,
+                  memo: this.formBind.unique.equipment.memo
+                }
               }
               return uniqueItem
             }
