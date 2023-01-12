@@ -17,18 +17,18 @@
       </v-col>
     </v-row>
 
-    <ItemDialogCreateRequest ref="ItemDialogCreateRequest"/>
+    <ItemDialogRequests ref="ItemDialogRequests"/>
   </div>
 </template>
 
 <script>
-import ItemDialogCreateRequest from '../../components/ItemDialogCreateRequest.vue'
+import ItemDialogRequests from '../../components/ItemDialogRequests.vue'
 
 export default {
   name: 'ItemDIalogTest',
 
   components: {
-    ItemDialogCreateRequest
+    ItemDialogRequests
   },
 
   data() {
@@ -43,7 +43,7 @@ export default {
 
   methods: {
     onClickAdd() {
-      this.$refs.ItemDialogCreateRequest.open('add')
+      this.$refs.ItemDialogRequests.open('add')
     },
 
   },

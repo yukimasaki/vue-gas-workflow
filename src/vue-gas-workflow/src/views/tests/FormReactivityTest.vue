@@ -21,19 +21,19 @@
       </v-col>
     </v-row>
 
-    <ItemDialogCreateRequest ref="ItemDialogCreateRequest"/>
+    <ItemDialogRequests ref="ItemDialogRequests"/>
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
-import ItemDialogCreateRequest from '../../components/ItemDialogCreateRequest.vue'
+import ItemDialogRequests from '../../components/ItemDialogRequests.vue'
 
 export default {
   name: 'FormReactivityTest',
 
   components: {
-    ItemDialogCreateRequest
+    ItemDialogRequests
   },
 
   data() {
@@ -60,7 +60,7 @@ export default {
     }),
 
     onClickAdd() {
-      this.$refs.ItemDialogCreateRequest.open('add')
+      this.$refs.ItemDialogRequests.open('add')
     },
 
     // methodsからdataの値を変更し、リアクティブにビューに反映させることができた

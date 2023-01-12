@@ -78,7 +78,7 @@
     </v-card>
 
     <!-- 追加／編集ダイアログ -->
-    <ItemDialogCreateRequest ref="ItemDialogCreateRequest"/>
+    <ItemDialogRequests ref="ItemDialogRequests"/>
 
   </div>
 
@@ -86,13 +86,13 @@
 
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
-import ItemDialogCreateRequest from '../components/ItemDialogCreateRequest.vue'
+import ItemDialogRequests from '../components/ItemDialogRequests.vue'
 
 export default {
   name: 'RequestOverView',
 
   components: {
-    ItemDialogCreateRequest
+    ItemDialogRequests
   },
 
   data() {
@@ -151,7 +151,7 @@ export default {
 
     /** 追加ボタンがクリックされたとき */
     onClickAdd () {
-      this.$refs.ItemDialogCreateRequest.open('add')
+      this.$refs.ItemDialogRequests.open('add')
     },
 
     onClickRow(item) {

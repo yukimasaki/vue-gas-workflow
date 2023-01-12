@@ -159,20 +159,20 @@
     </v-footer>
 
     <!-- 追加／編集ダイアログ -->
-    <ItemDialogCreateRequest ref="ItemDialogCreateRequest"/>
+    <ItemDialogRequests ref="ItemDialogRequests"/>
 
   </div>
 </template>
 
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex'
-import ItemDialogCreateRequest from '../components/ItemDialogCreateRequest.vue'
+import ItemDialogRequests from '../components/ItemDialogRequests.vue'
 
 export default {
   name: 'RequestDetail',
 
   components: {
-    ItemDialogCreateRequest
+    ItemDialogRequests
   },
 
   data() {
@@ -419,7 +419,7 @@ export default {
 
     onClickEdit() {
       const item = this.formData
-      this.$refs.ItemDialogCreateRequest.open('edit', item)
+      this.$refs.ItemDialogRequests.open('edit', item)
     },
   },
 
