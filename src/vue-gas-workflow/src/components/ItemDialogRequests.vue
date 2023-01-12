@@ -16,6 +16,7 @@
             v-model="formBind.common.request_type"
             :items="selectReqestType"
             :rules="requestTypeRules"
+            :disabled="actionType == 'edit'"
             return-object
           />
 
