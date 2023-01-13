@@ -210,6 +210,7 @@ export default {
 
     ...mapActions({
       addDocumentAsSubCollection: 'firestore/addDocumentAsSubCollection',
+      updateDocumentInSubCollection: 'firestore/updateDocumentInSubCollection',
       fetchUserInfo: 'firestore/fetchUserInfo',
       createArrayRoute: 'firestore/createArrayRoute',
       sendEmail: 'firestore/sendEmail',
@@ -253,9 +254,9 @@ export default {
       } else {
         const userId = this.getUserEmail()
         const docId = this.formBind.id
-        const item = this.updateItem(userId, docId)
+        const item = this.updateItem()
         console.log(item)
-        // await this.updateDocumentAsSubCollection({ userId, docId, item })
+        await this.updateDocumentInSubCollection({ userId, docId, item })
         this.show = false
       }
     },
@@ -380,6 +381,7 @@ export default {
         // RequestDetail.vue > created() でObject.assignを使うと画面が白く表示されてしまうため、
         // 本メソッド内でitemをディープコピーしている
         this.formBind = JSON.parse(JSON.stringify(item))
+        this.formBind.common.created_at = item.common.created_at
       } else {
         //this.formBind.common配下のプロパティに空値をセットする
         // キーを取得する
