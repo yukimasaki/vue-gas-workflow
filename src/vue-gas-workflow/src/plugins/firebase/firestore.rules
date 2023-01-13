@@ -22,7 +22,7 @@ service cloud.firestore {
 
     function isRemand(userId) {
       return isMe(userId) &&
-             resource.data.status == '差戻し';
+             resource.data.common.status == '差戻し';
     }
 
     match /admins/{adminId} {
