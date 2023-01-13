@@ -252,8 +252,6 @@ export default {
 
         this.show = false
       } else {
-        // TODO: 入力内容に変化がない場合は更新ボタンを非活性にしたい
-
         const userId = this.getUserEmail()
         const docId = this.formBind.id
         const item = this.updateItem()
