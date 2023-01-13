@@ -252,7 +252,7 @@ export default {
 
         this.show = false
       } else {
-        // 入力内容に変化がない場合は更新ボタンを非活性にしたい
+        // TODO: 入力内容に変化がない場合は更新ボタンを非活性にしたい
 
         const userId = this.getUserEmail()
         const docId = this.formBind.id
@@ -260,7 +260,7 @@ export default {
         console.log(item)
         await this.updateDocumentInSubCollection({ userId, docId, item })
         this.show = false
-        // RequestDetailのフォーム表示内容を更新させたい
+        // TODO: RequestDetailのフォーム表示内容を更新させたい
       }
     },
 
