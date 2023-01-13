@@ -242,7 +242,7 @@ const actions = {
     const docSnap = await getDoc(docRef)
     const timestampedItem = docSnap.data()
 
-    commit('addState', { item: timestampedItem, currentTableName: 'requests' })
+    commit('setState', { item: timestampedItem, currentTableName: 'requests' })
     commit('setWorkflowMessage', '申請を再提出しました。')
   },
 
