@@ -358,7 +358,10 @@ export default {
       if (this.actionType == 'edit') {
         console.log(`edit > before`)
         console.log(this.formBind)
+        // 現状は参照渡しでitemを渡している
         this.formBind = item
+        // RequestDetail.vue > created() でObject.assignを使うと画面が白く表示されてしまうため、
+        // 本メソッド内でitemをディープコピーできないか検証する
         console.log(`edit > after`)
         console.log(this.formBind)
       } else {
