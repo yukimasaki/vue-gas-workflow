@@ -425,6 +425,7 @@ export default {
 
   async created() {
     await this.fetchRequestDetail()
+    // formDataにrequestsを参照渡ししているため、inputへの入力内容が即座にformに反映されてしまい、resetFormも効かない
     this.formData = this.requests
   },
 }
