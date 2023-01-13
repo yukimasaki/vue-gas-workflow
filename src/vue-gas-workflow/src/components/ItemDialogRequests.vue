@@ -256,14 +256,33 @@ export default {
         const item = this.updateItem(userId, docId)
         console.log(item)
         // await this.updateDocumentAsSubCollection({ userId, docId, item })
+        this.show = false
       }
     },
 
     /** actionType == 'edit'時にitemを更新する */
-    updateItem(userId, docId) {
-      console.log(userId)
-      console.log(docId)
-      const item = { test: 'Hello World'}
+    updateItem() {
+      // itemをフォームに入力された内容に置き換える
+      const item = this.formBind
+
+      // 差戻しされた申請を修正した後に手動でリセットすべき項目を置き換える
+      // common:
+      // current_approver_email
+      item.common.current_approver_email = item.common.routes.approvers[0].email
+
+      // current_step
+      item.common.current_step = 1
+
+      // status
+      item.common.status = '保留中'
+
+      // routes.approvers.status
+      item.common.routes.approvers.forEach(
+        element => {
+          element.status = '保留中'
+        }
+      )
+
       return item
     },
 
