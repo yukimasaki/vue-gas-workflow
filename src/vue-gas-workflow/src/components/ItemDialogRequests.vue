@@ -260,6 +260,7 @@ export default {
         console.log(item)
         await this.updateDocumentInSubCollection({ userId, docId, item })
         this.show = false
+        // RequestDetailのフォーム表示内容を更新させたい
       }
     },
 
