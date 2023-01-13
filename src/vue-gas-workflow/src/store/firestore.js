@@ -235,6 +235,17 @@ const actions = {
     commit('setWorkflowMessage', '申請を提出しました。')
   },
 
+  /** users配下のサブコレクションのドキュメントを更新する */
+  async updateDocumentInSubCollection({ commit }, { docId, userId, item }) {
+    const docRef = doc(db, 'users', userId, 'requests', docId)
+    await setDoc(docRef, item)
+    const docSnap = await getDoc(docRef)
+    const timestampedItem = docSnap.data()
+
+    commit('addState', { item: timestampedItem, currentTableName: 'requests' })
+    commit('setWorkflowMessage', '申請を再提出しました。')
+  },
+
   /** 2階層のサブコレクションをusersコレクションにバッチ書き込み(add)する */
   async batchAddSubCollectionsToUsers({ commit }, { uid, userId, item }) {
     const batch = writeBatch(db)
