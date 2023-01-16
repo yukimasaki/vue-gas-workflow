@@ -258,7 +258,9 @@ export default {
         console.log(item)
         await this.updateDocumentInSubCollection({ userId, docId, item })
         this.show = false
-        // TODO: RequestDetailのフォーム表示内容を更新させたい
+
+        // 親コンポーネントにitemを渡してフォームを最新の状態にする
+        this.$emit('submitRemand', item)
       }
     },
 

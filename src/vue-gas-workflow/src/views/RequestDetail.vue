@@ -159,7 +159,7 @@
     </v-footer>
 
     <!-- 追加／編集ダイアログ -->
-    <ItemDialogRequests ref="ItemDialogRequests"/>
+    <ItemDialogRequests ref="ItemDialogRequests" @submitRemand="updateForm"/>
 
   </div>
 </template>
@@ -420,6 +420,11 @@ export default {
     onClickEdit() {
       const item = this.formData
       this.$refs.ItemDialogRequests.open('edit', item)
+    },
+
+    // 子コンポーネントからitemを受け取りフォームに反映する
+    updateForm(item) {
+      this.formData = item
     },
   },
 
