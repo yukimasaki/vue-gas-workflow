@@ -5,7 +5,7 @@
 
       <!-- タイトル -->
       <v-toolbar-title
-        @click="$router.push('/')"
+        @click="toRoot()"
         style="cursor: pointer"
       >{{ appName }}</v-toolbar-title>
 
@@ -143,12 +143,21 @@ export default {
   },
 
   methods: {
-    // ログアウト
     async logout(){
       await this.$store.dispatch('firebase/logout')
-      // this.$router.push('/login')
     },
 
+    toRoot() {
+      const currentPath = this.$route.path
+
+      if (currentPath != '/') {
+        // ルートディレクトリにいない場合は、ルートディレクトリに遷移する
+        this.$router.push('/')
+      } else {
+        // ルートディレクトリにいる場合は、画面をリロードする
+        this.$router.go({ path: '/', force: true })
+      }
+    },
   },
 
 
