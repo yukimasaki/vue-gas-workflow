@@ -82,6 +82,12 @@
               </v-list-item-content>
             </v-list-item>
 
+            <v-list-item link to="/send_email_test">
+              <v-list-item-content>
+                <v-list-item-title>SendEmailTest</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+
           </v-list>
         </v-menu>
 

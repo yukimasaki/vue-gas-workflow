@@ -14,6 +14,7 @@ import Admins from '../views/Admins.vue'
 import Users from '../views/Users.vue'
 import ItemDIalogTest from '../views/tests/ItemDIalogTest.vue'
 import FormReactivityTest from '../views/tests/FormReactivityTest.vue'
+import SendEmailTest from '../views/tests/SendEmailTest.vue'
 
 Vue.use(VueRouter)
 
@@ -93,6 +94,12 @@ const routes = [
     path: '/form_reactivity_test',
     name: 'FormReactivityTest',
     component: FormReactivityTest,
+    meta: {requiresAuth: true}
+  },
+  {
+    path: '/send_email_test',
+    name: 'SendEmailTest',
+    component: SendEmailTest,
     meta: {requiresAuth: true}
   },
 
