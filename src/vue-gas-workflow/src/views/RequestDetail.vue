@@ -326,22 +326,11 @@ export default {
       const operationType = '否認'
       const item = this.formData
 
-      this.updateSubCollection({ userId, docId, item, operationType })
-
-      // // to: 申請者メールアドレスをセットする
-      // const emailTo = this.formData.common.email
-      // // subject: 申請が否認された旨を題名に記載する
-      // const emailSubject = `申請が${operationType}されました [${this.formData.common.title}]`
-      // // body: 詳細画面へのリンクを記載する
-      // const url = window.location.href
-      // const detailPageUrl = url.replace('/others', '/my')
-      // const emailBody = this.createEmailBody(emailSubject, detailPageUrl)
-      // // メール送信
-      // const emailConfig = { to: emailTo, subject: emailSubject, body: emailBody }
-      // await this.sendEmail({ emailConfig })
+      await this.updateSubCollection({ userId, docId, item, operationType })
+      this.notifyToApplicant(operationType)
     },
 
-    //メール以外動作確認済み (onClickDisapproveと統合できるのでは？)
+    //メール以外動作確認済み (onClickApproveの最終ステップ時の処理、onClickDisapproveと統合できるのでは？)
     async onClickRemand() {
       this.formData.common.routes.approvers[this.formData.common.current_step - 1].status = '差戻し'
       this.formData.common.status = '差戻し'
@@ -352,19 +341,8 @@ export default {
       const operationType = '差戻し'
       const item = this.formData
 
-      this.updateSubCollection({ userId, docId, item, operationType })
-
-      // // to: 申請者メールアドレスをセットする
-      // const emailTo = this.formData.common.email
-      // // subject: 申請が否認された旨を題名に記載する
-      // const emailSubject = `申請が${operationType}されました [${this.formData.common.title}]`
-      // // body: 詳細画面へのリンクを記載する
-      // const url = window.location.href
-      // const detailPageUrl = url.replace('/others', '/my')
-      // const emailBody = this.createEmailBody(emailSubject, detailPageUrl)
-      // // メール送信
-      // const emailConfig = { to: emailTo, subject: emailSubject, body: emailBody }
-      // await this.sendEmail({ emailConfig })
+      await this.updateSubCollection({ userId, docId, item, operationType })
+      this.notifyToApplicant(operationType)
     },
 
     // TODO: 適切な関数名にリネームする
