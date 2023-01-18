@@ -238,19 +238,10 @@ export default {
         const userId = this.getUserEmail()
         const item = await this.createItem(uid, userId)
         await this.addDocumentAsSubCollection({ uid, userId, item })
-
-        // // to: 承認者メールアドレスをセットする
-        // const emailTo = routes.approvers[0].email
-        // // subject: 申請が否認された旨を題名に記載する
-        // const emailSubject = `[承認依頼] [${this.title}]`
-        // // body: 詳細画面へのリンクを記載する
-        // const detailPageUrl = `${window.location.href}others/requests/${uid}`
-        // const emailBody = this.createEmailBody(emailSubject, detailPageUrl)
-        // // メール送信
-        // const emailConfig = { to: emailTo, subject: emailSubject, body: emailBody }
-        // await this.sendEmail({ emailConfig })
-
         this.show = false
+        // 親コンポーネントに「submitOnClickAction」イベントを渡し、notifyToApproverメソッドを発火させる
+        const nextApproverEmail = item.common.routes.approvers[0].email
+        this.$emit('submitOnClickAction', nextApproverEmail)
       } else {
         const userId = this.getUserEmail()
         const docId = this.formBind.id
@@ -258,9 +249,11 @@ export default {
         console.log(item)
         await this.updateDocumentInSubCollection({ userId, docId, item })
         this.show = false
-
         // 親コンポーネントにitemを渡してフォームを最新の状態にする
-        this.$emit('submitRemand', item)
+        this.$emit('submitEdit', item)
+        // 親コンポーネントに「submitOnClickAction」イベントを渡し、notifyToApproverメソッドを発火させる
+        const nextApproverEmail = item.common.routes.approvers[0].email
+        this.$emit('submitOnClickAction', nextApproverEmail)
       }
     },
 

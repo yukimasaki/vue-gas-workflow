@@ -159,7 +159,11 @@
     </v-footer>
 
     <!-- 追加／編集ダイアログ -->
-    <ItemDialogRequests ref="ItemDialogRequests" @submitRemand="updateForm"/>
+    <ItemDialogRequests
+      ref="ItemDialogRequests"
+      @submitEdit="updateForm"
+      @submitOnClickAction="notifyToApprover"
+    />
 
   </div>
 </template>
@@ -311,7 +315,7 @@ export default {
         await this.updateSubCollection({ userId, docId, item, operationType })
 
         const nextApproverEmail = this.formData.common.current_approver_email
-        this.notifyToNextApprover(nextApproverEmail)
+        this.notifyToApprover(nextApproverEmail)
       }
     },
 
@@ -396,8 +400,8 @@ export default {
       this.sendEmail({ emailConfig })
     },
 
-    // 次のステップの承認者にメール通知する
-    notifyToNextApprover(nextApproverEmail) {
+    // 承認者にメール通知する
+    notifyToApprover(nextApproverEmail) {
       const emailTo = nextApproverEmail
       const emailSubject = `[承認依頼] [${this.formData.common.title}]`
       const detailPageUrl = window.location.href
