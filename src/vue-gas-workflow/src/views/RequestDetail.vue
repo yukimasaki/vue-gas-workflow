@@ -409,29 +409,21 @@ export default {
 
     // 申請者本人にメール通知する
     notifyToApplicant(operationType) {
-      // to: 申請者メールアドレスをセットする
       const emailTo = this.formData.common.email
-      // subject: 申請が承認された旨を題名に記載する
       const emailSubject = `申請が${operationType}されました [${this.formData.common.title}]`
-      // body: 詳細画面へのリンクを記載する
       const url = window.location.href
       const detailPageUrl = url.replace('/others', '/my')
       const emailBody = this.createEmailBody(emailSubject, detailPageUrl)
-      // メール送信
       const emailConfig = { to: emailTo, subject: emailSubject, body: emailBody }
       this.sendEmail({ emailConfig })
     },
 
     // 次のステップの承認者にメール通知する
     notifyToNextApprover(nextApproverEmail) {
-      // to: 次の承認者メールアドレスをセットする
       const emailTo = nextApproverEmail
-      // subject: 申請が承認された旨を題名に記載する
       const emailSubject = `[承認依頼] [${this.formData.common.title}]`
-      // body: 詳細画面へのリンクを記載する
       const detailPageUrl = window.location.href
       const emailBody = this.createEmailBody(emailSubject, detailPageUrl)
-      // メール送信
       const emailConfig = { to: emailTo, subject: emailSubject, body: emailBody }
       this.sendEmail({ emailConfig })
     },
