@@ -294,19 +294,8 @@ export default {
         const operationType = '承認'
         const item = this.formData
 
-        this.updateSubCollection({ userId, docId, item, operationType })
-
-        // // to: 申請者メールアドレスをセットする
-        // const emailTo = this.formData.common.email
-        // // subject: 申請が承認された旨を題名に記載する
-        // const emailSubject = `申請が${operationType}されました [${this.formData.common.title}]`
-        // // body: 詳細画面へのリンクを記載する
-        // const url = window.location.href
-        // const detailPageUrl = url.replace('/others', '/my')
-        // const emailBody = this.createEmailBody(emailSubject, detailPageUrl)
-        // // メール送信
-        // const emailConfig = { to: emailTo, subject: emailSubject, body: emailBody }
-        // await this.sendEmail({ emailConfig })
+        await this.updateSubCollection({ userId, docId, item, operationType })
+        this.notifyToApplicant(operationType)
 
       // それ以外のステップの場合
       } else {
@@ -319,19 +308,10 @@ export default {
         const docId = this.$route.params.id
         const operationType = '承認'
         const item = this.formData
+        await this.updateSubCollection({ userId, docId, item, operationType })
 
-        this.updateSubCollection({ userId, docId, item, operationType })
-
-        // // to: 次の承認者メールアドレスをセットする
-        // const emailTo = this.latestApproverEmail
-        // // subject: 申請が承認された旨を題名に記載する
-        // const emailSubject = `[承認依頼] [${this.formData.common.title}]`
-        // // body: 詳細画面へのリンクを記載する
-        // const detailPageUrl = window.location.href
-        // const emailBody = this.createEmailBody(emailSubject, detailPageUrl)
-        // // メール送信
-        // const emailConfig = { to: emailTo, subject: emailSubject, body: emailBody }
-        // await this.sendEmail({ emailConfig })
+        const nextApproverEmail = this.formData.common.current_approver_email
+        this.notifyToNextApprover(nextApproverEmail)
       }
     },
 
@@ -425,6 +405,35 @@ export default {
     // 子コンポーネントからitemを受け取りフォームに反映する
     updateForm(item) {
       this.formData = item
+    },
+
+    // 申請者本人にメール通知する
+    notifyToApplicant(operationType) {
+      // to: 申請者メールアドレスをセットする
+      const emailTo = this.formData.common.email
+      // subject: 申請が承認された旨を題名に記載する
+      const emailSubject = `申請が${operationType}されました [${this.formData.common.title}]`
+      // body: 詳細画面へのリンクを記載する
+      const url = window.location.href
+      const detailPageUrl = url.replace('/others', '/my')
+      const emailBody = this.createEmailBody(emailSubject, detailPageUrl)
+      // メール送信
+      const emailConfig = { to: emailTo, subject: emailSubject, body: emailBody }
+      this.sendEmail({ emailConfig })
+    },
+
+    // 次のステップの承認者にメール通知する
+    notifyToNextApprover(nextApproverEmail) {
+      // to: 次の承認者メールアドレスをセットする
+      const emailTo = nextApproverEmail
+      // subject: 申請が承認された旨を題名に記載する
+      const emailSubject = `[承認依頼] [${this.formData.common.title}]`
+      // body: 詳細画面へのリンクを記載する
+      const detailPageUrl = window.location.href
+      const emailBody = this.createEmailBody(emailSubject, detailPageUrl)
+      // メール送信
+      const emailConfig = { to: emailTo, subject: emailSubject, body: emailBody }
+      this.sendEmail({ emailConfig })
     },
   },
 
