@@ -106,7 +106,6 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  base: '/vue-gas-workflow/',
   routes
 })
 
