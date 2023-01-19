@@ -15,7 +15,7 @@ const state = {
   userName: '',
   userIcon: '',
   userEmail: '',
-
+  isAdmin: '',
   authMessage: '',
 }
 
@@ -36,7 +36,9 @@ const mutations = {
   setUserEmail(state, userEmail) {
     state.userEmail = userEmail
   },
-
+  setIsAdmin(state, isAdmin) {
+    state.isAdmin = isAdmin
+  },
   setAuthMessage(state, authMessage) {
     state.authMessage = authMessage
   },
@@ -94,7 +96,7 @@ const actions = {
     })
   },
 
-  onAuth({ commit }) {
+  async onAuth({ commit, dispatch, rootGetters }) {
     const auth = getAuth()
     onAuthStateChanged(auth, (user) => {
       user = user ? user : {}
@@ -105,6 +107,12 @@ const actions = {
       commit('setUserEmail', user.email)
       console.log('onAuth')
     })
+
+    await dispatch('firestore/fetchAllCollections', { currentTableName: 'admins' }, { root: true })
+    const adminEmails = rootGetters['firestore/getAdminEmails']
+    const isAdmin = adminEmails.includes(state.userEmail)
+    commit('setIsAdmin', isAdmin)
+    console.log(`isAdmin: ${isAdmin}`)
   },
 }
 
