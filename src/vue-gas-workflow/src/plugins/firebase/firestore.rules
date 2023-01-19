@@ -26,7 +26,8 @@ service cloud.firestore {
     }
 
     match /admins/{adminId} {
-      allow read, write: if isAdmin();
+      allow read: if isAuth();
+      allow write: if isAdmin();
     }
     match /departments/{departmentId} {
       allow read, write: if isAdmin();
