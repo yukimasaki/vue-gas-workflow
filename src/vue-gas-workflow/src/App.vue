@@ -12,7 +12,7 @@
       <v-spacer></v-spacer>
 
       <!-- ログイン時のみ、メニューを表示する -->
-      <v-toolbar-items v-if="loginStatus">
+      <v-toolbar-items v-if="isAuth">
         <!-- ユーザー関連のメニュー -->
         <v-menu
           offset-y
@@ -34,6 +34,7 @@
 
         <!-- 設定関連のメニュー -->
         <v-menu
+          v-if="isAdmin"
           offset-y
           open-on-hover>
           <template v-slot:activator="{on}">
@@ -132,13 +133,14 @@ export default {
       appName: state => state.workflow.settings.appName,
       authMessage: state => state.firebase.authMessage,
       workflowMessage: state => state.firestore.workflowMessage,
+      isAdmin: state => state.firebase.isAdmin,
     }),
 
     ...mapGetters({
       userName: 'firebase/getUserName',
       userIcon: 'firebase/getUserIcon',
-      loginStatus: 'firebase/getLoginStatus'
-    })
+      isAuth: 'firebase/getLoginStatus',
+    }),
   },
 
   beforeCreate () {
