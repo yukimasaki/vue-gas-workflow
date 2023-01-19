@@ -106,13 +106,19 @@ const actions = {
       commit('setUserIcon', user.photoURL)
       commit('setUserEmail', user.email)
       console.log('onAuth')
+
+      if (Object.keys(user).length != 0) {
+        const getAdminEmails = async () => {
+          await dispatch('firestore/fetchAllCollections', { currentTableName: 'admins' }, { root: true })
+          const adminEmails = rootGetters['firestore/getAdminEmails']
+          const isAdmin = adminEmails.includes(state.userEmail)
+          commit('setIsAdmin', isAdmin)
+          console.log(`isAdmin: ${isAdmin}`)
+        }
+        getAdminEmails()
+      }
     })
 
-    await dispatch('firestore/fetchAllCollections', { currentTableName: 'admins' }, { root: true })
-    const adminEmails = rootGetters['firestore/getAdminEmails']
-    const isAdmin = adminEmails.includes(state.userEmail)
-    commit('setIsAdmin', isAdmin)
-    console.log(`isAdmin: ${isAdmin}`)
   },
 }
 
