@@ -343,6 +343,14 @@ const getters = {
   getArrayRoute(state) {
     return state.arrayRoute
   },
+
+  getAdminEmails(state) {
+    const arrayAdminEmail = []
+    state.admins.map(element => {
+      arrayAdminEmail.push(element.id)
+    })
+    return arrayAdminEmail
+  },
 }
 
 export default {
