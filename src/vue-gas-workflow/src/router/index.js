@@ -1,6 +1,7 @@
 // ライブラリ
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from '@/store/index'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
 // コンポーネント
@@ -23,19 +24,19 @@ const routes = [
     path: '/',
     name: 'RequestOverview',
     component: RequestOverview,
-    meta: {requiresAuth: true}
+    meta: { requiresAuth: true }
   },
   {
     path: '/my/requests/:id',
     name: 'myRequestDetail',
     component: RequestDetail,
-    meta: {requiresAuth: true}
+    meta: { requiresAuth: true }
   },
   {
     path: '/others/requests/:id',
     name: 'othersRequestDetail',
     component: RequestDetail,
-    meta: {requiresAuth: true}
+    meta: { requiresAuth: true }
   },
   {
     path: '/login',
@@ -58,49 +59,70 @@ const routes = [
     path: '/settings',
     name: 'Settings',
     component: Settings,
-    meta: {requiresAuth: true}
+    meta: { requiresAuth: true }
   },
   {
     path: '/departments',
     name: 'Departments',
     component: Departments,
-    meta: {requiresAuth: true}
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
   },
   {
     path: '/routes',
     name: 'Routes',
     component: Routes,
-    meta: {requiresAuth: true}
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
   },
   {
     path: '/admins',
     name: 'Admins',
     component: Admins,
-    meta: {requiresAuth: true}
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
   },
   {
     path: '/users',
     name: 'Users',
     component: Users,
-    meta: {requiresAuth: true}
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
   },
   {
     path: '/item_dialog_test',
     name: 'ItemDIalogTest',
     component: ItemDIalogTest,
-    meta: {requiresAuth: true}
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
   },
   {
     path: '/form_reactivity_test',
     name: 'FormReactivityTest',
     component: FormReactivityTest,
-    meta: {requiresAuth: true}
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
   },
   {
     path: '/send_email_test',
     name: 'SendEmailTest',
     component: SendEmailTest,
-    meta: {requiresAuth: true}
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true
+    }
   },
 
 ]
@@ -111,6 +133,18 @@ const router = new VueRouter({
 
 // 認証状態をチェック
 router.beforeEach( (to, from, next) => {
+  // 管理者認証に関する処理
+  // if (Object.keys(user).length != 0) {
+  //   const getAdminEmails = async () => {
+  //     await dispatch('firestore/fetchAllCollections', { currentTableName: 'admins' }, { root: true })
+  //     const adminEmails = rootGetters['firestore/getAdminEmails']
+  //     const isAdmin = adminEmails.includes(state.userEmail)
+  //     commit('setIsAdmin', isAdmin)
+  //     console.log(`isAdmin: ${isAdmin}`)
+  //   }
+  //   getAdminEmails()
+  // }
+
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
 
   if (requiresAuth) {
@@ -126,6 +160,7 @@ router.beforeEach( (to, from, next) => {
       }
     })
   } else {
+    // 認証が不要な場合はページへ遷移する
     next()
   }
 })
