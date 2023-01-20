@@ -146,6 +146,15 @@ router.beforeEach( (to, from, next) => {
   //   getAdminEmails()
   // }
 
+  const setStateIsAdmin = async (user) => {
+    await store.dispatch('firestore/fetchAllCollections', { currentTableName: 'admins' })
+    const admins = store.getters['firestore/getAdminEmails']
+    const userEmail = user.email
+    const isAdmin = admins.includes(userEmail)
+    console.log(`isAdmin: ${isAdmin}`)
+    store.commit('firebase/setIsAdmin', isAdmin)
+  }
+
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
 
   if (requiresAuth) {
@@ -153,6 +162,9 @@ router.beforeEach( (to, from, next) => {
     const auth = getAuth()
     onAuthStateChanged(auth, (user) => {
       if(user) {
+        // 管理者であるか否かを判定し結果をstoreにコミットする
+        setStateIsAdmin(user)
+
         // 認証済の場合はページへ遷移する
         next()
       } else {
