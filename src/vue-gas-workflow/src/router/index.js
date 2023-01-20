@@ -24,19 +24,25 @@ const routes = [
     path: '/',
     name: 'RequestOverview',
     component: RequestOverview,
-    meta: { requiresAuth: true }
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: '/my/requests/:id',
     name: 'myRequestDetail',
     component: RequestDetail,
-    meta: { requiresAuth: true }
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: '/others/requests/:id',
     name: 'othersRequestDetail',
     component: RequestDetail,
-    meta: { requiresAuth: true }
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: '/login',
@@ -59,14 +65,15 @@ const routes = [
     path: '/settings',
     name: 'Settings',
     component: Settings,
-    meta: { requiresAuth: true }
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: '/departments',
     name: 'Departments',
     component: Departments,
     meta: {
-      requiresAuth: true,
       requiresAdmin: true
     }
   },
@@ -75,7 +82,6 @@ const routes = [
     name: 'Routes',
     component: Routes,
     meta: {
-      requiresAuth: true,
       requiresAdmin: true
     }
   },
@@ -84,7 +90,6 @@ const routes = [
     name: 'Admins',
     component: Admins,
     meta: {
-      requiresAuth: true,
       requiresAdmin: true
     }
   },
@@ -93,7 +98,6 @@ const routes = [
     name: 'Users',
     component: Users,
     meta: {
-      requiresAuth: true,
       requiresAdmin: true
     }
   },
@@ -102,7 +106,6 @@ const routes = [
     name: 'ItemDIalogTest',
     component: ItemDIalogTest,
     meta: {
-      requiresAuth: true,
       requiresAdmin: true
     }
   },
@@ -111,7 +114,6 @@ const routes = [
     name: 'FormReactivityTest',
     component: FormReactivityTest,
     meta: {
-      requiresAuth: true,
       requiresAdmin: true
     }
   },
@@ -120,7 +122,6 @@ const routes = [
     name: 'SendEmailTest',
     component: SendEmailTest,
     meta: {
-      requiresAuth: true,
       requiresAdmin: true
     }
   },
@@ -155,7 +156,21 @@ router.beforeEach( (to, from, next) => {
     store.commit('firebase/setIsAdmin', isAdmin)
   }
 
+  const auth = getAuth()
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setStateIsAdmin(user)
+      store.commit('firebase/setLoginStatus', user.uid ? true : false)
+      console.log(`isAuth: ${store.getters['firebase/getLoginStatus']}`)
+    } else {
+      store.commit('firebase/setLoginStatus', false)
+      console.log(`isAuth: ${store.getters['firebase/getLoginStatus']}`)
+    }
+  })
+
+
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+  // const requiresAdmin = to.matched.some(record => record.meta.requiresAdmin)
 
   if (requiresAuth) {
     // 認証状態を取得
