@@ -134,6 +134,7 @@ const router = new VueRouter({
 // 認証状態をチェック
 router.beforeEach( (to, from, next) => {
   // 管理者認証に関する処理
+  // 下記はもともとfirebase.jsに記述していたが、onAuthがrouterより後に評価されてしまうため、router内で処理する必要がある。
   // if (Object.keys(user).length != 0) {
   //   const getAdminEmails = async () => {
   //     await dispatch('firestore/fetchAllCollections', { currentTableName: 'admins' }, { root: true })
