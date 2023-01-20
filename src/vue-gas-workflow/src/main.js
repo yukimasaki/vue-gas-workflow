@@ -11,7 +11,7 @@ const createApp = async () => {
   // Firebaseを初期化
   initFirebase
 
-  // 認証状態をセット
+  // 認証状態、ユーザー情報をセット
   await store.dispatch('firebase/onAuth')
 
   new Vue({
