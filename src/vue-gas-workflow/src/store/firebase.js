@@ -96,12 +96,11 @@ const actions = {
     })
   },
 
-  // 認証状態、ユーザー情報をセットする (main.jsで呼び出される)
+  // ユーザー情報をセットする (main.jsで呼び出される)
   async onAuth({ commit }) {
     const auth = getAuth()
     onAuthStateChanged(auth, (user) => {
       user = user ? user : {}
-      commit('setLoginStatus', user.uid ? true : false)
       commit('setUserUid', user.uid)
       commit('setUserName', user.displayName)
       commit('setUserIcon', user.photoURL)
