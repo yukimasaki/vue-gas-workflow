@@ -144,13 +144,17 @@ router.beforeEach( (to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
   if (requiresAuth) {
     if (isAuth) {
+      // ISSUE: onAuthStateChangedメソッドを使わないとログアウト時にコードが評価されないため、リダイレクト処理がなされない
+      console.log(isAuth)
       // 認証済の場合はページへ遷移する
       next()
     } else {
+      console.log(isAuth)
       // 未認証の場合はログインページへ遷移する
       next({ path: '/login', query: { redirect: to.fullPath } })
     }
   } else {
+    console.log(isAuth)
     // 認証が不要な場合はページへ遷移する
     next()
   }
