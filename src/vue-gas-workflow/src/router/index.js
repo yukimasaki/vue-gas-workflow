@@ -132,64 +132,43 @@ const router = new VueRouter({
   routes
 })
 
-// 認証状態をチェック
+// 以下は、ページへ遷移しようとする際、遷移直前に評価される
 router.beforeEach( (to, from, next) => {
-  // 管理者認証に関する処理
-  // 下記はもともとfirebase.jsに記述していたが、onAuthがrouterより後に評価されてしまうため、router内で処理する必要がある。
-  // if (Object.keys(user).length != 0) {
-  //   const getAdminEmails = async () => {
-  //     await dispatch('firestore/fetchAllCollections', { currentTableName: 'admins' }, { root: true })
-  //     const adminEmails = rootGetters['firestore/getAdminEmails']
-  //     const isAdmin = adminEmails.includes(state.userEmail)
-  //     commit('setIsAdmin', isAdmin)
-  //     console.log(`isAdmin: ${isAdmin}`)
-  //   }
-  //   getAdminEmails()
-  // }
-
-  const setStateIsAdmin = async (user) => {
-    await store.dispatch('firestore/fetchAllCollections', { currentTableName: 'admins' })
-    const admins = store.getters['firestore/getAdminEmails']
-    const userEmail = user.email
-    const isAdmin = admins.includes(userEmail)
-    console.log(`isAdmin: ${isAdmin}`)
-    store.commit('firebase/setIsAdmin', isAdmin)
-  }
-
-  const auth = getAuth()
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setStateIsAdmin(user)
-      store.commit('firebase/setLoginStatus', user.uid ? true : false)
-      console.log(`isAuth: ${store.getters['firebase/getLoginStatus']}`)
-    } else {
-      store.commit('firebase/setLoginStatus', false)
-      console.log(`isAuth: ${store.getters['firebase/getLoginStatus']}`)
-    }
-  })
+  // ログインステータスを取得
+  const isAuth = store.getters['firebase/getLoginStatus']
+  // 管理者ステータスを取得
+  const isAdmin = store.getters['firebase/getIsAdmin']
 
 
+  // 認証のみを必要とするページにアクセスした場合
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
-  // const requiresAdmin = to.matched.some(record => record.meta.requiresAdmin)
-
   if (requiresAuth) {
-    // 認証状態を取得
-    const auth = getAuth()
-    onAuthStateChanged(auth, (user) => {
-      if(user) {
-        // 管理者であるか否かを判定し結果をstoreにコミットする
-        setStateIsAdmin(user)
-
-        // 認証済の場合はページへ遷移する
-        next()
-      } else {
-        // 未認証の場合はログインページへ遷移する
-        next({ path: '/login', query: { redirect: to.fullPath } })
-      }
-    })
+    if (isAuth) {
+      // 認証済の場合はページへ遷移する
+      next()
+    } else {
+      // 未認証の場合はログインページへ遷移する
+      next({ path: '/login', query: { redirect: to.fullPath } })
+    }
   } else {
     // 認証が不要な場合はページへ遷移する
     next()
+  }
+
+  // 管理者権限を必要とするページにアクセスした場合
+  const requiresAdmin = to.matched.some(record => record.meta.requiresAdmin)
+  if (requiresAdmin) {
+    if (isAuth && isAdmin) {
+      // 認証済かつ管理者の場合はページへ遷移する
+      next()
+    }
+    if (isAuth && !isAdmin) {
+      // 認証済かつ非管理者の場合は403ページへ遷移する
+      next({ path: '/403' })
+    } else {
+      // 未認証の場合はログインページへ遷移する
+      next({ path: '/login', query: { redirect: to.fullPath } })
+    }
   }
 })
 

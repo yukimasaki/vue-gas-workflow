@@ -97,10 +97,28 @@ const actions = {
   },
 
   // ユーザー情報をセットする (main.jsで呼び出される)
-  async onAuth({ commit }) {
+  async onAuth({ commit, dispatch, rootGetters }) {
+    // adminsコレクションを配列として取得し、自身のユーザーID(Email)が含まれるかを判定する関数
+    const isAdmin = async (user) => {
+      try {
+        await dispatch('firestore/fetchAllCollections', { currentTableName: 'admins' }, { root: true })
+      } catch (err) {
+        return false
+      }
+      const admins = rootGetters['firestore/getAdminEmails']
+      const isAdmin = admins.includes(user.email)
+      commit('firebase/setIsAdmin', isAdmin, { root: true })
+      return isAdmin
+    }
+
+    // 認証状態を取得
     const auth = getAuth()
+
+    // 認証情報をセット
     onAuthStateChanged(auth, (user) => {
       user = user ? user : {}
+      commit('firebase/setLoginStatus', user.uid ? true : false, { root: true })
+      commit('firebase/setIsAdmin', isAdmin(user), { root: true })
       commit('setUserUid', user.uid)
       commit('setUserName', user.displayName)
       commit('setUserIcon', user.photoURL)
@@ -114,6 +132,9 @@ const actions = {
 const getters = {
   getLoginStatus(state) {
     return state.loggedIn
+  },
+  getIsAdmin(state) {
+    return state.isAdmin
   },
   getUserUid(state) {
     return state.userUid
