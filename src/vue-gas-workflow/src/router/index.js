@@ -134,46 +134,45 @@ const router = new VueRouter({
 
 // 以下は、ページへ遷移しようとする際、遷移直前に評価される
 router.beforeEach( (to, from, next) => {
-  // ログインステータスを取得
-  const isAuth = store.getters['firebase/getLoginStatus']
-  // 管理者ステータスを取得
-  const isAdmin = store.getters['firebase/getIsAdmin']
-
 
   // 認証のみを必要とするページにアクセスした場合
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
   if (requiresAuth) {
-    if (isAuth) {
-      // ISSUE: onAuthStateChangedメソッドを使わないとログアウト時にコードが評価されないため、リダイレクト処理がなされない
-      console.log(isAuth)
-      // 認証済の場合はページへ遷移する
-      next()
-    } else {
-      console.log(isAuth)
-      // 未認証の場合はログインページへ遷移する
-      next({ path: '/login', query: { redirect: to.fullPath } })
-    }
+    // ISSUE: onAuthStateChangedメソッドを使わないとログアウト時にコードが評価されないため、リダイレクト処理がなされない
+    const auth = getAuth()
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // 認証済の場合はページへ遷移する
+        next()
+      } else {
+        // 未認証の場合はログインページへ遷移する
+        next({ path: '/login', query: { redirect: to.fullPath } })
+      }
+    })
   } else {
-    console.log(isAuth)
     // 認証が不要な場合はページへ遷移する
     next()
   }
 
   // 管理者権限を必要とするページにアクセスした場合
   const requiresAdmin = to.matched.some(record => record.meta.requiresAdmin)
+  const isAdmin = store.getters['firebase/getIsAdmin']
+
   if (requiresAdmin) {
-    if (isAuth && isAdmin) {
-      // 認証済かつ管理者の場合はページへ遷移する
-      next()
-    }
-    if (isAuth && !isAdmin) {
-      // 認証済かつ非管理者の場合は403ページへ遷移する
-      next({ path: '/403' })
-    } else {
-      // 未認証の場合はログインページへ遷移する
-      next({ path: '/login', query: { redirect: to.fullPath } })
-    }
+    const auth = getAuth()
+    onAuthStateChanged(auth, (user) => {
+      if (user && isAdmin) {
+        // 認証済でかつ管理者の場合はページへ遷移する
+        next()
+      } else if (user && !isAdmin) {
+        // 認証済かつ非管理者の場合は403ページへ遷移する
+        // ISSUE: requiresAdminが有効なページでリロードすると/403へ遷移してしまう
+        next({ path: '/403' })
+      } else {
+        // 未認証の場合はログインページへ遷移する
+        next({ path: '/login', query: { redirect: to.fullPath } })
+      }
+    })
   }
 })
-
 export default router

@@ -102,13 +102,13 @@ const actions = {
     const isAdmin = async (user) => {
       try {
         await dispatch('firestore/fetchAllCollections', { currentTableName: 'admins' }, { root: true })
+        const admins = rootGetters['firestore/getAdminEmails']
+        const isAdmin = admins.includes(user.email)
+        commit('firebase/setIsAdmin', isAdmin, { root: true })
+        return isAdmin
       } catch (err) {
         return false
       }
-      const admins = rootGetters['firestore/getAdminEmails']
-      const isAdmin = admins.includes(user.email)
-      commit('firebase/setIsAdmin', isAdmin, { root: true })
-      return isAdmin
     }
 
     // 認証状態を取得
