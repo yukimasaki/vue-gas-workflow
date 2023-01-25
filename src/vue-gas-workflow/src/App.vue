@@ -16,61 +16,38 @@
         <!-- ユーザー関連のメニュー -->
         <v-menu
           offset-y
-          open-on-hover>
-          <template v-slot:activator="{on}">
+          open-on-hover
+          :close-on-content-click="false"
+        >
+          <template v-slot:activator="{ on }">
             <!-- Googleアカウントの表示名を表示する -->
             <v-btn text v-on="on" style="cursor: default"><v-avatar size="40" class="mr-3"><img :src="userIcon"></v-avatar>{{ userName }}</v-btn>
           </template>
           <v-list>
+            <!-- 管理者メニュー -->
+            <v-list-group
+              v-if="isAdmin"
+              no-action
+            >
+              <template v-slot:activator>
+                <v-list-item-content>
+                  <v-list-item-title>管理者向け設定</v-list-item-title>
+                </v-list-item-content>
+              </template>
+              <v-list-item
+                v-for="adminMenuItem in adminMenuItems"
+                link
+                :key="adminMenuItem.title"
+                :to="adminMenuItem.link"
+              >
+                <v-list-item-content>
+                  <v-list-item-title>{{ adminMenuItem.title }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list-group>
 
-            <v-list-item link>
-              <v-list-item-content>
-                <v-list-item-title @click="logout">ログアウト</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-
-          </v-list>
-        </v-menu>
-
-        <!-- 設定関連のメニュー -->
-        <v-menu
-          v-if="isAdmin"
-          offset-y
-          open-on-hover>
-          <template v-slot:activator="{on}">
-            <v-btn text v-on="on" style="cursor: default">設定</v-btn>
-          </template>
-          <v-list>
-            <v-list-item link to="/admins">
-              <v-list-item-content>
-                <v-list-item-title>管理者設定</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-
-            <v-list-item link to="/departments">
-              <v-list-item-content>
-                <v-list-item-title>部署設定</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-
-            <v-list-item link to="/users">
-              <v-list-item-content>
-                <v-list-item-title>従業員設定</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-
-            <v-list-item link to="/routes">
-              <v-list-item-content>
-                <v-list-item-title>申請ルート設定</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-
-            <v-list-item link to="/settings">
-              <v-list-item-content>
-                <v-list-item-title>アプリ設定</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-
+            <!-- 下記メニューはv-forでループ処理したい -->
+            <!-- テスト用メニュー -->
             <v-list-item link to="/item_dialog_test">
               <v-list-item-content>
                 <v-list-item-title>ItemDIalogTest</v-list-item-title>
@@ -89,11 +66,22 @@
               </v-list-item-content>
             </v-list-item>
 
+            <!-- アプリ設定 -->
+            <v-list-item link to="/settings">
+              <v-list-item-content>
+                <v-list-item-title>アプリ設定</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+
+            <!-- ログアウト -->
+            <v-list-item link>
+              <v-list-item-content>
+                <v-list-item-title @click="logout">ログアウト</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
           </v-list>
         </v-menu>
-
       </v-toolbar-items>
-
     </v-app-bar>
 
     <!-- メインコンテンツ -->
@@ -125,6 +113,25 @@ export default {
     return {
       snackbar: false,
       message: '',
+
+      adminMenuItems: [
+        {
+          title: '管理者設定',
+          link: '/admins'
+        },
+        {
+          title: '部署設定',
+          link: '/departments'
+        },
+        {
+          title: '従業員設定',
+          link: '/users'
+        },
+        {
+          title: '申請ルート設定',
+          link: '/routes'
+        },
+      ],
     }
   },
 
