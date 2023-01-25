@@ -36,7 +36,7 @@ const mutations = {
   setUserEmail(state, userEmail) {
     state.userEmail = userEmail
   },
-  setIsAdmin(state, isAdmin) {
+  setAdminStatus(state, isAdmin) {
     state.isAdmin = isAdmin
   },
   setAuthMessage(state, authMessage) {
@@ -99,12 +99,12 @@ const actions = {
   // ユーザー情報をセットする (main.jsで呼び出される)
   async onAuth({ commit, dispatch, rootGetters }) {
     // adminsコレクションを配列として取得し、自身のユーザーID(Email)が含まれるかを判定する関数
-    const isAdmin = async (user) => {
+    const checkAdminStatus = async (user) => {
       try {
         await dispatch('firestore/fetchAllCollections', { currentTableName: 'admins' }, { root: true })
         const admins = rootGetters['firestore/getAdminEmails']
         const isAdmin = admins.includes(user.email)
-        commit('firebase/setIsAdmin', isAdmin, { root: true })
+        commit('firebase/setAdminStatus', isAdmin, { root: true })
         return isAdmin
       } catch (err) {
         return false
@@ -115,10 +115,11 @@ const actions = {
     const auth = getAuth()
 
     // 認証情報をセット
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
+      const isAdmin = await checkAdminStatus(user)
       user = user ? user : {}
       commit('firebase/setLoginStatus', user.uid ? true : false, { root: true })
-      commit('firebase/setIsAdmin', isAdmin(user), { root: true })
+      commit('firebase/setAdminStatus', isAdmin, { root: true })
       commit('setUserUid', user.uid)
       commit('setUserName', user.displayName)
       commit('setUserIcon', user.photoURL)

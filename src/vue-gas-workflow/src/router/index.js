@@ -155,18 +155,29 @@ router.beforeEach( (to, from, next) => {
   }
 
   // 管理者権限を必要とするページにアクセスした場合
-  const requiresAdmin = to.matched.some(record => record.meta.requiresAdmin)
-  const isAdmin = store.getters['firebase/getIsAdmin']
+  // adminsコレクションを配列として取得し、自身のユーザーID(Email)が含まれるかを判定する関数
+  const checkAdminStatus = async (user) => {
+    try {
+      await store.dispatch('firestore/fetchAllCollections', { currentTableName: 'admins' })
+      const admins = store.getters['firestore/getAdminEmails']
+      const isAdmin = admins.includes(user.email)
+      store.commit('firebase/setAdminStatus', isAdmin)
+      return isAdmin
+    } catch (err) {
+      return false
+    }
+  }
 
+  const requiresAdmin = to.matched.some(record => record.meta.requiresAdmin)
   if (requiresAdmin) {
     const auth = getAuth()
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
+      const isAdmin = await checkAdminStatus(user)
       if (user && isAdmin) {
         // 認証済でかつ管理者の場合はページへ遷移する
         next()
       } else if (user && !isAdmin) {
         // 認証済かつ非管理者の場合は403ページへ遷移する
-        // ISSUE: requiresAdminが有効なページでリロードすると/403へ遷移してしまう
         next({ path: '/403' })
       } else {
         // 未認証の場合はログインページへ遷移する
