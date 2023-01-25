@@ -116,7 +116,9 @@ const actions = {
 
     // 認証情報をセット
     onAuthStateChanged(auth, async (user) => {
+      console.log(`firebase.js: ${user.email}`)
       const isAdmin = await checkAdminStatus(user)
+      console.log(`firebase.js: ${user.email}`)
       user = user ? user : {}
       commit('firebase/setLoginStatus', user.uid ? true : false, { root: true })
       commit('firebase/setAdminStatus', isAdmin, { root: true })
