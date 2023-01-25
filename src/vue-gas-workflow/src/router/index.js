@@ -149,6 +149,7 @@ const router = new VueRouter({
 
 // 以下は、ページへ遷移しようとする際、遷移直前に評価される
 router.beforeEach( (to, from, next) => {
+  const auth = getAuth()
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
   const requiresAdmin = to.matched.some(record => record.meta.requiresAdmin)
 
@@ -164,77 +165,38 @@ router.beforeEach( (to, from, next) => {
       return false
     }
   }
-
-  const auth = getAuth()
-  console.log(onAuthStateChanged(auth))
 
   if (requiresAuth && requiresAdmin) {
     // 認証および管理者権限を必要とするページにアクセスした場合
-  } else if (requiresAuth && !requiresAdmin) {
-    // 認証のみを必要とするページにアクセスした場合
-  } else {
-    // 認証が不要なページにアクセスした場合 (/loginへのアクセスを想定)
-  }
-
-})
-
-router.beforeEach( (to, from, next) => {
-
-  // 認証のみを必要とするページにアクセスした場合
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
-  if (requiresAuth) {
-    // ISSUE: onAuthStateChangedメソッドを使わないとログアウト時にコードが評価されないため、リダイレクト処理がなされない
-    const auth = getAuth()
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        console.log(`requiresAuth: 1`)
-        // 認証済の場合はページへ遷移する
-        next()
-      } else {
-        console.log(`requiresAuth: 2`)
-        // 未認証の場合はログインページへ遷移する
-        next({ path: '/login', query: { redirect: to.fullPath } })
-      }
-    })
-  } else {
-    console.log(`requiresAuth: 3`)
-    // 認証が不要な場合はページへ遷移する
-    next()
-  }
-
-  // 管理者権限を必要とするページにアクセスした場合
-  // adminsコレクションを配列として取得し、自身のユーザーID(Email)が含まれるかを判定する関数
-  const checkAdminStatus = async (user) => {
-    try {
-      await store.dispatch('firestore/fetchAllCollections', { currentTableName: 'admins' })
-      const admins = store.getters['firestore/getAdminEmails']
-      const isAdmin = admins.includes(user.email)
-      store.commit('firebase/setAdminStatus', isAdmin)
-      return isAdmin
-    } catch (err) {
-      return false
-    }
-  }
-
-  const requiresAdmin = to.matched.some(record => record.meta.requiresAdmin)
-  if (requiresAdmin) {
-    const auth = getAuth()
     onAuthStateChanged(auth, async (user) => {
       const isAdmin = await checkAdminStatus(user)
       if (user && isAdmin) {
-        console.log(`requiresAdmin: 1`)
-        // 認証済でかつ管理者の場合はページへ遷移する
+        // 認証済かつ管理者の場合、ページへ遷移する
         next()
       } else if (user && !isAdmin) {
-        console.log(`requiresAdmin: 2`)
-        // 認証済かつ非管理者の場合は403ページへ遷移する
+        // 認証済かつ非管理者の場合、/403へ遷移する
         next({ path: '/403' })
       } else {
-        console.log(`requiresAdmin: 3`)
-        // 未認証の場合はログインページへ遷移する
+        // 未認証の場合、/loginへ遷移する
         next({ path: '/login', query: { redirect: to.fullPath } })
       }
     })
+
+  } else if (requiresAuth && !requiresAdmin) {
+    onAuthStateChanged(auth, async (user) => {
+      // 認証のみを必要とするページにアクセスした場合
+      if (user) {
+        next()
+      } else {
+        // 未認証の場合、/loginへ遷移する
+        next({ path: '/login', query: { redirect: to.fullPath } })
+      }
+    })
+
+  } else {
+    // 認証が不要なページにアクセスした場合 (/loginへのアクセスを想定)
+    next()
   }
 })
+
 export default router
