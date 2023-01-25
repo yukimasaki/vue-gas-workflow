@@ -183,7 +183,7 @@ router.beforeEach( (to, from, next) => {
     })
 
   } else if (requiresAuth && !requiresAdmin) {
-    onAuthStateChanged(auth, async (user) => {
+    onAuthStateChanged(auth, (user) => {
       // 認証のみを必要とするページにアクセスした場合
       if (user) {
         next()

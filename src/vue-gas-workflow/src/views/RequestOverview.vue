@@ -115,6 +115,10 @@ export default {
       selectedTabName: state => state.firestore.selectedTabName,
     }),
 
+    ...mapGetters({
+      getUserEmail: 'firebase/getUserEmail',
+    }),
+
     /** テーブルのヘッダー設定 */
     tableHeaders () {
       return [
@@ -145,9 +149,6 @@ export default {
       setSelectedTabName: 'firestore/setSelectedTabName',
     }),
 
-    ...mapGetters({
-      getUserEmail: 'firebase/getUserEmail',
-    }),
 
     /** 追加ボタンがクリックされたとき */
     onClickAdd () {
@@ -169,7 +170,7 @@ export default {
 
     async onClickTab(selectedTabName) {
       this.setSelectedTabName({ selectedTabName })
-      const userId = this.getUserEmail()
+      const userId = this.getUserEmail
       switch(selectedTabName) {
         case 'myRequests':
           await this.fetchMyRequests({ userId })
@@ -224,8 +225,8 @@ export default {
 
   async created() {
     this.setSelectedTabName({ selectedTabName: 'myRequests' })
-
-    const userId = this.getUserEmail()
+    const userId = this.getUserEmail
+    console.log(`RequestOverview: ${userId}`)
     await this.fetchMyRequests({ userId })
     await this.fetchOthersRequests({ userId })
     this.tableData = this.myRequests

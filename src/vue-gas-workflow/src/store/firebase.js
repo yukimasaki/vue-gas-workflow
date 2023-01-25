@@ -124,9 +124,9 @@ const actions = {
       commit('setUserName', user.displayName)
       commit('setUserIcon', user.photoURL)
       commit('setUserEmail', user.email)
+      console.log(`firebase.js: ${user.email}`)
       console.log('onAuth')
     })
-
   },
 }
 
