@@ -168,8 +168,8 @@ router.beforeEach( (to, from, next) => {
 
   if (requiresAuth && requiresAdmin) {
     // 認証および管理者権限を必要とするページにアクセスした場合
-    onAuthStateChanged(auth, async (user) => {
-      const isAdmin = await checkAdminStatus(user)
+    onAuthStateChanged(auth, (user) => {
+      const isAdmin = checkAdminStatus(user)
       if (user && isAdmin) {
         // 認証済かつ管理者の場合、ページへ遷移する
         next()

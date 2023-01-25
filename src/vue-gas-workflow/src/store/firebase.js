@@ -115,10 +115,8 @@ const actions = {
     const auth = getAuth()
 
     // 認証情報をセット
-    onAuthStateChanged(auth, async (user) => {
-      console.log(`firebase.js: ${user.email}`)
-      const isAdmin = await checkAdminStatus(user)
-      console.log(`firebase.js: ${user.email}`)
+    onAuthStateChanged(auth, (user) => {
+      const isAdmin = checkAdminStatus(user)
       user = user ? user : {}
       commit('firebase/setLoginStatus', user.uid ? true : false, { root: true })
       commit('firebase/setAdminStatus', isAdmin, { root: true })
@@ -126,7 +124,6 @@ const actions = {
       commit('setUserName', user.displayName)
       commit('setUserIcon', user.photoURL)
       commit('setUserEmail', user.email)
-      console.log(`firebase.js: ${user.email}`)
       console.log('onAuth')
     })
   },

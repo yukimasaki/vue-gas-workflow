@@ -226,7 +226,6 @@ export default {
   async created() {
     this.setSelectedTabName({ selectedTabName: 'myRequests' })
     const userId = this.getUserEmail
-    console.log(`RequestOverview: ${userId}`)
     await this.fetchMyRequests({ userId })
     await this.fetchOthersRequests({ userId })
     this.tableData = this.myRequests

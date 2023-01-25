@@ -12,13 +12,7 @@ const createApp = async () => {
   initFirebase
 
   // ユーザー情報をセット
-  console.log(`main.js:`)
-  console.log(store.state.firebase.userEmail)
-
   await store.dispatch('firebase/onAuth')
-
-  // ISSUE: 下記で、userEmailが空値のままなのはなぜか？
-  console.log(store.state.firebase.userEmail)
 
   new Vue({
     router,
