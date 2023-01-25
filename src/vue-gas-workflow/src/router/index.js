@@ -25,7 +25,8 @@ const routes = [
     name: 'RequestOverview',
     component: RequestOverview,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      requiresAdmin: false
     }
   },
   {
@@ -33,7 +34,8 @@ const routes = [
     name: 'myRequestDetail',
     component: RequestDetail,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      requiresAdmin: false
     }
   },
   {
@@ -41,13 +43,18 @@ const routes = [
     name: 'othersRequestDetail',
     component: RequestDetail,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      requiresAdmin: false
     }
   },
   {
     path: '/login',
     name: 'Login',
     component: Login,
+    meta: {
+      requiresAuth: false,
+      requiresAdmin: false
+    },
     beforeEnter(to, from, next) {
       const auth = getAuth()
       onAuthStateChanged(auth, (user) => {
@@ -66,7 +73,8 @@ const routes = [
     name: 'Settings',
     component: Settings,
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      requiresAdmin: false
     }
   },
   {
@@ -74,6 +82,7 @@ const routes = [
     name: 'Departments',
     component: Departments,
     meta: {
+      requiresAuth: true,
       requiresAdmin: true
     }
   },
@@ -82,6 +91,7 @@ const routes = [
     name: 'Routes',
     component: Routes,
     meta: {
+      requiresAuth: true,
       requiresAdmin: true
     }
   },
@@ -90,6 +100,7 @@ const routes = [
     name: 'Admins',
     component: Admins,
     meta: {
+      requiresAuth: true,
       requiresAdmin: true
     }
   },
@@ -98,6 +109,7 @@ const routes = [
     name: 'Users',
     component: Users,
     meta: {
+      requiresAuth: true,
       requiresAdmin: true
     }
   },
@@ -106,6 +118,7 @@ const routes = [
     name: 'ItemDIalogTest',
     component: ItemDIalogTest,
     meta: {
+      requiresAuth: true,
       requiresAdmin: true
     }
   },
@@ -114,6 +127,7 @@ const routes = [
     name: 'FormReactivityTest',
     component: FormReactivityTest,
     meta: {
+      requiresAuth: true,
       requiresAdmin: true
     }
   },
@@ -122,6 +136,7 @@ const routes = [
     name: 'SendEmailTest',
     component: SendEmailTest,
     meta: {
+      requiresAuth: true,
       requiresAdmin: true
     }
   },
@@ -134,6 +149,36 @@ const router = new VueRouter({
 
 // 以下は、ページへ遷移しようとする際、遷移直前に評価される
 router.beforeEach( (to, from, next) => {
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+  const requiresAdmin = to.matched.some(record => record.meta.requiresAdmin)
+
+  // adminsコレクションを配列として取得し、自身のユーザーID(Email)が含まれるかを判定する関数
+  const checkAdminStatus = async (user) => {
+    try {
+      await store.dispatch('firestore/fetchAllCollections', { currentTableName: 'admins' })
+      const admins = store.getters['firestore/getAdminEmails']
+      const isAdmin = admins.includes(user.email)
+      store.commit('firebase/setAdminStatus', isAdmin)
+      return isAdmin
+    } catch (err) {
+      return false
+    }
+  }
+
+  const auth = getAuth()
+  console.log(onAuthStateChanged(auth))
+
+  if (requiresAuth && requiresAdmin) {
+    // 認証および管理者権限を必要とするページにアクセスした場合
+  } else if (requiresAuth && !requiresAdmin) {
+    // 認証のみを必要とするページにアクセスした場合
+  } else {
+    // 認証が不要なページにアクセスした場合 (/loginへのアクセスを想定)
+  }
+
+})
+
+router.beforeEach( (to, from, next) => {
 
   // 認証のみを必要とするページにアクセスした場合
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
@@ -142,14 +187,17 @@ router.beforeEach( (to, from, next) => {
     const auth = getAuth()
     onAuthStateChanged(auth, (user) => {
       if (user) {
+        console.log(`requiresAuth: 1`)
         // 認証済の場合はページへ遷移する
         next()
       } else {
+        console.log(`requiresAuth: 2`)
         // 未認証の場合はログインページへ遷移する
         next({ path: '/login', query: { redirect: to.fullPath } })
       }
     })
   } else {
+    console.log(`requiresAuth: 3`)
     // 認証が不要な場合はページへ遷移する
     next()
   }
@@ -174,12 +222,15 @@ router.beforeEach( (to, from, next) => {
     onAuthStateChanged(auth, async (user) => {
       const isAdmin = await checkAdminStatus(user)
       if (user && isAdmin) {
+        console.log(`requiresAdmin: 1`)
         // 認証済でかつ管理者の場合はページへ遷移する
         next()
       } else if (user && !isAdmin) {
+        console.log(`requiresAdmin: 2`)
         // 認証済かつ非管理者の場合は403ページへ遷移する
         next({ path: '/403' })
       } else {
+        console.log(`requiresAdmin: 3`)
         // 未認証の場合はログインページへ遷移する
         next({ path: '/login', query: { redirect: to.fullPath } })
       }
