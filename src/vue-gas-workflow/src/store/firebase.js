@@ -15,7 +15,7 @@ const state = {
   userName: '',
   userIcon: '',
   userEmail: '',
-  isAdmin: '',
+  isAdmin: false,
   authMessage: '',
 }
 
