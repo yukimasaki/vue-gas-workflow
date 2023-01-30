@@ -13,9 +13,6 @@ import Departments from '../views/Departments.vue'
 import Routes from '../views/Routes.vue'
 import Admins from '../views/Admins.vue'
 import Users from '../views/Users.vue'
-import ItemDIalogTest from '../views/tests/ItemDIalogTest.vue'
-import FormReactivityTest from '../views/tests/FormReactivityTest.vue'
-import SendEmailTest from '../views/tests/SendEmailTest.vue'
 
 Vue.use(VueRouter)
 
