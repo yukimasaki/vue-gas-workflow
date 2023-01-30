@@ -47,26 +47,6 @@
               </v-list-item>
             </v-list-group>
 
-            <!-- 下記メニューはv-forでループ処理したい -->
-            <!-- テスト用メニュー -->
-            <v-list-item link to="/item_dialog_test">
-              <v-list-item-content>
-                <v-list-item-title>ItemDIalogTest</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-
-            <v-list-item link to="/form_reactivity_test">
-              <v-list-item-content>
-                <v-list-item-title>FormReactivityTest</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-
-            <v-list-item link to="/send_email_test">
-              <v-list-item-content>
-                <v-list-item-title>SendEmailTest</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-
             <!-- アプリ設定 -->
             <v-list-item link to="/settings">
               <v-list-item-content>

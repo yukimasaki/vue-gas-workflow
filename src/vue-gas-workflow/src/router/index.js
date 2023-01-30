@@ -113,34 +113,6 @@ const routes = [
       requiresAdmin: true
     }
   },
-  {
-    path: '/item_dialog_test',
-    name: 'ItemDIalogTest',
-    component: ItemDIalogTest,
-    meta: {
-      requiresAuth: true,
-      requiresAdmin: true
-    }
-  },
-  {
-    path: '/form_reactivity_test',
-    name: 'FormReactivityTest',
-    component: FormReactivityTest,
-    meta: {
-      requiresAuth: true,
-      requiresAdmin: true
-    }
-  },
-  {
-    path: '/send_email_test',
-    name: 'SendEmailTest',
-    component: SendEmailTest,
-    meta: {
-      requiresAuth: true,
-      requiresAdmin: true
-    }
-  },
-
 ]
 
 const router = new VueRouter({
