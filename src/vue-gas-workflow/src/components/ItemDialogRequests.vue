@@ -36,12 +36,53 @@
               rows="3"
             />
 
-            <v-textarea
-              label="予定日時"
-              v-model="formBind.unique.paid_leave.date"
-              :rules="dateRules"
-              rows="3"
-            />
+            <v-menu
+              ref="menu"
+              v-model="menu"
+              :close-on-content-click="false"
+              :return-value.sync="formBind.unique.paid_leave.date"
+              transition="scale-transition"
+              offset-y
+              max-width="290px"
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  v-model="formBind.unique.paid_leave.date"
+                  label="日付"
+                  readonly
+                  v-on="on"
+
+                />
+              </template>
+              <v-date-picker
+                v-model="formBind.unique.paid_leave.date"
+                type="date"
+                color="green"
+                locale="ja-jp"
+                no-title
+                scrollable
+                :day-format="date => new Date(date).getDate()"
+              >
+                <v-spacer/>
+                <v-btn text color="grey" @click="menu = false">キャンセル</v-btn>
+                <v-btn text color="primary" @click="$refs.menu.save(formBind.unique.paid_leave.date)">選択</v-btn>
+              </v-date-picker>
+            </v-menu>
+
+            <v-radio-group
+              v-model="formBind.unique.paid_leave.length"
+              :rules="lengthRules"
+            >
+              <v-radio
+                label="半日"
+                value="half_day"
+              />
+              <v-radio
+                label="終日"
+                value="full_day"
+              />
+            </v-radio-group>
 
             <v-text-field
               label="緊急連絡先"
@@ -154,6 +195,7 @@ export default {
           paid_leave: {
             reason: '',
             date: '',
+            length: '',
             contact: '',
             memo: ''
           },
@@ -176,7 +218,10 @@ export default {
         v => v.trim().length > 0 || '事由は必須です',
       ],
       dateRules: [
-        v => v.trim().length > 0 || '予定日時は必須です',
+        v => v.trim().length > 0 || '日付は必須です',
+      ],
+      lengthRules: [
+        v => v.trim().length > 0 || '長さは必須です',
       ],
       contactRules: [
         v => v.trim().length > 0 || '緊急連絡先は必須です',
