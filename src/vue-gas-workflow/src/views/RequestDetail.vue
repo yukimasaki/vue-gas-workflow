@@ -103,11 +103,13 @@
                   label="事由"
                   v-model="formData.unique.paid_leave.reason"
                 />
-                <v-textarea
-                  auto-grow
-                  rows="1"
-                  label="予定日時"
+                <v-text-field
+                  label="日付"
                   v-model="formData.unique.paid_leave.date"
+                />
+                <v-text-field
+                  label="長さ"
+                  v-model="lengthText"
                 />
                 <v-text-field
                   label="緊急連絡先"
@@ -246,6 +248,20 @@ export default {
 
       // 配列「rules」に1つでも「true」の要素があったら「true」を返す
       return rules.some(v => v == true)
+    },
+
+    lengthText() {
+      const lengthValue = this.formData.unique.paid_leave.length
+      let lengthText
+      switch (lengthValue) {
+        case 'half_day':
+          lengthText = '半日'
+          break
+        case 'full_day':
+          lengthText = '終日'
+          break
+      }
+      return lengthText
     },
 
   },

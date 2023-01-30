@@ -364,6 +364,7 @@ export default {
                 paid_leave: {
                   reason: this.formBind.unique.paid_leave.reason,
                   date: this.formBind.unique.paid_leave.date,
+                  length: this.formBind.unique.paid_leave.length,
                   contact: this.formBind.unique.paid_leave.contact,
                   memo: this.formBind.unique.paid_leave.memo
                 }
