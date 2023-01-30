@@ -52,7 +52,7 @@
                   label="日付"
                   readonly
                   v-on="on"
-
+                  :rules="dateRules"
                 />
               </template>
               <v-date-picker
