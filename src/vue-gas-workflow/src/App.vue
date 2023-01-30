@@ -17,7 +17,7 @@
         <v-menu
           offset-y
           open-on-hover
-          :close-on-content-click="false"
+          :close-on-content-click="true"
         >
           <template v-slot:activator="{ on }">
             <!-- Googleアカウントの表示名を表示する -->
@@ -27,6 +27,7 @@
             <!-- 管理者メニュー -->
             <v-list-group
               v-if="isAdmin"
+              v-model="isActiveAdminMenu"
               no-action
             >
               <template v-slot:activator>
@@ -113,7 +114,7 @@ export default {
     return {
       snackbar: false,
       message: '',
-
+      isActiveAdminMenu: true,
       adminMenuItems: [
         {
           title: '管理者設定',
