@@ -58,7 +58,7 @@
               <v-date-picker
                 v-model="formBind.unique.paid_leave.date"
                 type="date"
-                color="green"
+                color="primary"
                 locale="ja-jp"
                 no-title
                 scrollable
@@ -72,6 +72,7 @@
 
             <v-radio-group
               v-model="formBind.unique.paid_leave.length"
+              label="半日または終日"
               :rules="lengthRules"
             >
               <v-radio
@@ -143,6 +144,54 @@
             />
 
             <!-- TODO: rakumoワークフローを参考に項目を追加していく -->
+            <v-radio-group
+              v-model="formBind.unique.hosting.acquire_date_radio"
+              label="ドメイン取得日"
+              :rules="acquireDateRadioRules"
+            >
+              <v-radio
+                label="今すぐ"
+                value="just_now"
+              />
+              <v-radio
+                label="指定日あり"
+                value="scheduled"
+              />
+            </v-radio-group>
+            <v-menu
+              ref="menu"
+              v-model="menu"
+              :close-on-content-click="false"
+              :return-value.sync="formBind.unique.hosting.acquire_date_picker"
+              transition="scale-transition"
+              offset-y
+              max-width="290px"
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  v-model="formBind.unique.hosting.acquire_date_picker"
+                  label="日付"
+                  readonly
+                  v-on="on"
+                  :rules=[aquireDatePickerRules]
+                  :disabled="formBind.unique.hosting.acquire_date_radio != 'scheduled'"
+                />
+              </template>
+              <v-date-picker
+                v-model="formBind.unique.hosting.acquire_date_picker"
+                type="date"
+                color="primary"
+                locale="ja-jp"
+                no-title
+                scrollable
+                :day-format="date => new Date(date).getDate()"
+              >
+                <v-spacer/>
+                <v-btn text color="grey" @click="menu = false">キャンセル</v-btn>
+                <v-btn text color="primary" @click="$refs.menu.save(formBind.unique.hosting.acquire_date_picker)">選択</v-btn>
+              </v-date-picker>
+            </v-menu>
 
             <v-textarea
               label="備考"
@@ -247,6 +296,8 @@ export default {
             customer_name: '',
             domain_name: '',
             acquire_type: '',
+            acquire_date_radio: '',
+            acquire_date_picker: '',
             memo: ''
           },
         },
@@ -288,6 +339,9 @@ export default {
       acquireTypeRules: [
         v => Object.keys(v).length > 0 || '取得方法は必須です',
       ],
+      acquireDateRadioRules: [
+        v => v.trim().length > 0 || 'ドメイン取得日は必須です',
+      ],
     }
   },
 
@@ -296,6 +350,25 @@ export default {
       userInfo: state => state.firestore.userInfo
     }),
 
+
+    /** バリデーションルール
+     *  ホスティング申請
+     */
+    aquireDatePickerRules () {
+      const acquireDateRadio = this.formBind.unique.hosting.acquire_date_radio
+      if (acquireDateRadio == 'just_now') {
+        console.log(`just_now:`)
+        console.log(acquireDateRadio)
+        return true
+      } else {
+        console.log(`other:`)
+        console.log(acquireDateRadio)
+        const rules = acquireDateRadio.trim().length > 0
+        console.log(rules)
+        return !rules || 'ドメイン取得日は必須です'
+      }
+    },
+
     /** ダイアログのタイトル */
     titleText () {
       return this.actionType === 'add' ? 'データ追加' : 'データ編集'
@@ -303,7 +376,7 @@ export default {
     /** ダイアログのアクション */
     actionText () {
       return this.actionType === 'add' ? '追加' : '更新'
-    }
+    },
   },
 
   methods: {
