@@ -120,6 +120,37 @@
             />
           </div>
 
+          <!-- ホスティング申請 -->
+          <div v-else-if="formBind.common.request_type.value == 'hosting'">
+            <v-text-field
+              label="顧客名"
+              v-model="formBind.unique.hosting.customer_name"
+              :rules="customerNameRules"
+            />
+
+            <v-text-field
+              label="ドメイン名"
+              v-model="formBind.unique.hosting.domain_name"
+              :rules="domainNameRules"
+            />
+
+            <v-select
+              label="取得方法"
+              v-model="formBind.unique.hosting.acquire_type"
+              :items="selectAcquireType"
+              :rules="acquireTypeRules"
+              return-object
+            />
+
+            <!-- TODO: rakumoワークフローを参考に項目を追加していく -->
+
+            <v-textarea
+              label="備考"
+              v-model="formBind.unique.hosting.memo"
+              rows="3"
+            />
+          </div>
+
         </v-form>
       </v-card-text>
       <v-divider/>
@@ -159,6 +190,14 @@ export default {
       selectReqestType: [
         {text: '休暇申請', value: 'paid_leave'},
         {text: '備品申請', value: 'equipment'},
+        {text: 'ホスティング申請', value: 'hosting'},
+      ],
+      /** ドメイン名取得方法 */
+      selectAcquireType: [
+        {text: '当社で新規取得', value: 'newDomainNameWithUs'},
+        {text: '当社で取得済み', value: 'existDomainNameWithUs'},
+        {text: '他社からの移管', value: 'domainTransferToUs'},
+        {text: 'ホスティングのみ当社', value: 'onlyHostingWithUs'},
       ],
       /** ダイアログの表示状態 */
       show: false,
@@ -204,16 +243,25 @@ export default {
             reason: '',
             memo: ''
           },
+          hosting: {
+            customer_name: '',
+            domain_name: '',
+            acquire_type: '',
+            memo: ''
+          },
         },
       },
 
-      /** バリデーションルール */
+      /** バリデーションルール
+       * 共通
+       */
       requestTypeRules: [
-        // v => v != '' || '申請種別は必須です',
+        v => Object.keys(v).length > 0 || '申請種別は必須です',
       ],
       titleRules: [
         v => v.trim().length > 0 || 'タイトルは必須です',
       ],
+      /** 休暇申請 */
       reasonRules: [
         v => v.trim().length > 0 || '事由は必須です',
       ],
@@ -226,8 +274,19 @@ export default {
       contactRules: [
         v => v.trim().length > 0 || '緊急連絡先は必須です',
       ],
+      /** 備品申請 */
       itemNameRules: [
         v => v.trim().length > 0 || '商品名は必須です',
+      ],
+      /** ホスティング申請 */
+      customerNameRules: [
+        v => v.trim().length > 0 || '顧客名は必須です',
+      ],
+      domainNameRules: [
+        v => v.trim().length > 0 || 'ドメイン名は必須です',
+      ],
+      acquireTypeRules: [
+        v => Object.keys(v).length > 0 || '取得方法は必須です',
       ],
     }
   },
