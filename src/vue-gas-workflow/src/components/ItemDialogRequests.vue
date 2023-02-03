@@ -171,9 +171,10 @@
               <template v-slot:activator="{ on }">
                 <v-text-field
                   v-model="formBind.unique.hosting.acquire_date_picker"
-                  label="日付"
+                  label="指定日を選択してください。"
                   readonly
                   v-on="on"
+                  class="mt-0 pt-0"
                   :rules=[aquireDatePickerRules]
                   :disabled="formBind.unique.hosting.acquire_date_radio != 'scheduled'"
                 />
