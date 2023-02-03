@@ -357,14 +357,9 @@ export default {
     aquireDatePickerRules () {
       const acquireDateRadio = this.formBind.unique.hosting.acquire_date_radio
       if (acquireDateRadio == 'just_now') {
-        console.log(`just_now:`)
-        console.log(acquireDateRadio)
         return true
       } else {
-        console.log(`other:`)
-        console.log(acquireDateRadio)
         const rules = acquireDateRadio.trim().length > 0
-        console.log(rules)
         return !rules || 'ドメイン取得日は必須です'
       }
     },
