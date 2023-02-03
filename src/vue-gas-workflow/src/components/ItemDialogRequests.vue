@@ -193,6 +193,14 @@
               </v-date-picker>
             </v-menu>
 
+            <v-select
+              label="ドメイン移管申請"
+              v-model="formBind.unique.hosting.transfer_request"
+              :items="selectTransferRequest"
+              :rules="transferRequestRules"
+              return-object
+            />
+
             <v-textarea
               label="備考"
               v-model="formBind.unique.hosting.memo"
@@ -243,10 +251,16 @@ export default {
       ],
       /** ドメイン名取得方法 */
       selectAcquireType: [
-        {text: '当社で新規取得', value: 'newDomainNameWithUs'},
-        {text: '当社で取得済み', value: 'existDomainNameWithUs'},
-        {text: '他社からの移管', value: 'domainTransferToUs'},
-        {text: 'ホスティングのみ当社', value: 'onlyHostingWithUs'},
+        {text: '当社で新規取得', value: 'new_domain_name_with_us'},
+        {text: '当社で取得済み', value: 'exist_domain_name_with_us'},
+        {text: '他社からの移管', value: 'domain_transfer_to_us'},
+        {text: 'ホスティングのみ当社', value: 'only_hosting_with_us'},
+      ],
+      /** ドメイン名取得方法 */
+      selectTransferRequest: [
+        {text: '申請済み', value: 'requested'},
+        {text: '未 (客先で申請)', value: 'not_done_by_customer'},
+        {text: '未 (当社で申請)', value: 'not_done_by_us'},
       ],
       /** ダイアログの表示状態 */
       show: false,
@@ -298,6 +312,7 @@ export default {
             acquire_type: '',
             acquire_date_radio: '',
             acquire_date_picker: '',
+            transfer_request: '',
             memo: ''
           },
         },
@@ -342,6 +357,9 @@ export default {
       acquireDateRadioRules: [
         v => v.trim().length > 0 || 'ドメイン取得日は必須です',
       ],
+      transferRequestRules: [
+        v => Object.keys(v).length > 0 || 'ドメイン移管申請は必須です',
+      ],
     }
   },
 
@@ -359,8 +377,9 @@ export default {
       if (acquireDateRadio == 'just_now') {
         return true
       } else {
-        const rules = acquireDateRadio.trim().length > 0
-        return !rules || 'ドメイン取得日は必須です'
+        const acquireDatePicker = this.formBind.unique.hosting.acquire_date_picker
+        const rules = acquireDatePicker.trim().length > 0
+        return rules || 'ドメイン取得日は必須です'
       }
     },
 
