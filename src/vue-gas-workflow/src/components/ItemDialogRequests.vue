@@ -249,7 +249,6 @@
                   readonly
                   v-on="on"
                   class="mt-0 pt-0"
-                  :rules="dnsTransferDatePickerRules"
                 />
               </template>
               <v-date-picker
@@ -535,9 +534,6 @@ export default {
       ],
       priceRules: [
         v => v.trim().length > 0 || '料金は必須です',
-      ],
-      dnsTransferDatePickerRules: [
-        v => v.trim().length > 0 || 'DNS切り替え日は必須です',
       ],
       paymentStatusRules: [
         v => v.trim().length > 0 || '引落し状況は必須です',
