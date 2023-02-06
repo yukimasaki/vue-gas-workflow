@@ -37,8 +37,8 @@
             />
 
             <v-menu
-              ref="menu"
-              v-model="menu"
+              ref="menuDate"
+              v-model="menuDate"
               :close-on-content-click="false"
               :return-value.sync="formBind.unique.paid_leave.date"
               transition="scale-transition"
@@ -65,8 +65,8 @@
                 :day-format="date => new Date(date).getDate()"
               >
                 <v-spacer/>
-                <v-btn text color="grey" @click="menu = false">キャンセル</v-btn>
-                <v-btn text color="primary" @click="$refs.menu.save(formBind.unique.paid_leave.date)">選択</v-btn>
+                <v-btn text color="grey" @click="menuDate = false">キャンセル</v-btn>
+                <v-btn text color="primary" @click="$refs.menuDate.save(formBind.unique.paid_leave.date)">選択</v-btn>
               </v-date-picker>
             </v-menu>
 
@@ -160,8 +160,8 @@
               />
             </v-radio-group>
             <v-menu
-              ref="menu"
-              v-model="menu"
+              ref="menuAcquireDatePicker"
+              v-model="menuAcquireDatePicker"
               :close-on-content-click="false"
               :return-value.sync="formBind.unique.hosting.acquire_date_picker"
               transition="scale-transition"
@@ -190,8 +190,8 @@
                 :day-format="date => new Date(date).getDate()"
               >
                 <v-spacer/>
-                <v-btn text color="grey" @click="menu = false">キャンセル</v-btn>
-                <v-btn text color="primary" @click="$refs.menu.save(formBind.unique.hosting.acquire_date_picker)">選択</v-btn>
+                <v-btn text color="grey" @click="menuAcquireDatePicker = false">キャンセル</v-btn>
+                <v-btn text color="primary" @click="$refs.menuAcquireDatePicker.save(formBind.unique.hosting.acquire_date_picker)">選択</v-btn>
               </v-date-picker>
             </v-menu>
 
@@ -223,6 +223,46 @@
               v-model="formBind.unique.hosting.price"
               :rules="priceRules"
             />
+
+            <v-checkbox
+              label="今すぐホスティングを開始する"
+              v-model="formBind.unique.hosting.start_hosting_immediately"
+            />
+
+            <v-menu
+              ref="menuDnsTransferDatePicker"
+              v-model="menuDnsTransferDatePicker"
+              :close-on-content-click="false"
+              :return-value.sync="formBind.unique.hosting.dns_transfer_date_picker"
+              transition="scale-transition"
+              offset-y
+              max-width="290px"
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  v-model="formBind.unique.hosting.dns_transfer_date_picker"
+                  label="DNS切り替え日"
+                  readonly
+                  v-on="on"
+                  class="mt-0 pt-0"
+                  :rules="dnsTransferDatePickerRules"
+                />
+              </template>
+              <v-date-picker
+                v-model="formBind.unique.hosting.dns_transfer_date_picker"
+                type="date"
+                color="primary"
+                locale="ja-jp"
+                no-title
+                scrollable
+                :day-format="date => new Date(date).getDate()"
+              >
+                <v-spacer/>
+                <v-btn text color="grey" @click="menuDnsTransferDatePicker = false">キャンセル</v-btn>
+                <v-btn text color="primary" @click="$refs.menuDnsTransferDatePicker.save(formBind.unique.hosting.dns_transfer_date_picker)">選択</v-btn>
+              </v-date-picker>
+            </v-menu>
 
             <v-textarea
               label="備考"
@@ -290,7 +330,9 @@ export default {
       /** 入力したデータが有効かどうか */
       valid: false,
       /** 日付選択メニューの表示状態 */
-      menu: false,
+      menuDate: false,
+      menuAcquireDatePicker: false,
+      menuDnsTransferDatePicker: false,
       /** 操作タイプ 'add' or 'edit' */
       actionType: 'add',
 
@@ -338,6 +380,8 @@ export default {
             transfer_request: '',
             payment_type: '',
             price: '',
+            start_hosting_immediately: '',
+            dns_transfer_date_picker: '',
             memo: ''
           },
         },
@@ -390,6 +434,9 @@ export default {
       ],
       priceRules: [
         v => v.trim().length > 0 || '料金は必須です',
+      ],
+      dnsTransferDatePickerRules: [
+        v => v.trim().length > 0 || 'DNS切り替え日は必須です',
       ],
     }
   },
