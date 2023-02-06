@@ -264,6 +264,12 @@
               </v-date-picker>
             </v-menu>
 
+            <v-text-field
+              label="現在のホスティング会社"
+              v-model="formBind.unique.hosting.current_hosting_service"
+              :rules="currentHostingServiceRules"
+            />
+
             <v-textarea
               label="備考"
               v-model="formBind.unique.hosting.memo"
@@ -382,6 +388,7 @@ export default {
             price: '',
             start_hosting_immediately: '',
             dns_transfer_date_picker: '',
+            current_hosting_service: '',
             memo: ''
           },
         },
@@ -437,6 +444,9 @@ export default {
       ],
       dnsTransferDatePickerRules: [
         v => v.trim().length > 0 || 'DNS切り替え日は必須です',
+      ],
+      currentHostingServiceRules: [
+        v => v.trim().length > 0 || '現在のホスティング会社は必須です',
       ],
     }
   },
