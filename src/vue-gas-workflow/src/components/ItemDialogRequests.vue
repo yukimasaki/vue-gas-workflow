@@ -330,6 +330,16 @@
               @click:append="clearPaymentStartMonth"
             />
 
+            <v-select
+              label="現サイトデータの処遇"
+              v-model="formBind.unique.hosting.site_data_handling"
+              :items="selectSiteDataHandling"
+              return-object
+              :append-icon = "formBind.unique.hosting.site_data_handling == '' ? 'mdi-menu-down' : 'mdi-close'"
+              @click:append="clearSiteDataHandling"
+              :rules="siteDataHandlingRules"
+            />
+
             <v-textarea
               label="備考"
               v-model="formBind.unique.hosting.memo"
@@ -406,6 +416,13 @@ export default {
         {text: '11月', value: 'november'},
         {text: '12月', value: 'december'},
       ],
+        /** 現サイトデータの処遇 */
+        selectSiteDataHandling: [
+          {text: '移動する (他社制作の場合は要相談)', value: 'required_transfer'},
+          {text: '移動しない (新規のため)', value: 'no_transfer_cause_new_customer'},
+          {text: '移動しない (データも不要)', value: 'no_transfer_cause_data_unnecessary'},
+          {text: '移動しない (データは保管/要相談)', value: 'no_transfer_but_keep_data'},
+        ],
       /** ダイアログの表示状態 */
       show: false,
       /** 入力したデータが有効かどうか */
@@ -468,6 +485,7 @@ export default {
             cancel_other_service_date_picker: '',
             payment_status: '',
             payment_start_month: '',
+            site_data_handling: '',
             memo: ''
           },
         },
@@ -523,6 +541,9 @@ export default {
       ],
       paymentStatusRules: [
         v => v.trim().length > 0 || '引落し状況は必須です',
+      ],
+      siteDataHandlingRules: [
+        v => Object.keys(v).length > 0 || '現サイトデータの処遇は必須です',
       ],
     }
   },
@@ -769,6 +790,9 @@ export default {
     },
     clearPaymentStartMonth() {
       this.formBind.unique.hosting.payment_start_month = ''
+    },
+    clearSiteDataHandling() {
+      this.formBind.unique.hosting.site_data_handling = ''
     },
 
     createEmailBody(emailSubject, detailPageUrl) {
