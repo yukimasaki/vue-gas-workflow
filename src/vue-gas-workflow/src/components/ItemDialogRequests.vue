@@ -141,6 +141,8 @@
               :items="selectAcquireType"
               :rules="acquireTypeRules"
               return-object
+              :append-icon = "formBind.unique.hosting.acquire_type == '' ? 'mdi-menu-down' : 'mdi-close'"
+              @click:append="clearAcquireType"
             />
 
             <!-- TODO: rakumoワークフローを参考に項目を追加していく -->
@@ -199,8 +201,9 @@
               label="ドメイン移管申請"
               v-model="formBind.unique.hosting.transfer_request"
               :items="selectTransferRequest"
-              :rules="transferRequestRules"
               return-object
+              :append-icon = "formBind.unique.hosting.transfer_request == '' ? 'mdi-menu-down' : 'mdi-close'"
+              @click:append="clearTransferRequest"
             />
 
             <v-radio-group
@@ -267,8 +270,41 @@
             <v-text-field
               label="現在のホスティング会社"
               v-model="formBind.unique.hosting.current_hosting_service"
-              :rules="currentHostingServiceRules"
             />
+
+            <v-menu
+              ref="menuCancelOtherServiceDatePicker"
+              v-model="menuCancelOtherServiceDatePicker"
+              :close-on-content-click="false"
+              :return-value.sync="formBind.unique.hosting.cancel_other_service_date_picker"
+              transition="scale-transition"
+              offset-y
+              max-width="290px"
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  v-model="formBind.unique.hosting.cancel_other_service_date_picker"
+                  label="他社への解約依頼日"
+                  readonly
+                  v-on="on"
+                  class="mt-0 pt-0"
+                />
+              </template>
+              <v-date-picker
+                v-model="formBind.unique.hosting.cancel_other_service_date_picker"
+                type="date"
+                color="primary"
+                locale="ja-jp"
+                no-title
+                scrollable
+                :day-format="date => new Date(date).getDate()"
+              >
+                <v-spacer/>
+                <v-btn text color="grey" @click="menuCancelOtherServiceDatePicker = false">キャンセル</v-btn>
+                <v-btn text color="primary" @click="$refs.menuCancelOtherServiceDatePicker.save(formBind.unique.hosting.cancel_other_service_date_picker)">選択</v-btn>
+              </v-date-picker>
+            </v-menu>
 
             <v-textarea
               label="備考"
@@ -339,6 +375,7 @@ export default {
       menuDate: false,
       menuAcquireDatePicker: false,
       menuDnsTransferDatePicker: false,
+      menuCancelOtherServiceDatePicker: false,
       /** 操作タイプ 'add' or 'edit' */
       actionType: 'add',
 
@@ -389,6 +426,7 @@ export default {
             start_hosting_immediately: '',
             dns_transfer_date_picker: '',
             current_hosting_service: '',
+            cancel_other_service_date_picker: '',
             memo: ''
           },
         },
@@ -433,9 +471,6 @@ export default {
       acquireDateRadioRules: [
         v => v.trim().length > 0 || 'ドメイン取得日は必須です',
       ],
-      transferRequestRules: [
-        v => Object.keys(v).length > 0 || 'ドメイン移管申請は必須です',
-      ],
       paymentTypeRules: [
         v => v.trim().length > 0 || '支払方法は必須です',
       ],
@@ -444,9 +479,6 @@ export default {
       ],
       dnsTransferDatePickerRules: [
         v => v.trim().length > 0 || 'DNS切り替え日は必須です',
-      ],
-      currentHostingServiceRules: [
-        v => v.trim().length > 0 || '現在のホスティング会社は必須です',
       ],
     }
   },
@@ -682,6 +714,16 @@ export default {
       }
 
       this.$refs.form.resetValidation()
+    },
+
+    /** ホスティング申請 > 取得方法の選択状態を解除する */
+    clearAcquireType() {
+      this.formBind.unique.hosting.acquire_type = ''
+    },
+
+    /** ホスティング申請 > ドメイン移管申請の選択状態を解除する */
+    clearTransferRequest() {
+      this.formBind.unique.hosting.transfer_request = ''
     },
 
     createEmailBody(emailSubject, detailPageUrl) {
