@@ -306,6 +306,30 @@
               </v-date-picker>
             </v-menu>
 
+            <v-radio-group
+              v-model="formBind.unique.hosting.payment_status"
+              label="引落し状況"
+              :rules="paymentStatusRules"
+            >
+              <v-radio
+                label="初めての引落し"
+                value="first_payment"
+              />
+              <v-radio
+                label="当社で引落し歴あり"
+                value="has_past_payment"
+              />
+            </v-radio-group>
+
+            <v-select
+              label="引落し開始月"
+              v-model="formBind.unique.hosting.payment_start_month"
+              :items="selectPaymentStartMonth"
+              return-object
+              :append-icon = "formBind.unique.hosting.payment_start_month == '' ? 'mdi-menu-down' : 'mdi-close'"
+              @click:append="clearPaymentStartMonth"
+            />
+
             <v-textarea
               label="備考"
               v-model="formBind.unique.hosting.memo"
@@ -367,6 +391,21 @@ export default {
         {text: '未 (客先で申請)', value: 'not_done_by_customer'},
         {text: '未 (当社で申請)', value: 'not_done_by_us'},
       ],
+      /** 引落し開始月 */
+      selectPaymentStartMonth: [
+        {text: '1月', value: 'january'},
+        {text: '2月', value: 'february'},
+        {text: '3月', value: 'march'},
+        {text: '4月', value: 'april'},
+        {text: '5月', value: 'may'},
+        {text: '6月', value: 'june'},
+        {text: '7月', value: 'july'},
+        {text: '8月', value: 'august'},
+        {text: '9月', value: 'september'},
+        {text: '10月', value: 'october'},
+        {text: '11月', value: 'november'},
+        {text: '12月', value: 'december'},
+      ],
       /** ダイアログの表示状態 */
       show: false,
       /** 入力したデータが有効かどうか */
@@ -427,6 +466,8 @@ export default {
             dns_transfer_date_picker: '',
             current_hosting_service: '',
             cancel_other_service_date_picker: '',
+            payment_status: '',
+            payment_start_month: '',
             memo: ''
           },
         },
@@ -479,6 +520,9 @@ export default {
       ],
       dnsTransferDatePickerRules: [
         v => v.trim().length > 0 || 'DNS切り替え日は必須です',
+      ],
+      paymentStatusRules: [
+        v => v.trim().length > 0 || '引落し状況は必須です',
       ],
     }
   },
@@ -716,14 +760,15 @@ export default {
       this.$refs.form.resetValidation()
     },
 
-    /** ホスティング申請 > 取得方法の選択状態を解除する */
+    /** ホスティング申請 選択状態を解除する */
     clearAcquireType() {
       this.formBind.unique.hosting.acquire_type = ''
     },
-
-    /** ホスティング申請 > ドメイン移管申請の選択状態を解除する */
     clearTransferRequest() {
       this.formBind.unique.hosting.transfer_request = ''
+    },
+    clearPaymentStartMonth() {
+      this.formBind.unique.hosting.payment_start_month = ''
     },
 
     createEmailBody(emailSubject, detailPageUrl) {
