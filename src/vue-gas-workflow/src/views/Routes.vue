@@ -5,6 +5,7 @@
     <v-tabs grow color="primary">
       <v-tab @click="onClickTab('paid_leave')">休暇申請</v-tab>
       <v-tab @click="onClickTab('equipment')">備品申請</v-tab>
+      <v-tab @click="onClickTab('hosting')">ホスティング申請</v-tab>
     </v-tabs>
 
     <!-- コンテンツ -->
