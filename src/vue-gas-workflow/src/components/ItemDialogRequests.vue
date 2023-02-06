@@ -152,6 +152,7 @@
               <v-radio
                 label="今すぐ"
                 value="just_now"
+                @click="formBind.unique.hosting.acquire_date_picker = ''"
               />
               <v-radio
                 label="指定日あり"
@@ -200,6 +201,27 @@
               :items="selectTransferRequest"
               :rules="transferRequestRules"
               return-object
+            />
+
+            <v-radio-group
+              v-model="formBind.unique.hosting.payment_type"
+              label="支払方法"
+              :rules="paymentTypeRules"
+            >
+              <v-radio
+                label="月額"
+                value="monthly"
+              />
+              <v-radio
+                label="年間一括"
+                value="anuually"
+              />
+            </v-radio-group>
+
+            <v-text-field
+              label="料金"
+              v-model="formBind.unique.hosting.price"
+              :rules="priceRules"
             />
 
             <v-textarea
@@ -314,6 +336,8 @@ export default {
             acquire_date_radio: '',
             acquire_date_picker: '',
             transfer_request: '',
+            payment_type: '',
+            price: '',
             memo: ''
           },
         },
@@ -360,6 +384,12 @@ export default {
       ],
       transferRequestRules: [
         v => Object.keys(v).length > 0 || 'ドメイン移管申請は必須です',
+      ],
+      paymentTypeRules: [
+        v => v.trim().length > 0 || '支払方法は必須です',
+      ],
+      priceRules: [
+        v => v.trim().length > 0 || '料金は必須です',
       ],
     }
   },
