@@ -57,7 +57,6 @@
         :items-per-page="30"
         mobile-breakpoint="0"
         @click:row="onClickRow"
-        ref="the-table"
       >
         <template v-slot:[`item.common.created_at`]="{ item }">{{ formatDate(item) }}</template>
         <template v-slot:[`item.common.status`]="{ item }">
@@ -232,8 +231,9 @@ export default {
 
   mounted() {
     /** テーブルにScrollHintを表示する */
-    const outerDiv = this.$refs['the-table'].$children[0].$children[0].$el.__vue__.$children[0].$children[0].$el.__vue__.$el.children[0]
-    outerDiv.classList.add('js-scrollable')
+    const theTable = document.getElementsByTagName('table')[0]
+    const parentOfTheTable = theTable.parentElement
+    parentOfTheTable.classList.add('js-scrollable')
     new scrollHint(
       '.js-scrollable',
       {
@@ -243,6 +243,5 @@ export default {
       }
     )
   },
-
 }
 </script>
