@@ -57,6 +57,7 @@
         :items-per-page="30"
         mobile-breakpoint="0"
         @click:row="onClickRow"
+        ref="the-table"
       >
         <template v-slot:[`item.common.created_at`]="{ item }">{{ formatDate(item) }}</template>
         <template v-slot:[`item.common.status`]="{ item }">
@@ -79,12 +80,6 @@
 
   </div>
 </template>
-
-<style>
-table.scrollable {
-  white-space: nowrap;
-}
-</style>
 
 <script>
 import ItemDialogRequests from '../components/ItemDialogRequests.vue'
@@ -231,7 +226,10 @@ export default {
     await this.fetchMyRequests({ userId })
     await this.fetchOthersRequests({ userId })
     this.tableData = this.myRequests
+  },
 
+  mounted() {
+    console.log(this.$refs['the-table'].$children[0].$children[0].$el.childNodes[0].childNodes[0])
   },
 
 }
