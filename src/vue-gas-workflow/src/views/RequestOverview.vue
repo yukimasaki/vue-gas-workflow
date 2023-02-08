@@ -46,35 +46,34 @@
         </v-col>
       </v-card-title>
       <!-- テーブル -->
-      <v-data-table
-        class="text-no-wrap"
-        :headers="tableHeaders"
-        :items="tableData"
-        :search="search"
-        :footer-props="footerProps"
-        :sort-by="'common.created_at'"
-        :sort-desc="true"
-        :items-per-page="30"
-        mobile-breakpoint="0"
-        @click:row="onClickRow"
-      >
-
-        <template v-slot:[`item.common.created_at`]="{ item }">{{ formatDate(item) }}</template>
-
-        <template v-slot:[`item.common.status`]="{ item }">
-          <v-chip
-            class="ma-2"
-            :color="statusColor(item)"
-            text-color="white"
-          >
-            <v-icon left>
-              {{ statusIcon(item) }}
-            </v-icon>
-            {{ item.common.status }}
-          </v-chip>
-        </template>
-
-      </v-data-table>
+      <scrollable-container>
+        <v-data-table
+          class="text-no-wrap"
+          :headers="tableHeaders"
+          :items="tableData"
+          :search="search"
+          :footer-props="footerProps"
+          :sort-by="'common.created_at'"
+          :sort-desc="true"
+          :items-per-page="30"
+          mobile-breakpoint="0"
+          @click:row="onClickRow"
+        >
+          <template v-slot:[`item.common.created_at`]="{ item }">{{ formatDate(item) }}</template>
+          <template v-slot:[`item.common.status`]="{ item }">
+            <v-chip
+              class="ma-2"
+              :color="statusColor(item)"
+              text-color="white"
+            >
+              <v-icon left>
+                {{ statusIcon(item) }}
+              </v-icon>
+              {{ item.common.status }}
+            </v-chip>
+          </template>
+        </v-data-table>
+      </scrollable-container>
     </v-card>
 
     <!-- 追加／編集ダイアログ -->
@@ -85,14 +84,16 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex'
 import ItemDialogRequests from '../components/ItemDialogRequests.vue'
+import { mapState, mapActions, mapGetters } from 'vuex'
+import ScrollableContainer from 'vue-scrollable-container'
 
 export default {
   name: 'RequestOverView',
 
   components: {
-    ItemDialogRequests
+    ItemDialogRequests,
+    ScrollableContainer
   },
 
   data() {
