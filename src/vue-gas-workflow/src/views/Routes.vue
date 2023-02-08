@@ -68,6 +68,7 @@
 import ItemDialogRoutes from '../components/ItemDialogRoutes.vue'
 import DeleteDialog from '../components/DeleteDialog.vue'
 import { mapActions, mapState } from 'vuex'
+import { scrollHintHelper } from '../helpers/scrollHintHelper'
 
 export default {
   name: 'Routes',
@@ -163,6 +164,11 @@ export default {
 
   created() {
     this.getRecords()
+  },
+
+  mounted() {
+    // /** テーブルにScrollHintを表示する */
+    scrollHintHelper.showScrollHint()
   },
 
 }

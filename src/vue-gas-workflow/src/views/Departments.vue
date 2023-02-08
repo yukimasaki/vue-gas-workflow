@@ -62,6 +62,7 @@
 import ItemDialogDepartments from '../components/ItemDialogDepartments.vue'
 import DeleteDialog from '../components/DeleteDialog.vue'
 import { mapActions, mapState } from 'vuex'
+import { scrollHintHelper } from '../helpers/scrollHintHelper'
 
 export default {
   name: 'Departments',
@@ -135,6 +136,11 @@ export default {
 
   async created() {
     await this.getRecords()
+  },
+
+  mounted() {
+    // /** テーブルにScrollHintを表示する */
+    scrollHintHelper.showScrollHint()
   },
 
 }
