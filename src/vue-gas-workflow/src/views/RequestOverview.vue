@@ -83,8 +83,7 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
 import ItemDialogRequests from '../components/ItemDialogRequests.vue'
-import scrollHint from 'scroll-hint'
-import 'scroll-hint/css/scroll-hint.css'
+import { scrollHintHelper } from '../helpers/scrollHintHelper'
 
 export default {
   name: 'RequestOverView',
@@ -230,18 +229,8 @@ export default {
   },
 
   mounted() {
-    /** テーブルにScrollHintを表示する */
-    const theTable = document.getElementsByTagName('table')[0]
-    const parentOfTheTable = theTable.parentElement
-    parentOfTheTable.classList.add('js-scrollable')
-    new scrollHint(
-      '.js-scrollable',
-      {
-        i18n: {
-          scrollable: 'スクロールできます'
-        }
-      }
-    )
+    // /** テーブルにScrollHintを表示する */
+    scrollHintHelper.showScrollHint()
   },
 }
 </script>
