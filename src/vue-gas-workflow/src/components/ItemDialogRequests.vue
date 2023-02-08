@@ -611,9 +611,8 @@ export default {
         const item = await this.createItem(uid, userId)
         await this.addDocumentAsSubCollection({ uid, userId, item })
         this.show = false
-        // 親コンポーネントに「submitOnClickAction」イベントを渡し、notifyToApproverメソッドを発火させる
-        const nextApproverEmail = item.common.routes.approvers[0].email
-        this.$emit('submitOnClickAction', nextApproverEmail)
+        const nextApproverEmail = item.common.current_approver_email
+        this.notifyToApprover(nextApproverEmail, item)
       } else {
         const userId = this.getUserEmail()
         const docId = this.formBind.id
@@ -627,6 +626,16 @@ export default {
         const nextApproverEmail = item.common.routes.approvers[0].email
         this.$emit('submitOnClickAction', nextApproverEmail)
       }
+    },
+
+    // 承認者にメール通知する (追加時のみ呼び出される)
+    notifyToApprover(nextApproverEmail, item) {
+      const emailTo = nextApproverEmail
+      const emailSubject = `[承認依頼] [${item.common.title}]`
+      const detailPageUrl = `${window.location.href}others/requests/${item.id}`
+      const emailBody = this.createEmailBody(emailSubject, detailPageUrl)
+      const emailConfig = { to: emailTo, subject: emailSubject, body: emailBody }
+      this.sendEmail({ emailConfig })
     },
 
     /** actionType == 'edit'時にitemを更新する */
