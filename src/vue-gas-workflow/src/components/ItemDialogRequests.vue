@@ -23,7 +23,6 @@
           <v-text-field
             label="タイトル"
             v-model="formBind.common.title"
-            :rules="titleRules"
           />
 
           <!-- 選択した申請書ごとに項目を出し分けする -->
@@ -495,9 +494,6 @@ export default {
        */
       requestTypeRules: [
         v => Object.keys(v).length > 0 || '申請種別は必須です',
-      ],
-      titleRules: [
-        v => v.trim().length > 0 || 'タイトルは必須です',
       ],
       /** 休暇申請 */
       reasonRules: [
