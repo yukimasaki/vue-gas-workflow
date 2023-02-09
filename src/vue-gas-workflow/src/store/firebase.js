@@ -104,7 +104,7 @@ const actions = {
         await dispatch('firestore/fetchAllCollections', { currentTableName: 'admins' }, { root: true })
         const admins = rootGetters['firestore/getAdminEmails']
         const isAdmin = admins.includes(user.email)
-        commit('firebase/setAdminStatus', isAdmin, { root: true })
+        commit('setAdminStatus', isAdmin)
         return isAdmin
       } catch (err) {
         return false
@@ -117,14 +117,14 @@ const actions = {
     // 認証情報をセット
     onAuthStateChanged(auth, (user) => {
       user = user ? user : {}
-      commit('firebase/setLoginStatus', user.uid ? true : false, { root: true })
+      commit('setLoginStatus', user.uid ? true : false)
       commit('setUserUid', user.uid)
       commit('setUserName', user.displayName)
       commit('setUserIcon', user.photoURL)
       commit('setUserEmail', user.email)
 
       const isAdmin = checkAdminStatus(user)
-      commit('firebase/setAdminStatus', isAdmin, { root: true })
+      commit('setAdminStatus', isAdmin)
 
       console.log('onAuth')
     })
