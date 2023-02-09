@@ -13,6 +13,7 @@ import Departments from '../views/Departments.vue'
 import Routes from '../views/Routes.vue'
 import Admins from '../views/Admins.vue'
 import Users from '../views/Users.vue'
+import NotFound from '../views/NotFound.vue'
 
 Vue.use(VueRouter)
 
@@ -108,6 +109,15 @@ const routes = [
     meta: {
       requiresAuth: true,
       requiresAdmin: true
+    }
+  },
+  {
+    path: '*',
+    name: 'NotFound',
+    component: NotFound,
+    meta: {
+      requiresAuth: false,
+      requiresAdmin: false
     }
   },
 ]
