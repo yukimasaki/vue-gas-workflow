@@ -23,7 +23,8 @@
           <v-text-field
             label="タイトル"
             v-model="formBind.common.title"
-            placeholder="入力は任意です。"
+            placeholder="入力は任意です"
+            persistent-placeholder
           />
 
           <!-- 選択した申請書ごとに項目を出し分けする -->
@@ -33,6 +34,7 @@
               label="事由"
               v-model="formBind.unique.paid_leave.reason"
               placeholder="例: 私用のため"
+              persistent-placeholder
               :rules="reasonRules"
               rows="3"
             />
@@ -104,6 +106,8 @@
             <v-textarea
               label="商品名"
               v-model="formBind.unique.equipment.item_name"
+              :placeholder="`例: https://example.com/JLDZGFYP\n3個`"
+              persistent-placeholder
               :rules="itemNameRules"
               rows="3"
             />
@@ -111,6 +115,8 @@
             <v-textarea
               label="購入理由"
               v-model="formBind.unique.equipment.reason"
+              placeholder="例: 〇〇で必要なため"
+              persistent-placeholder
               :rules="reasonRules"
               rows="3"
             />
@@ -127,6 +133,8 @@
             <v-text-field
               label="顧客名"
               v-model="formBind.unique.hosting.customer_name"
+              placeholder="法人格を省略せず正確に記入してください"
+              persistent-placeholder
               :rules="customerNameRules"
             />
 
@@ -371,6 +379,12 @@
     </v-card>
   </v-dialog>
 </template>
+
+<style>
+input[placeholder] {
+  font-size: 0.8em;
+}
+</style>
 
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
