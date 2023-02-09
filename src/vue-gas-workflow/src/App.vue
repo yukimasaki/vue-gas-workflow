@@ -80,6 +80,24 @@
         <v-btn text v-bind="attrs" @click="snackbar = false">Close</v-btn>
       </template>
     </v-snackbar>
+
+    <!-- アラート -->
+    <v-dialog
+      v-model="hasEmptySetting"
+      transition="scale-transition"
+      width="80%"
+      persistent
+    >
+      <v-card>
+        <v-card-title>
+          メール設定をしてください
+        </v-card-title>
+        <v-card-text>
+          <router-link to="/settings" @click="hasEmptySetting = false">設定画面</router-link>からメール設定を完了させてください。
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
   </v-app>
 
 </template>
@@ -131,6 +149,7 @@ export default {
       userName: 'firebase/getUserName',
       userIcon: 'firebase/getUserIcon',
       isAuth: 'firebase/getLoginStatus',
+      getSettings: 'workflow/getSettings',
     }),
 
     isRoot () {
@@ -140,6 +159,15 @@ export default {
       } else {
         return false
       }
+    },
+
+    hasEmptySetting () {
+      const settings = this.getSettings
+      const checkTargets = [
+        settings.apiUrl == '' ? true : false,
+        settings.authToken == '' ? true : false,
+      ]
+      return checkTargets.some(v => v == true)
     },
   },
 
@@ -163,6 +191,14 @@ export default {
         this.$router.go({ path: '/', force: true })
       }
     },
+
+    setSiteTitle () {
+      document.title = this.appName
+    },
+  },
+
+  created () {
+    this.setSiteTitle()
   },
 
   beforeCreate () {
@@ -187,10 +223,5 @@ export default {
       }
     },
   },
-
-  created () {
-    document.title = this.appName
-  },
-
 }
 </script>
