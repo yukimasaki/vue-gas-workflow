@@ -566,7 +566,7 @@ export default {
     },
     /** ダイアログのアクション */
     actionText () {
-      return this.actionType === 'add' ? '追加' : '更新'
+      return this.actionType === 'add' ? '申請' : '再申請'
     },
   },
 
