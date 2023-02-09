@@ -85,7 +85,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'App',
@@ -95,6 +95,8 @@ export default {
       appName: 'ワークフロー',
       snackbar: false,
       message: '',
+      isSetAuthMessage: false,
+      isSetWorkflowMessage: false,
       isActiveAdminMenu: true,
       adminMenuItems: [
         {
@@ -120,7 +122,8 @@ export default {
   computed: {
     ...mapState({
       authMessage: state => state.firebase.authMessage,
-      workflowMessage: state => state.firestore.workflowMessage,
+      settingsMessage: state => state.workflow.settingsMessage,
+      isShowSettingsMessage: state => state.workflow.isShowSettingsMessage,
       isAdmin: state => state.firebase.isAdmin,
     }),
 
@@ -140,14 +143,11 @@ export default {
     },
   },
 
-  beforeCreate () {
-    // ミューテーション経由でstateの設定を読み込む
-    // beforeCreate()は［Appインスタンスは生成後 かつ データ初期化前］に実行される
-    // 参考：https://qiita.com/ksh-fthr/items/2a9f173c706ef6939f93
-    this.$store.dispatch('workflow/loadSettings')
-  },
-
   methods: {
+    ...mapActions({
+      toggleIsShowSettingsMessage: 'workflow/toggleIsShowSettingsMessage'
+    }),
+
     async logout(){
       await this.$store.dispatch('firebase/logout')
     },
@@ -165,15 +165,26 @@ export default {
     },
   },
 
+  beforeCreate () {
+    // ミューテーション経由でstateの設定を読み込む
+    // beforeCreate()は［Appインスタンスは生成後 かつ データ初期化前］に実行される
+    // 参考：https://qiita.com/ksh-fthr/items/2a9f173c706ef6939f93
+    this.$store.dispatch('workflow/loadSettings')
+  },
+
 
   watch: {
     authMessage () {
       this.message = this.authMessage
       this.snackbar = true
     },
-    workflowMessage () {
-      this.message = this.workflowMessage
-      this.snackbar = true
+    isShowSettingsMessage () {
+      const isShowSettingsMessage = this.isShowSettingsMessage
+      if (isShowSettingsMessage) {
+        this.message = this.settingsMessage
+        this.snackbar = true
+        this.toggleIsShowSettingsMessage()
+      }
     },
   },
 

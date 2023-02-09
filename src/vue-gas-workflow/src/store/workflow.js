@@ -1,12 +1,12 @@
 import gasApi from '../api/gasApi'
 
 const state = {
-  /** 設定 */
   settings: {
     apiUrl: '',
     authToken: '',
   },
-
+  isShowSettingsMessage: false,
+  settingsMessage: '',
 }
 
 const mutations = {
@@ -28,16 +28,28 @@ const mutations = {
     gasApi.setUrl(apiUrl)
     gasApi.setAuthToken(authToken)
   },
+
+  toggleIsShowSettingsMessage (state) {
+    state.isShowSettingsMessage = !state.isShowSettingsMessage
+  },
+  setSettingsMessage (state, settingsMessage) {
+    state.settingsMessage = settingsMessage
+  },
 }
 
 const actions = {
   saveSettings ({ commit }, { settings }) {
+    commit('toggleIsShowSettingsMessage')
     commit('saveSettings', { settings })
-    commit('firestore/setWorkflowMessage', '設定を保存しました。', { root: true })
+    commit('setSettingsMessage', '設定を保存しました。')
   },
 
   loadSettings ({ commit }) {
     commit('loadSettings')
+  },
+
+  toggleIsShowSettingsMessage ({ commit }) {
+    commit('toggleIsShowSettingsMessage')
   },
 }
 
