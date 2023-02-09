@@ -78,6 +78,10 @@
                 v-model="formattedDate"
               />
               <v-text-field
+                label="部署"
+                v-model="formData.common.department"
+              />
+              <v-text-field
                 label="申請者"
                 v-model="formData.common.name"
               />
@@ -85,10 +89,7 @@
                 label="メールアドレス"
                 v-model="formData.common.email"
               />
-              <v-text-field
-                label="部署"
-                v-model="formData.common.department"
-              />
+              <v-divider class="mt-4 py-4" />
               <!-- 選択した申請書ごとに項目を出し分けする -->
               <!-- 休暇申請 -->
               <div v-if="requestTypeValue == 'paid_leave'">
