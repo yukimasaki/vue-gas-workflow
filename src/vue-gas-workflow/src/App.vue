@@ -7,7 +7,7 @@
       <v-toolbar-title
         @click="toRoot()"
         style="cursor: pointer"
-      >{{ appName }}</v-toolbar-title>
+      ><v-icon large v-if="!isRoot">mdi-chevron-left</v-icon>{{ appName }}</v-toolbar-title>
 
       <v-spacer></v-spacer>
 
@@ -92,6 +92,7 @@ export default {
 
   data () {
     return {
+      appName: 'ワークフロー',
       snackbar: false,
       message: '',
       isActiveAdminMenu: true,
@@ -118,7 +119,6 @@ export default {
 
   computed: {
     ...mapState({
-      appName: state => state.workflow.settings.appName,
       authMessage: state => state.firebase.authMessage,
       workflowMessage: state => state.firestore.workflowMessage,
       isAdmin: state => state.firebase.isAdmin,
@@ -129,6 +129,15 @@ export default {
       userIcon: 'firebase/getUserIcon',
       isAuth: 'firebase/getLoginStatus',
     }),
+
+    isRoot () {
+      const currentPath = this.$route.path
+      if (currentPath == '/') {
+        return true
+      } else {
+        return false
+      }
+    },
   },
 
   beforeCreate () {
@@ -166,6 +175,10 @@ export default {
       this.message = this.workflowMessage
       this.snackbar = true
     },
+  },
+
+  created () {
+    document.title = this.appName
   },
 
 }

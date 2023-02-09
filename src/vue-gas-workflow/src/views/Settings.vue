@@ -3,13 +3,6 @@
     <p>※設定はこのデバイスのみに保存されます。</p>
     <v-form v-model="valid">
       <h3>アプリ設定</h3>
-      <!-- アプリ名 -->
-      <v-text-field
-        label="アプリ名"
-        v-model="settings.appName"
-        :counter="30"
-        :rules="[appNameRule]"
-      />
       <!-- API URL -->
       <v-text-field
         label="API URL"
@@ -52,7 +45,6 @@ export default {
 
       //test
       /** バリデーションルール */
-      appNameRule: v => v.length <= 30 || '30文字以内で入力してください',
       stringRule: v => v.length <= 150 || '150文字以内で入力してください',
     }
   },
