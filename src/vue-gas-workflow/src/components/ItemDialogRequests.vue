@@ -717,6 +717,29 @@ export default {
               }
               return uniqueItem
             }
+            case 'hosting': {
+              const uniqueItem = {
+                hosting: {
+                  customer_name: this.formBind.unique.hosting.customer_name,
+                  domain_name: this.formBind.unique.hosting.domain_name,
+                  acquire_type: this.formBind.unique.hosting.acquire_type,
+                  acquire_date_radio: this.formBind.unique.hosting.acquire_date_radio,
+                  acquire_date_picker: this.formBind.unique.hosting.acquire_date_picker,
+                  transfer_request: this.formBind.unique.hosting.transfer_request,
+                  payment_type: this.formBind.unique.hosting.payment_type,
+                  price: this.formBind.unique.hosting.price,
+                  start_hosting_immediately: this.formBind.unique.hosting.start_hosting_immediately,
+                  dns_transfer_date_picker: this.formBind.unique.hosting.dns_transfer_date_picker,
+                  current_hosting_service: this.formBind.unique.hosting.current_hosting_service,
+                  cancel_other_service_date_picker: this.formBind.unique.hosting.cancel_other_service_date_picker,
+                  payment_status: this.formBind.unique.hosting.payment_status,
+                  payment_start_month: this.formBind.unique.hosting.payment_start_month,
+                  site_data_handling: this.formBind.unique.hosting.site_data_handling,
+                  memo: this.formBind.unique.hosting.memo,
+                }
+              }
+              return uniqueItem
+            }
           }
         }
         const uniqueItem = createUniqueItem(requestTypeValue)

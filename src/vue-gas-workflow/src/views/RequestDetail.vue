@@ -73,27 +73,22 @@
                 label="タイトル"
                 v-model="formData.common.title"
               />
-
               <v-text-field
                 label="作成日時"
                 v-model="formattedDate"
               />
-
               <v-text-field
                 label="申請者"
                 v-model="formData.common.name"
               />
-
               <v-text-field
                 label="メールアドレス"
                 v-model="formData.common.email"
               />
-
               <v-text-field
                 label="部署"
                 v-model="formData.common.department"
               />
-
               <!-- 選択した申請書ごとに項目を出し分けする -->
               <!-- 休暇申請 -->
               <div v-if="requestTypeValue == 'paid_leave'">
@@ -102,25 +97,25 @@
                   rows="1"
                   label="事由"
                   v-model="formData.unique.paid_leave.reason"
-                />
+                  />
                 <v-text-field
                   label="日付"
                   v-model="formData.unique.paid_leave.date"
-                />
+                  />
                 <v-text-field
                   label="長さ"
                   v-model="lengthText"
-                />
+                  />
                 <v-text-field
                   label="緊急連絡先"
                   v-model="formData.unique.paid_leave.contact"
-                />
+                  />
                 <v-textarea
                   auto-grow
                   rows="1"
                   label="備考"
                   v-model="formData.unique.paid_leave.memo"
-                />
+                  />
               </div>
               <!-- 備品申請 -->
               <div v-else-if="requestTypeValue == 'equipment'">
@@ -129,20 +124,112 @@
                   rows="1"
                   label="商品名"
                   v-model="formData.unique.equipment.item_name"
-                />
+                  />
                 <v-textarea
                   auto-grow
                   rows="1"
                   label="購入理由"
                   v-model="formData.unique.equipment.reason"
-                />
+                  />
                 <v-textarea
                   auto-grow
                   rows="1"
                   label="備考"
                   v-model="formData.unique.equipment.memo"
-                />
+                  />
               </div>
+              <!-- ホスティング申請 -->
+              <div v-else-if="requestTypeValue == 'hosting'">
+                <v-text-field
+                  label="顧客名"
+                  v-model="formData.unique.hosting.customer_name"
+                  />
+                <v-text-field
+                  label="ドメイン名"
+                  v-model="formData.unique.hosting.domain_name"
+                  />
+                <v-text-field
+                  label="取得方法"
+                  v-model="formData.unique.hosting.acquire_type.text"
+                  />
+                <v-row>
+                  <v-col class="pr-0">
+                    <v-text-field
+                      label="ドメイン取得日"
+                      v-model="acquireDateRadioText"
+                      hide-details
+                      />
+                  </v-col>
+                  <v-col>
+                    <v-text-field
+                      label="指定日"
+                      v-model="formData.unique.hosting.acquire_date_picker"
+                      />
+                  </v-col>
+                </v-row>
+                <v-text-field
+                  label="ドメイン移管申請"
+                  v-model="formData.unique.hosting.transfer_request.text"
+                  />
+                <v-row>
+                  <v-col class="pr-0">
+                    <v-text-field
+                      label="支払方法"
+                      v-model="paymentTypeText"
+                      hide-details
+                      />
+                  </v-col>
+                  <v-col>
+                    <v-text-field
+                      label="料金"
+                      v-model="formData.unique.hosting.price"
+                      />
+                  </v-col>
+                </v-row>
+                <v-checkbox
+                  label="今すぐホスティングを開始する"
+                  v-model="formData.unique.hosting.start_hosting_immediately"
+                  class="mt-0"
+                />
+                <v-text-field
+                  label="DNS切り替え日"
+                  v-model="formData.unique.hosting.dns_transfer_date_picker"
+                  />
+                <v-text-field
+                  label="現在のホスティング会社"
+                  v-model="formData.unique.hosting.current_hosting_service"
+                  />
+                <v-text-field
+                  label="他社への解約依頼日"
+                  v-model="formData.unique.hosting.cancel_other_service_date_picker"
+                  />
+                <v-row>
+                  <v-col class="pr-0">
+                    <v-text-field
+                      label="引落し状況"
+                      v-model="paymentStatusText"
+                      hide-details
+                      />
+                  </v-col>
+                  <v-col>
+                    <v-text-field
+                      label="引落し開始月"
+                      v-model="formData.unique.hosting.payment_start_month.text"
+                      />
+                  </v-col>
+                </v-row>
+                <v-text-field
+                  label="現サイトデータの処遇"
+                  v-model="formData.unique.hosting.site_data_handling.text"
+                  />
+                <v-textarea
+                  auto-grow
+                  rows="1"
+                  label="備考"
+                  v-model="formData.unique.hosting.memo"
+                  />
+              </div>
+
 
             </v-form>
           </v-card-text>
@@ -250,6 +337,9 @@ export default {
       return rules.some(v => v == true)
     },
 
+    /** ラジオボタンで選択された値はオブジェクトではないため、Switch文で文字列をセットする
+     * todo: オブジェクトを返す方法がないか調べる
+     */
     lengthText() {
       const lengthValue = this.formData.unique.paid_leave.length
       let lengthText
@@ -262,6 +352,45 @@ export default {
           break
       }
       return lengthText
+    },
+    acquireDateRadioText() {
+      const acquireDateRadioValue = this.formData.unique.hosting.acquire_date_radio
+      let acquireDateRadioText
+      switch (acquireDateRadioValue) {
+        case 'just_now':
+          acquireDateRadioText = '今すぐ'
+          break
+        case 'scheduled':
+          acquireDateRadioText = '指定日あり'
+          break
+      }
+      return acquireDateRadioText
+    },
+    paymentTypeText() {
+      const paymentTypeValue = this.formData.unique.hosting.payment_type
+      let paymentTypeText
+      switch (paymentTypeValue) {
+        case 'monthly':
+          paymentTypeText = '月額'
+          break
+        case 'anuually':
+          paymentTypeText = '年間一括'
+          break
+      }
+      return paymentTypeText
+    },
+    paymentStatusText() {
+      const paymentStatusValue = this.formData.unique.hosting.payment_status
+      let paymentStatusText
+      switch (paymentStatusValue) {
+        case 'first_payment':
+          paymentStatusText = '初めての引落し'
+          break
+        case 'has_past_payment':
+          paymentStatusText = '当社で引落し歴あり'
+          break
+      }
+      return paymentStatusText
     },
 
   },
