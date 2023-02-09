@@ -381,7 +381,7 @@
 </template>
 
 <style>
-input[placeholder] {
+*[placeholder] {
   font-size: 0.8em;
 }
 </style>
