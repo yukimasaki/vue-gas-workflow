@@ -54,6 +54,9 @@ const actions = {
 }
 
 const getters = {
+  getSettings (state) {
+    return state.settings
+  },
 }
 
 export default {
