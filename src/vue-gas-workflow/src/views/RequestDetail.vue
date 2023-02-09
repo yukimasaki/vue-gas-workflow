@@ -193,7 +193,7 @@
                   class="mt-0"
                 />
                 <v-text-field
-                  label="DNS切り替え日"
+                  label="DNS切替え日"
                   v-model="formData.unique.hosting.dns_transfer_date_picker"
                   />
                 <v-text-field

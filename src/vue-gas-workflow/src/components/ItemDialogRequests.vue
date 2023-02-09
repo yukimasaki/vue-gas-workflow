@@ -51,8 +51,8 @@
             >
               <template v-slot:activator="{ on }">
                 <v-text-field
-                  v-model="formBind.unique.paid_leave.date"
                   label="日付"
+                  v-model="formBind.unique.paid_leave.date"
                   readonly
                   v-on="on"
                   :rules="dateRules"
@@ -141,12 +141,16 @@
             <v-text-field
               label="ドメイン名"
               v-model="formBind.unique.hosting.domain_name"
+              placeholder="半角英数で正確に記入してください"
+              persistent-placeholder
               :rules="domainNameRules"
             />
 
             <v-select
               label="取得方法"
               v-model="formBind.unique.hosting.acquire_type"
+              placeholder="ドメインの管理状況を選択してください"
+              persistent-placeholder
               :items="selectAcquireType"
               :rules="acquireTypeRules"
               return-object
@@ -182,8 +186,8 @@
             >
               <template v-slot:activator="{ on }">
                 <v-text-field
-                  v-model="formBind.unique.hosting.acquire_date_picker"
                   label="指定日を選択してください。"
+                  v-model="formBind.unique.hosting.acquire_date_picker"
                   readonly
                   v-on="on"
                   class="mt-0 pt-0"
@@ -209,6 +213,8 @@
             <v-select
               label="ドメイン移管申請"
               v-model="formBind.unique.hosting.transfer_request"
+              placeholder="移管の場合は選択してください"
+              persistent-placeholder
               :items="selectTransferRequest"
               return-object
               :append-icon = "formBind.unique.hosting.transfer_request == '' ? 'mdi-menu-down' : 'mdi-close'"
@@ -253,8 +259,8 @@
             >
               <template v-slot:activator="{ on }">
                 <v-text-field
+                  label="DNS切替え日"
                   v-model="formBind.unique.hosting.dns_transfer_date_picker"
-                  label="DNS切り替え日"
                   readonly
                   v-on="on"
                   class="mt-0 pt-0"
@@ -278,6 +284,8 @@
             <v-text-field
               label="現在のホスティング会社"
               v-model="formBind.unique.hosting.current_hosting_service"
+              placeholder="移管の場合は記入してください"
+              persistent-placeholder
             />
 
             <v-menu
@@ -292,8 +300,10 @@
             >
               <template v-slot:activator="{ on }">
                 <v-text-field
-                  v-model="formBind.unique.hosting.cancel_other_service_date_picker"
                   label="他社への解約依頼日"
+                  v-model="formBind.unique.hosting.cancel_other_service_date_picker"
+                  placeholder="移管の場合は選択してください"
+                  persistent-placeholder
                   readonly
                   v-on="on"
                   class="mt-0 pt-0"
