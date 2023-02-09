@@ -23,6 +23,7 @@
           <v-text-field
             label="タイトル"
             v-model="formBind.common.title"
+            placeholder="入力は任意です。"
           />
 
           <!-- 選択した申請書ごとに項目を出し分けする -->
@@ -31,6 +32,7 @@
             <v-textarea
               label="事由"
               v-model="formBind.unique.paid_leave.reason"
+              placeholder="例: 私用のため"
               :rules="reasonRules"
               rows="3"
             />
