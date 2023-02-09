@@ -10,7 +10,6 @@ const state = {
 }
 
 const mutations = {
-
   saveSettings (state, { settings }) {
     state.settings = { ...settings }
     const { apiUrl, authToken } = state.settings
@@ -29,18 +28,17 @@ const mutations = {
     gasApi.setUrl(apiUrl)
     gasApi.setAuthToken(authToken)
   },
-
 }
 
 const actions = {
   saveSettings ({ commit }, { settings }) {
     commit('saveSettings', { settings })
+    commit('firestore/setWorkflowMessage', '設定を保存しました。', { root: true })
   },
 
   loadSettings ({ commit }) {
     commit('loadSettings')
   },
-
 }
 
 const getters = {
