@@ -1,28 +1,34 @@
 <template>
-  <div class="form-wrapper">
-    <p>※設定はこのデバイスのみに保存されます。</p>
-    <v-form v-model="valid">
-      <h3>アプリ設定</h3>
-      <!-- API URL -->
-      <v-text-field
-        label="API URL"
-        v-model="settings.apiUrl"
-        :counter="150"
-        :rules="[stringRule]"
-      />
-      <!-- Auth Token -->
-      <v-text-field
-        label="Auth Token"
-        v-model="settings.authToken"
-        :counter="150"
-        :rules="[stringRule]"
-      />
-      <v-row class="mt-4">
-        <v-spacer/>
-        <v-btn color="primary" :disabled="!valid" @click="onClickSave">保存</v-btn>
-      </v-row>
-    </v-form>
-  </div>
+  <v-row justify="center">
+    <v-col cols="12" md="6" xs="12">
+      <v-card>
+        <v-card-text>
+          <p>※設定はこのデバイスのみに保存されます。<br>デバイスごとに設定を保存してください。</p>
+          <v-form v-model="valid">
+            <h3>アプリ設定</h3>
+            <!-- API URL -->
+            <v-text-field
+              label="API URL"
+              v-model="settings.apiUrl"
+              :counter="150"
+              :rules="[stringRule]"
+            />
+            <!-- Auth Token -->
+            <v-text-field
+              label="Auth Token"
+              v-model="settings.authToken"
+              :counter="150"
+              :rules="[stringRule]"
+            />
+            <v-row class="mt-4 px-3 pb-3">
+              <v-spacer/>
+              <v-btn color="primary" :disabled="!valid" @click="onClickSave">保存</v-btn>
+            </v-row>
+          </v-form>
+        </v-card-text>
+      </v-card>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -56,10 +62,3 @@ export default {
   },
 }
 </script>
-
-<style>
-.form-wrapper {
-  max-width: 500px;
-  margin: auto;
-}
-</style>
