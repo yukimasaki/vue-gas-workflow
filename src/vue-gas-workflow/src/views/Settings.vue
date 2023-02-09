@@ -17,7 +17,7 @@
             <v-text-field
               label="Auth Token"
               v-model="settings.authToken"
-              :counter="150"
+              :counter="36"
               :rules="[stringRule]"
             />
             <v-row class="mt-4 px-3 pb-3">
@@ -38,18 +38,11 @@ export default {
 
   data () {
     return {
-
-      /** 設定 */
-      // ↓ mapState表記だとなぜかエラーになる
-      // ...mapState({
-      //   settings: state => state.workflow.settings
-      // }),
       settings: { ...this.$store.state.workflow.settings},
 
       /** 入力したデータが有効かどうか */
       valid: false,
 
-      //test
       /** バリデーションルール */
       stringRule: v => v.length <= 150 || '150文字以内で入力してください',
     }
