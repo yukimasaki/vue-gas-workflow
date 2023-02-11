@@ -4,6 +4,6 @@ module.exports = defineConfig({
   transpileDependencies: [
     'vuetify'
   ],
-  publicPath: '/vue-gas-workflow',
+  publicPath: '/ftsworkflow',
   outputDir: 'docs'
 })
