@@ -83,17 +83,18 @@
 
     <!-- アラート -->
     <v-dialog
-      v-model="hasEmptySetting"
+      v-model="showSettingsAlert"
       transition="scale-transition"
-      width="80%"
+      max-width="500px"
       persistent
     >
       <v-card>
-        <v-card-title>
-          メール設定をしてください
-        </v-card-title>
-        <v-card-text>
-          <router-link to="/settings" @click="hasEmptySetting = false">設定画面</router-link>からメール設定を完了させてください。
+        <v-toolbar color="primary" dark elevation-1>
+          <v-btn icon @click="onClickCloseSettingsAlert = true"><v-icon>mdi-close</v-icon></v-btn>
+          <v-toolbar-title>メール設定をしてください</v-toolbar-title>
+        </v-toolbar>
+        <v-card-text class="pt-3">
+          <router-link :to="{ path: '/settings' }" @click.native="onClickCloseSettingsAlert = true">設定画面</router-link>からメール設定を完了させてください。
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -113,9 +114,8 @@ export default {
       appName: 'ワークフロー',
       snackbar: false,
       message: '',
-      isSetAuthMessage: false,
-      isSetWorkflowMessage: false,
       isActiveAdminMenu: true,
+      onClickCloseSettingsAlert: false,
       adminMenuItems: [
         {
           title: '管理者設定',
@@ -141,7 +141,7 @@ export default {
     ...mapState({
       authMessage: state => state.firebase.authMessage,
       settingsMessage: state => state.workflow.settingsMessage,
-      isShowSettingsMessage: state => state.workflow.isShowSettingsMessage,
+      showSettingsMessage: state => state.workflow.showSettingsMessage,
       isAdmin: state => state.firebase.isAdmin,
     }),
 
@@ -161,19 +161,43 @@ export default {
       }
     },
 
-    hasEmptySetting () {
-      const settings = this.getSettings
+    /** 2つの変数を監視し、メール設定アラートを表示するか否かを返す関数 */
+    showSettingsAlert () {
+
+      /** 監視対象の1つ目の変数は、dataプロパティの「onClickCloseSettingsAlert」変数(デフォルト:false)で
+       * アラート内のリンクをクリックすると値がtrueに変わる(処理はtemplate側に記載)。
+       */
+
+      /** 監視対象の2つ目の変数。
+       * アプリ設定の2項目(API URL、Auth Token)のいずれかが未設定(空値)の場合にtrueを返す
+       */
+      const hasEmptySetting = () => {
+        const settings = this.getSettings
+        const checkTargets = [
+          settings.apiUrl == '' ? true : false,
+          settings.authToken == '' ? true : false,
+        ]
+        return checkTargets.some(v => v == true)
+      }
+
+      /** 監視対象の2つ目の変数 */
+      const onClickCloseSettingsAlert = this.onClickCloseSettingsAlert
+
+      /** 結果を配列に格納 */
       const checkTargets = [
-        settings.apiUrl == '' ? true : false,
-        settings.authToken == '' ? true : false,
+        hasEmptySetting(),
+        !onClickCloseSettingsAlert
       ]
-      return checkTargets.some(v => v == true)
+
+      /** 両方がtrueの場合、trueを返す */
+      return checkTargets.every(v => v == true)
+
     },
   },
 
   methods: {
     ...mapActions({
-      toggleIsShowSettingsMessage: 'workflow/toggleIsShowSettingsMessage'
+      toggleShowSettingsMessage: 'workflow/toggleShowSettingsMessage'
     }),
 
     async logout(){
@@ -214,12 +238,12 @@ export default {
       this.message = this.authMessage
       this.snackbar = true
     },
-    isShowSettingsMessage () {
-      const isShowSettingsMessage = this.isShowSettingsMessage
-      if (isShowSettingsMessage) {
+    showSettingsMessage () {
+      const showSettingsMessage = this.showSettingsMessage
+      if (showSettingsMessage) {
         this.message = this.settingsMessage
         this.snackbar = true
-        this.toggleIsShowSettingsMessage()
+        this.toggleShowSettingsMessage()
       }
     },
   },

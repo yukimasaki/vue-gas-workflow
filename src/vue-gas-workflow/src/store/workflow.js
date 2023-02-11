@@ -5,7 +5,7 @@ const state = {
     apiUrl: '',
     authToken: '',
   },
-  isShowSettingsMessage: false,
+  showSettingsMessage: false,
   settingsMessage: '',
 }
 
@@ -29,8 +29,8 @@ const mutations = {
     gasApi.setAuthToken(authToken)
   },
 
-  toggleIsShowSettingsMessage (state) {
-    state.isShowSettingsMessage = !state.isShowSettingsMessage
+  toggleShowSettingsMessage (state) {
+    state.showSettingsMessage = !state.showSettingsMessage
   },
   setSettingsMessage (state, settingsMessage) {
     state.settingsMessage = settingsMessage
@@ -39,7 +39,7 @@ const mutations = {
 
 const actions = {
   saveSettings ({ commit }, { settings }) {
-    commit('toggleIsShowSettingsMessage')
+    commit('toggleShowSettingsMessage')
     commit('saveSettings', { settings })
     commit('setSettingsMessage', '設定を保存しました。')
   },
@@ -48,8 +48,8 @@ const actions = {
     commit('loadSettings')
   },
 
-  toggleIsShowSettingsMessage ({ commit }) {
-    commit('toggleIsShowSettingsMessage')
+  toggleShowSettingsMessage ({ commit }) {
+    commit('toggleShowSettingsMessage')
   },
 }
 
