@@ -161,15 +161,18 @@ export default {
       }
     },
 
-    /** 2つの変数を監視し、メール設定アラートを表示するか否かを返す関数 */
+    /** 3つの変数を監視し、メール設定アラートを表示するか否かを返す関数 */
     showSettingsAlert () {
+      /** 監視対象の1つ目の変数は、computed(getters)の「isAuth」変数 */
+      const isAuth = this.isAuth
 
-      /** 監視対象の1つ目の変数は、dataプロパティの「onClickCloseSettingsAlert」変数(デフォルト:false)で
-       * アラート内のリンクをクリックすると値がtrueに変わる(処理はtemplate側に記載)。
+      /** 監視対象の2つ目の変数は、dataプロパティの「onClickCloseSettingsAlert」変数(デフォルト:false)で
+       *  アラート内のリンクをクリックすると値がtrueに変わる(処理はtemplate側に記載)。
        */
+      const onClickCloseSettingsAlert = this.onClickCloseSettingsAlert
 
-      /** 監視対象の2つ目の変数。
-       * アプリ設定の2項目(API URL、Auth Token)のいずれかが未設定(空値)の場合にtrueを返す
+      /** 監視対象の3つ目の変数。
+       *  アプリ設定の2項目(API URL、Auth Token)のいずれかが未設定(空値)の場合にtrueを返す
        */
       const hasEmptySetting = () => {
         const settings = this.getSettings
@@ -180,18 +183,15 @@ export default {
         return checkTargets.some(v => v == true)
       }
 
-      /** 監視対象の2つ目の変数 */
-      const onClickCloseSettingsAlert = this.onClickCloseSettingsAlert
-
       /** 結果を配列に格納 */
       const checkTargets = [
+        isAuth,
         hasEmptySetting(),
         !onClickCloseSettingsAlert
       ]
 
       /** 両方がtrueの場合、trueを返す */
       return checkTargets.every(v => v == true)
-
     },
   },
 
