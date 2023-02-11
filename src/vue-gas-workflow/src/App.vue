@@ -140,6 +140,7 @@ export default {
   computed: {
     ...mapState({
       authMessage: state => state.firebase.authMessage,
+      workflowMessage: state => state.firestore.workflowMessage,
       settingsMessage: state => state.workflow.settingsMessage,
       showSettingsMessage: state => state.workflow.showSettingsMessage,
       isAdmin: state => state.firebase.isAdmin,
@@ -236,6 +237,10 @@ export default {
   watch: {
     authMessage () {
       this.message = this.authMessage
+      this.snackbar = true
+    },
+    workflowMessage () {
+      this.message = this.workflowMessage
       this.snackbar = true
     },
     showSettingsMessage () {
