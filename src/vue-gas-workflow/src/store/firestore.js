@@ -21,11 +21,11 @@ const state = {
   requests: [],
   myRequests: [],
   othersRequests: [],
-  details: [],
   users: [],
   departments: [],
   routes: [],
   admins: [],
+  paid_leave_days: [],
 
   // FormReactivityTest
   testFormData: [],
