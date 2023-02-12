@@ -404,6 +404,7 @@ export default {
       fetchRequest: 'firestore/fetchRequest',
       updateSubCollection: 'firestore/updateSubCollection',
       sendEmail: 'firestore/sendEmail',
+      addDocument: 'firestore/addDocument',
     }),
 
     async fetchRequestDetail() {
@@ -431,7 +432,6 @@ export default {
         return format
     },
 
-    //メール以外動作確認済み
     async onClickApprove() {
       // 最終ステップの場合
       if (this.formData.common.current_step == this.formData.common.max_step) {
@@ -446,6 +446,29 @@ export default {
 
         await this.updateSubCollection({ userId, docId, item, operationType })
         this.notifyToApplicant(operationType)
+
+        /** requestTypeValueがpaid_leaveの時、paid_leave_daysコレクションにドキュメントを作成する(有給休暇の日数を記録する) */
+        if (this.requestTypeValue == 'paid_leave') {
+          const currentTableName = 'paid_leave_days'
+
+          const lengthNumber = () => {
+            const lengthValue = this.formData.unique.paid_leave.length
+            switch (lengthValue) {
+              case 'half_day':
+                return 0.5
+              case 'full_day':
+                return 1
+            }
+          }
+
+          const item = {
+            user_id: userId,
+            request_id: docId,
+            length: lengthNumber()
+          }
+
+          await this.addDocument({ item, currentTableName })
+        }
 
       // それ以外のステップの場合
       } else {
