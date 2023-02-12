@@ -96,6 +96,7 @@ export default {
         { text: '部署', value: 'department', sortable: true },
         { text: 'メールアドレス', value: 'id', sortable: false },
         { text: '氏名', value: 'name', sortable: false },
+        { text: '取得可能な有給日数', value: 'available_paid_leave_days', sortable: false },
         { text: '操作', value: 'actions', sortable: false },
       ]
     },

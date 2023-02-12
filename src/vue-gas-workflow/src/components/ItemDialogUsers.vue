@@ -25,20 +25,22 @@
             item-text="department"
             item-value="department"
           />
-
-          <!-- メールアドレス -->
           <v-text-field
             label="メールアドレス"
             v-model="email"
             :rules="emailRules"
             :readonly="actionType=='edit'"
           />
-
-          <!-- 氏名 -->
           <v-text-field
             label="氏名"
             v-model="name"
             :rules="nameRules"
+          />
+          <v-text-field
+            label="取得可能な有給日数"
+            v-model="available_paid_leave_days"
+            :rules="availablePaidLeaveDaysRules"
+            type="number"
           />
 
         </v-form>
@@ -84,14 +86,12 @@ export default {
       menu: false,
       /** 操作タイプ 'add' or 'edit' */
       actionType: 'add',
-      /** ID */
+
       id: '',
-      /** 部署 */
       department: '',
-      /** メールアドレス */
       email: '',
-      /** 氏名 */
       name: '',
+      available_paid_leave_days: '',
 
       /** バリデーションルール */
       departmentRules: [
@@ -104,6 +104,10 @@ export default {
       nameRules: [
         v => v.trim().length > 0 || '氏名は必須です',
         v => v.trim().length <= 32 || '氏名は32文字以内で入力してください',
+      ],
+      availablePaidLeaveDaysRules: [
+        v => v.trim().length > 0 || '取得可能な有給日数は必須です',
+        v => v.trim().length <= 32 || '取得可能な有給日数は2文字以内で入力してください',
       ],
     }
   },
@@ -154,6 +158,7 @@ export default {
         id: this.email,
         department: this.department,
         name: this.name,
+        available_paid_leave_days: this.available_paid_leave_days,
       }
       const currentTableName = this.currentTableName
 
@@ -172,6 +177,7 @@ export default {
       this.department = item.department || ''
       this.email = item.id || ''
       this.name = item.name || ''
+      this.available_paid_leave_days = item.available_paid_leave_days || ''
 
       this.$refs.form.resetValidation()
     },
