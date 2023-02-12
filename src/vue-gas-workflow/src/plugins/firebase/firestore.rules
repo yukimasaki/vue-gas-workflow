@@ -32,6 +32,10 @@ service cloud.firestore {
     match /departments/{departmentId} {
       allow read, write: if isAdmin();
     }
+    match /paid_leave_days/{paidLeaveDaysId} {
+      // TODO: 本当は、承認者のみが読み書きできるセキュリティルールを実装したい
+      allow read, write: if isAuth();
+    }
 
     match /users/{userId} {
       // ユーザー一覧の読み取り・作成を、本人と管理者のみ許可する
