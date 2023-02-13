@@ -29,6 +29,7 @@
                   label="取得可能日数"
                   v-model="availablePaidLeaveDays"
                   suffix="日"
+                  :rules="availablePaidLeaveDaysRules"
                   readonly
                 />
               </v-col>
@@ -538,6 +539,9 @@ export default {
         v => Object.keys(v).length > 0 || '申請種別は必須です',
       ],
       /** 休暇申請 */
+      availablePaidLeaveDaysRules: [
+        v => v > 0 || '取得可能な日数を確認してください',
+      ],
       reasonRules: [
         v => v.trim().length > 0 || '事由は必須です',
       ],
