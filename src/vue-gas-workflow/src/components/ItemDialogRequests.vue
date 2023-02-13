@@ -390,12 +390,6 @@
   </v-dialog>
 </template>
 
-<style>
-*[placeholder] {
-  font-size: 0.8em;
-}
-</style>
-
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
 import { serverTimestamp } from '@firebase/firestore'
