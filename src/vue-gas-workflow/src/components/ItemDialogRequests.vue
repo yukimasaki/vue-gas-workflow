@@ -25,6 +25,7 @@
           <div v-if="formBind.common.request_type.value == 'paid_leave'">
             <v-row>
               <v-col>
+                <!-- TODO: 保留中の有給休暇も考慮して日数の確認処理を修正する！ -->
                 <v-text-field
                   label="取得可能日数"
                   v-model="availablePaidLeaveDays"
