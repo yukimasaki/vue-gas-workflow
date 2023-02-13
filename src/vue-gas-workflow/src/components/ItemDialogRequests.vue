@@ -29,6 +29,7 @@
                   label="取得可能日数"
                   v-model="availablePaidLeaveDays"
                   suffix="日"
+                  readonly
                 />
               </v-col>
               <v-col>
@@ -36,75 +37,76 @@
               </v-col>
             </v-row>
 
-            <v-text-field
-              label="タイトル"
-              v-model="formBind.common.title"
-              placeholder="入力は任意です"
-              persistent-placeholder
-            />
-
-            <v-textarea
-              label="事由"
-              v-model="formBind.unique.paid_leave.reason"
-              placeholder="例: 私用のため"
-              persistent-placeholder
-              :rules="reasonRules"
-              rows="3"
-            />
-
-            <v-menu
-              ref="menuDate"
-              v-model="menuDate"
-              :close-on-content-click="false"
-              :return-value.sync="formBind.unique.paid_leave.date"
-              transition="scale-transition"
-              offset-y
-              max-width="290px"
-              min-width="290px"
-            >
-              <template v-slot:activator="{ on }">
-                <v-text-field
-                  label="日付"
-                  v-model="formBind.unique.paid_leave.date"
-                  readonly
-                  v-on="on"
-                  :rules="dateRules"
-                />
-              </template>
-              <v-date-picker
-                v-model="formBind.unique.paid_leave.date"
-                type="date"
-                color="primary"
-                locale="ja-jp"
-                no-title
-                scrollable
-                :day-format="date => new Date(date).getDate()"
+            <div v-if="availablePaidLeaveDays > 0">
+              <v-text-field
+                label="タイトル"
+                v-model="formBind.common.title"
+                placeholder="入力は任意です"
+                persistent-placeholder
+              />
+              <v-textarea
+                label="事由"
+                v-model="formBind.unique.paid_leave.reason"
+                placeholder="例: 私用のため"
+                persistent-placeholder
+                :rules="reasonRules"
+                rows="3"
+              />
+              <v-menu
+                ref="menuDate"
+                v-model="menuDate"
+                :close-on-content-click="false"
+                :return-value.sync="formBind.unique.paid_leave.date"
+                transition="scale-transition"
+                offset-y
+                max-width="290px"
+                min-width="290px"
               >
-                <v-spacer/>
-                <v-btn text color="grey" @click="menuDate = false">キャンセル</v-btn>
-                <v-btn text color="primary" @click="$refs.menuDate.save(formBind.unique.paid_leave.date)">選択</v-btn>
-              </v-date-picker>
-            </v-menu>
-
-            <v-select
-              label="半日または終日"
-              v-model="formBind.unique.paid_leave.length"
-              :items="selectLength"
-              :rules="lengthRules"
-              return-object
-            />
-
-            <v-text-field
-              label="緊急連絡先"
-              v-model="formBind.unique.paid_leave.contact"
-              :rules="contactRules"
-            />
-
-            <v-textarea
-              label="備考"
-              v-model="formBind.unique.paid_leave.memo"
-              rows="3"
-            />
+                <template v-slot:activator="{ on }">
+                  <v-text-field
+                    label="日付"
+                    v-model="formBind.unique.paid_leave.date"
+                    readonly
+                    v-on="on"
+                    :rules="dateRules"
+                  />
+                </template>
+                <v-date-picker
+                  v-model="formBind.unique.paid_leave.date"
+                  type="date"
+                  color="primary"
+                  locale="ja-jp"
+                  no-title
+                  scrollable
+                  :day-format="date => new Date(date).getDate()"
+                >
+                  <v-spacer/>
+                  <v-btn text color="grey" @click="menuDate = false">キャンセル</v-btn>
+                  <v-btn text color="primary" @click="$refs.menuDate.save(formBind.unique.paid_leave.date)">選択</v-btn>
+                </v-date-picker>
+              </v-menu>
+              <!-- TODO: itemsの内容を条件分岐する
+                availablePaidLeaveDays < 1 : 半日のみ選択可能
+                                      else : 半日、終日を選択可能
+               -->
+              <v-select
+                label="半日または終日"
+                v-model="formBind.unique.paid_leave.length"
+                :items="selectLength"
+                :rules="lengthRules"
+                return-object
+              />
+              <v-text-field
+                label="緊急連絡先"
+                v-model="formBind.unique.paid_leave.contact"
+                :rules="contactRules"
+              />
+              <v-textarea
+                label="備考"
+                v-model="formBind.unique.paid_leave.memo"
+                rows="3"
+              />
+            </div>
           </div>
 
           <!-- 備品申請 -->
@@ -426,10 +428,6 @@ export default {
         {text: '備品申請', value: 'equipment'},
         {text: 'ホスティング申請', value: 'hosting'},
       ],
-      selectLength: [
-        {text: '半日', value: 0.5},
-        {text: '終日', value: 1.0},
-      ],
       /** ドメイン名取得方法 */
       selectAcquireType: [
         {text: '当社で新規取得', value: 'new_domain_name_with_us'},
@@ -590,7 +588,6 @@ export default {
       availablePaidLeaveDays: state => state.firestore.availablePaidLeaveDays,
     }),
 
-
     /** バリデーションルール
      *  ホスティング申請
      */
@@ -609,9 +606,24 @@ export default {
     titleText () {
       return this.actionType === 'add' ? 'データ追加' : 'データ編集'
     },
+
     /** ダイアログのアクション */
     actionText () {
       return this.actionType === 'add' ? '申請' : '再申請'
+    },
+
+    /** 残りの有給休暇日数によって選択肢を分岐する */
+    selectLength () {
+      if (this.availablePaidLeaveDays < 1) {
+        // 残り日数が0.5日の場合
+        return [{text: '半日', value: 0.5}]
+      } else {
+        // 残り日数が1日以上の場合
+        return [
+          {text: '半日', value: 0.5},
+          {text: '終日', value: 1.0},
+        ]
+      }
     },
   },
 
@@ -826,7 +838,7 @@ export default {
         this.formBind = JSON.parse(JSON.stringify(item))
         this.formBind.common.created_at = item.common.created_at
       } else {
-        //this.formBind.common配下のプロパティに空値をセットする
+        // this.formBind.common配下のプロパティに空値をセットする
         // キーを取得する
         const commonPorpKeys = Object.keys(this.formBind.common)
         // キーの数の分だけ、空値をセットする処理を繰り返す
@@ -834,7 +846,7 @@ export default {
           this.formBind.common[key] = ''
         })
 
-        //this.formBind.unique.[申請種別]配下のプロパティに空値をセットする
+        // this.formBind.unique.[申請種別]配下のプロパティに空値をセットする
         // 申請種別キーを取得する
         const uniquePropRequestTypeKeys = Object.keys(this.formBind.unique)
         // 申請種別キーの数の分だけ、ネストされた処理を繰り返す
