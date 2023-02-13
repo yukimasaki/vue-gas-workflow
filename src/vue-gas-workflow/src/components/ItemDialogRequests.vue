@@ -20,16 +20,29 @@
             return-object
           />
 
-          <v-text-field
-            label="タイトル"
-            v-model="formBind.common.title"
-            placeholder="入力は任意です"
-            persistent-placeholder
-          />
-
           <!-- 選択した申請書ごとに項目を出し分けする -->
           <!-- 休暇申請 -->
           <div v-if="formBind.common.request_type.value == 'paid_leave'">
+            <v-row>
+              <v-col>
+                <v-text-field
+                  label="取得可能日数"
+                  v-model="availablePaidLeaveDays"
+                  suffix="日"
+                />
+              </v-col>
+              <v-col>
+                <v-btn @click="checkAvailablePaidLeaveDays()">日数を確認</v-btn>
+              </v-col>
+            </v-row>
+
+            <v-text-field
+              label="タイトル"
+              v-model="formBind.common.title"
+              placeholder="入力は任意です"
+              persistent-placeholder
+            />
+
             <v-textarea
               label="事由"
               v-model="formBind.unique.paid_leave.reason"
@@ -96,6 +109,13 @@
 
           <!-- 備品申請 -->
           <div v-else-if="formBind.common.request_type.value == 'equipment'">
+            <v-text-field
+              label="タイトル"
+              v-model="formBind.common.title"
+              placeholder="入力は任意です"
+              persistent-placeholder
+            />
+
             <v-textarea
               label="商品名"
               v-model="formBind.unique.equipment.item_name"
@@ -123,6 +143,13 @@
 
           <!-- ホスティング申請 -->
           <div v-else-if="formBind.common.request_type.value == 'hosting'">
+            <v-text-field
+              label="タイトル"
+              v-model="formBind.common.title"
+              placeholder="入力は任意です"
+              persistent-placeholder
+            />
+
             <v-text-field
               label="顧客名"
               v-model="formBind.unique.hosting.customer_name"
@@ -559,7 +586,8 @@ export default {
 
   computed: {
     ...mapState({
-      userInfo: state => state.firestore.userInfo
+      userInfo: state => state.firestore.userInfo,
+      availablePaidLeaveDays: state => state.firestore.availablePaidLeaveDays,
     }),
 
 
@@ -599,6 +627,7 @@ export default {
       fetchUserInfo: 'firestore/fetchUserInfo',
       createArrayRoute: 'firestore/createArrayRoute',
       sendEmail: 'firestore/sendEmail',
+      calcAvailablePaidLeaveDays: 'firestore/calcAvailablePaidLeaveDays',
     }),
 
     /**
@@ -842,6 +871,10 @@ export default {
       return emailBody
     },
 
-  }
+    checkAvailablePaidLeaveDays() {
+      const userId = this.getUserEmail()
+      this.calcAvailablePaidLeaveDays({ userId })
+    },
+  },
 }
 </script>

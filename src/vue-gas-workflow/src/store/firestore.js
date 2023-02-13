@@ -27,12 +27,14 @@ const state = {
   admins: [],
   paid_leave_days: [],
 
-  // FormReactivityTest
-  testFormData: [],
-
   userInfo: '',
   arrayRoute: [],
   selectedTabName: '',
+  availablePaidLeaveDays: 0,
+
+  // FormReactivityTest
+  testFormData: [],
+
 }
 
 const mutations = {
@@ -78,6 +80,11 @@ const mutations = {
   /** 選択したタブ情報を保持する */
   setSelectedTabName(state, { selectedTabName }) {
     state.selectedTabName = selectedTabName
+  },
+
+  /** 取得可能な有給日数をセットする */
+  setAvailablePaidLeaveDays(state, { availablePaidLeaveDays }) {
+    state.availablePaidLeaveDays = availablePaidLeaveDays
   },
 
 }
@@ -300,6 +307,37 @@ const actions = {
     commit('setWorkflowMessage', 'メール送信しました。')
   },
 
+  /** 使用可能な有給日数を取得 */
+  async calcAvailablePaidLeaveDays({ commit }, { userId }) {
+    /** ステータスが完了である自分の休暇申請から、取得済みの有給日数を合算する */
+    const usedPaidLeaveDays = async () => {
+      const q = query(
+        collection(db, 'users', userId, 'requests'),
+        where('common.request_type.value', '==', 'paid_leave'),
+        where('common.status', '==', '完了')
+      )
+      const querySnapshot = await getDocs(q)
+      const docs = []
+      querySnapshot.forEach(doc => {
+        docs.push(doc.data())
+      })
+      const usedPaidLeaveDays = docs.reduce(
+        (sum, doc) => sum + doc.unique.paid_leave.length.value, 0
+      )
+      return usedPaidLeaveDays
+    }
+
+    /** 自分が取得できる最大の有給日数を取得する */
+    const totalPaidLeaveDays = async () => {
+      const q = doc(db, 'users', userId)
+      const myUserProfile = await getDoc(q)
+      return myUserProfile.data().total_paid_leave_days
+    }
+
+    const availablePaidLeaveDays = await totalPaidLeaveDays() - await usedPaidLeaveDays()
+    commit('setAvailablePaidLeaveDays', { availablePaidLeaveDays })
+  },
+
   // FormReactivityTest
   async fetchMyTestFormData({ commit }, { userId, docId }) {
     const docRef = doc(db, 'users', userId, 'testFormData', docId)
@@ -308,7 +346,6 @@ const actions = {
     commit('setState', { collections: testFormData, currentTableName: 'testFormData' })
     commit('setWorkflowMessage', 'データを取得しました。')
   },
-
 }
 
 /**
