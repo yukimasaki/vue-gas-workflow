@@ -73,20 +73,13 @@
               </v-date-picker>
             </v-menu>
 
-            <v-radio-group
-              v-model="formBind.unique.paid_leave.length"
+            <v-select
               label="半日または終日"
+              v-model="formBind.unique.paid_leave.length"
+              :items="selectLength"
               :rules="lengthRules"
-            >
-              <v-radio
-                label="半日"
-                value="half_day"
-              />
-              <v-radio
-                label="終日"
-                value="full_day"
-              />
-            </v-radio-group>
+              return-object
+            />
 
             <v-text-field
               label="緊急連絡先"
@@ -406,6 +399,10 @@ export default {
         {text: '備品申請', value: 'equipment'},
         {text: 'ホスティング申請', value: 'hosting'},
       ],
+      selectLength: [
+        {text: '半日', value: 0.5},
+        {text: '終日', value: 1.0},
+      ],
       /** ドメイン名取得方法 */
       selectAcquireType: [
         {text: '当社で新規取得', value: 'new_domain_name_with_us'},
@@ -523,7 +520,7 @@ export default {
         v => v.trim().length > 0 || '日付は必須です',
       ],
       lengthRules: [
-        v => v.trim().length > 0 || '長さは必須です',
+        v => Object.keys(v).length > 0 || '長さは必須です',
       ],
       contactRules: [
         v => v.trim().length > 0 || '緊急連絡先は必須です',

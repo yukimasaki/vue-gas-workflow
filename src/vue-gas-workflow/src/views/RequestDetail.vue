@@ -105,7 +105,7 @@
                 />
                 <v-text-field
                   label="長さ"
-                  v-model="lengthText"
+                  v-model="formData.unique.paid_leave.length.text"
                 />
                 <v-text-field
                   label="緊急連絡先"
@@ -339,19 +339,6 @@ export default {
     /** ラジオボタンで選択された値はオブジェクトではないため、Switch文で文字列をセットする
      * todo: オブジェクトを返す方法がないか調べる
      */
-    lengthText() {
-      const lengthValue = this.formData.unique.paid_leave.length
-      let lengthText
-      switch (lengthValue) {
-        case 'half_day':
-          lengthText = '半日'
-          break
-        case 'full_day':
-          lengthText = '終日'
-          break
-      }
-      return lengthText
-    },
     acquireDateRadioText() {
       const acquireDateRadioValue = this.formData.unique.hosting.acquire_date_radio
       let acquireDateRadioText
