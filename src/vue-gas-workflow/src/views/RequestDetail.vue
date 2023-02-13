@@ -98,25 +98,25 @@
                   rows="1"
                   label="事由"
                   v-model="formData.unique.paid_leave.reason"
-                  />
+                />
                 <v-text-field
                   label="日付"
                   v-model="formData.unique.paid_leave.date"
-                  />
+                />
                 <v-text-field
                   label="長さ"
                   v-model="lengthText"
-                  />
+                />
                 <v-text-field
                   label="緊急連絡先"
                   v-model="formData.unique.paid_leave.contact"
-                  />
+                />
                 <v-textarea
                   auto-grow
                   rows="1"
                   label="備考"
                   v-model="formData.unique.paid_leave.memo"
-                  />
+                />
               </div>
               <!-- 備品申請 -->
               <div v-else-if="requestTypeValue == 'equipment'">
@@ -125,66 +125,66 @@
                   rows="1"
                   label="商品名"
                   v-model="formData.unique.equipment.item_name"
-                  />
+                />
                 <v-textarea
                   auto-grow
                   rows="1"
                   label="購入理由"
                   v-model="formData.unique.equipment.reason"
-                  />
+                />
                 <v-textarea
                   auto-grow
                   rows="1"
                   label="備考"
                   v-model="formData.unique.equipment.memo"
-                  />
+                />
               </div>
               <!-- ホスティング申請 -->
               <div v-else-if="requestTypeValue == 'hosting'">
                 <v-text-field
                   label="顧客名"
                   v-model="formData.unique.hosting.customer_name"
-                  />
+                />
                 <v-text-field
                   label="ドメイン名"
                   v-model="formData.unique.hosting.domain_name"
-                  />
+                />
                 <v-text-field
                   label="取得方法"
                   v-model="formData.unique.hosting.acquire_type.text"
-                  />
+                />
                 <v-row>
                   <v-col class="pr-0">
                     <v-text-field
                       label="ドメイン取得日"
                       v-model="acquireDateRadioText"
                       hide-details
-                      />
+                    />
                   </v-col>
                   <v-col>
                     <v-text-field
                       label="指定日"
                       v-model="formData.unique.hosting.acquire_date_picker"
-                      />
+                    />
                   </v-col>
                 </v-row>
                 <v-text-field
                   label="ドメイン移管申請"
                   v-model="formData.unique.hosting.transfer_request.text"
-                  />
+                />
                 <v-row>
                   <v-col class="pr-0">
                     <v-text-field
                       label="支払方法"
                       v-model="paymentTypeText"
                       hide-details
-                      />
+                    />
                   </v-col>
                   <v-col>
                     <v-text-field
                       label="料金"
                       v-model="formData.unique.hosting.price"
-                      />
+                    />
                   </v-col>
                 </v-row>
                 <v-checkbox
@@ -195,43 +195,41 @@
                 <v-text-field
                   label="DNS切替え日"
                   v-model="formData.unique.hosting.dns_transfer_date_picker"
-                  />
+                />
                 <v-text-field
                   label="現在のホスティング会社"
                   v-model="formData.unique.hosting.current_hosting_service"
-                  />
+                />
                 <v-text-field
                   label="他社への解約依頼日"
                   v-model="formData.unique.hosting.cancel_other_service_date_picker"
-                  />
+                />
                 <v-row>
                   <v-col class="pr-0">
                     <v-text-field
                       label="引落し状況"
                       v-model="paymentStatusText"
                       hide-details
-                      />
+                    />
                   </v-col>
                   <v-col>
                     <v-text-field
                       label="引落し開始月"
                       v-model="formData.unique.hosting.payment_start_month.text"
-                      />
+                    />
                   </v-col>
                 </v-row>
                 <v-text-field
                   label="現サイトデータの処遇"
                   v-model="formData.unique.hosting.site_data_handling.text"
-                  />
+                />
                 <v-textarea
                   auto-grow
                   rows="1"
                   label="備考"
                   v-model="formData.unique.hosting.memo"
-                  />
+                />
               </div>
-
-
             </v-form>
           </v-card-text>
         </v-card>
@@ -259,8 +257,8 @@
 </template>
 
 <script>
-import { mapActions, mapState, mapGetters } from 'vuex'
 import ItemDialogRequests from '../components/ItemDialogRequests.vue'
+import { mapActions, mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'RequestDetail',
@@ -584,5 +582,6 @@ export default {
     await this.fetchRequestDetail()
     this.formData = this.requests
   },
+
 }
 </script>
