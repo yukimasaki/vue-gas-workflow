@@ -30,7 +30,7 @@ const state = {
   userInfo: '',
   arrayRoute: [],
   selectedTabName: '',
-  availablePaidLeaveDays: 0,
+  availablePaidLeaveDaysState: 0,
 
   // FormReactivityTest
   testFormData: [],
@@ -83,8 +83,8 @@ const mutations = {
   },
 
   /** 取得可能な有給日数をセットする */
-  setAvailablePaidLeaveDays(state, { availablePaidLeaveDays }) {
-    state.availablePaidLeaveDays = availablePaidLeaveDays
+  setAvailablePaidLeaveDays(state, { availablePaidLeaveDaysState }) {
+    state.availablePaidLeaveDaysState = availablePaidLeaveDaysState
   },
 
 }
@@ -336,8 +336,8 @@ const actions = {
       return myUserProfile.data().total_paid_leave_days
     }
 
-    const availablePaidLeaveDays = await totalPaidLeaveDays() - await usedPaidLeaveDays()
-    commit('setAvailablePaidLeaveDays', { availablePaidLeaveDays })
+    const availablePaidLeaveDaysState = await totalPaidLeaveDays() - await usedPaidLeaveDays()
+    commit('setAvailablePaidLeaveDays', { availablePaidLeaveDaysState })
   },
 
   // FormReactivityTest

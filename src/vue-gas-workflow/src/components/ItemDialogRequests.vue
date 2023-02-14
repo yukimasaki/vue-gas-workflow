@@ -28,7 +28,7 @@
                 <!-- TODO: 保留中の有給休暇も考慮して日数の確認処理を修正する！ -->
                 <v-text-field
                   label="取得可能日数"
-                  v-model="availablePaidLeaveDays"
+                  v-model="availablePaidLeaveDaysData"
                   suffix="日"
                   :rules="availablePaidLeaveDaysRules"
                   readonly
@@ -39,7 +39,7 @@
               </v-col>
             </v-row>
 
-            <div v-if="availablePaidLeaveDays > 0">
+            <div v-if="availablePaidLeaveDaysData > 0">
               <v-text-field
                 label="タイトル"
                 v-model="formBind.common.title"
@@ -420,59 +420,6 @@ export default {
 
   data () {
     return {
-      /** 申請種別 */
-      selectReqestType: [
-        {text: '休暇申請', value: 'paid_leave'},
-        {text: '備品申請', value: 'equipment'},
-        {text: 'ホスティング申請', value: 'hosting'},
-      ],
-      /** ドメイン名取得方法 */
-      selectAcquireType: [
-        {text: '当社で新規取得', value: 'new_domain_name_with_us'},
-        {text: '当社で取得済み', value: 'exist_domain_name_with_us'},
-        {text: '他社からの移管', value: 'domain_transfer_to_us'},
-        {text: 'ホスティングのみ当社', value: 'only_hosting_with_us'},
-      ],
-      /** ドメイン名取得方法 */
-      selectTransferRequest: [
-        {text: '申請済み', value: 'requested'},
-        {text: '未 (客先で申請)', value: 'not_done_by_customer'},
-        {text: '未 (当社で申請)', value: 'not_done_by_us'},
-      ],
-      /** 引落し開始月 */
-      selectPaymentStartMonth: [
-        {text: '1月', value: 'january'},
-        {text: '2月', value: 'february'},
-        {text: '3月', value: 'march'},
-        {text: '4月', value: 'april'},
-        {text: '5月', value: 'may'},
-        {text: '6月', value: 'june'},
-        {text: '7月', value: 'july'},
-        {text: '8月', value: 'august'},
-        {text: '9月', value: 'september'},
-        {text: '10月', value: 'october'},
-        {text: '11月', value: 'november'},
-        {text: '12月', value: 'december'},
-      ],
-        /** 現サイトデータの処遇 */
-        selectSiteDataHandling: [
-          {text: '移動する (他社制作の場合は要相談)', value: 'required_transfer'},
-          {text: '移動しない (新規のため)', value: 'no_transfer_cause_new_customer'},
-          {text: '移動しない (データも不要)', value: 'no_transfer_cause_data_unnecessary'},
-          {text: '移動しない (データは保管/要相談)', value: 'no_transfer_but_keep_data'},
-        ],
-      /** ダイアログの表示状態 */
-      show: false,
-      /** 入力したデータが有効かどうか */
-      valid: false,
-      /** 日付選択メニューの表示状態 */
-      menuDate: false,
-      menuAcquireDatePicker: false,
-      menuDnsTransferDatePicker: false,
-      menuCancelOtherServiceDatePicker: false,
-      /** 操作タイプ 'add' or 'edit' */
-      actionType: 'add',
-
       /** フォームのバインディング */
       formBind: {
         common: {
@@ -532,7 +479,7 @@ export default {
       /** バリデーションルール
        * 共通
        */
-      requestTypeRules: [
+       requestTypeRules: [
         v => Object.keys(v).length > 0 || '申請種別は必須です',
       ],
       /** 休暇申請 */
@@ -580,13 +527,70 @@ export default {
       siteDataHandlingRules: [
         v => Object.keys(v).length > 0 || '現サイトデータの処遇は必須です',
       ],
+
+      /** 申請種別 */
+      selectReqestType: [
+        {text: '休暇申請', value: 'paid_leave'},
+        {text: '備品申請', value: 'equipment'},
+        {text: 'ホスティング申請', value: 'hosting'},
+      ],
+      /** ドメイン名取得方法 */
+      selectAcquireType: [
+        {text: '当社で新規取得', value: 'new_domain_name_with_us'},
+        {text: '当社で取得済み', value: 'exist_domain_name_with_us'},
+        {text: '他社からの移管', value: 'domain_transfer_to_us'},
+        {text: 'ホスティングのみ当社', value: 'only_hosting_with_us'},
+      ],
+      /** ドメイン名取得方法 */
+      selectTransferRequest: [
+        {text: '申請済み', value: 'requested'},
+        {text: '未 (客先で申請)', value: 'not_done_by_customer'},
+        {text: '未 (当社で申請)', value: 'not_done_by_us'},
+      ],
+      /** 引落し開始月 */
+      selectPaymentStartMonth: [
+        {text: '1月', value: 'january'},
+        {text: '2月', value: 'february'},
+        {text: '3月', value: 'march'},
+        {text: '4月', value: 'april'},
+        {text: '5月', value: 'may'},
+        {text: '6月', value: 'june'},
+        {text: '7月', value: 'july'},
+        {text: '8月', value: 'august'},
+        {text: '9月', value: 'september'},
+        {text: '10月', value: 'october'},
+        {text: '11月', value: 'november'},
+        {text: '12月', value: 'december'},
+      ],
+        /** 現サイトデータの処遇 */
+        selectSiteDataHandling: [
+          {text: '移動する (他社制作の場合は要相談)', value: 'required_transfer'},
+          {text: '移動しない (新規のため)', value: 'no_transfer_cause_new_customer'},
+          {text: '移動しない (データも不要)', value: 'no_transfer_cause_data_unnecessary'},
+          {text: '移動しない (データは保管/要相談)', value: 'no_transfer_but_keep_data'},
+        ],
+      /** ダイアログの表示状態 */
+      show: false,
+      /** 入力したデータが有効かどうか */
+      valid: false,
+      /** 日付選択メニューの表示状態 */
+      menuDate: false,
+      menuAcquireDatePicker: false,
+      menuDnsTransferDatePicker: false,
+      menuCancelOtherServiceDatePicker: false,
+      /** 操作タイプ 'add' or 'edit' */
+      actionType: 'add',
+      /** 取得可能な残り有給日数
+       * TODO: 変数名を考え直す!!
+       */
+      availablePaidLeaveDaysData: 0,
     }
   },
 
   computed: {
     ...mapState({
       userInfo: state => state.firestore.userInfo,
-      availablePaidLeaveDays: state => state.firestore.availablePaidLeaveDays,
+      availablePaidLeaveDaysState: state => state.firestore.availablePaidLeaveDaysState,
     }),
 
     /** バリデーションルール
@@ -615,7 +619,7 @@ export default {
 
     /** 残りの有給休暇日数によって選択肢を分岐する */
     selectLength () {
-      if (this.availablePaidLeaveDays < 1) {
+      if (this.availablePaidLeaveDaysData < 1) {
         // 残り日数が0.5日の場合
         return [{text: '半日', value: 0.5}]
       } else {
@@ -859,6 +863,9 @@ export default {
             this.formBind.unique[requestTypeKey][itemNameKey] = ''
           })
         })
+
+        // availablePaidLeaveDaysDataを初期化
+        this.availablePaidLeaveDaysData = 0
       }
 
       this.$refs.form.resetValidation()
@@ -884,9 +891,10 @@ export default {
       return emailBody
     },
 
-    checkAvailablePaidLeaveDays() {
+    async checkAvailablePaidLeaveDays() {
       const userId = this.getUserEmail()
-      this.calcAvailablePaidLeaveDays({ userId })
+      await this.calcAvailablePaidLeaveDays({ userId })
+      this.availablePaidLeaveDaysData = this.availablePaidLeaveDaysState
     },
   },
 }
