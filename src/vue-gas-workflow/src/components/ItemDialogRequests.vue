@@ -87,10 +87,6 @@
                   <v-btn text color="primary" @click="$refs.menuDate.save(formBind.unique.paid_leave.date)">選択</v-btn>
                 </v-date-picker>
               </v-menu>
-              <!-- TODO: itemsの内容を条件分岐する
-                availablePaidLeaveDays < 1 : 半日のみ選択可能
-                                      else : 半日、終日を選択可能
-               -->
               <v-select
                 label="半日または終日"
                 v-model="formBind.unique.paid_leave.length"
