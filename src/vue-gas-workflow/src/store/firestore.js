@@ -309,18 +309,20 @@ const actions = {
 
   /** 使用可能な有給日数を取得 */
   async calcAvailablePaidLeaveDays({ commit }, { userId }) {
-    /** ステータスが完了である自分の休暇申請から、取得済みの有給日数を合算する */
+    /** ステータスが「否認」を除く自分の休暇申請を取得する */
     const usedPaidLeaveDays = async () => {
       const q = query(
         collection(db, 'users', userId, 'requests'),
         where('common.request_type.value', '==', 'paid_leave'),
-        where('common.status', '==', '完了')
+        where('common.status', 'not-in', ['否認'])
       )
       const querySnapshot = await getDocs(q)
       const docs = []
       querySnapshot.forEach(doc => {
         docs.push(doc.data())
       })
+
+      /** 有給の長さ(半日:0.5 or 終日:1.0)を合算して値を返す */
       const usedPaidLeaveDays = docs.reduce(
         (sum, doc) => sum + doc.unique.paid_leave.length.value, 0
       )
