@@ -106,8 +106,8 @@ export default {
         v => v.trim().length <= 32 || '氏名は32文字以内で入力してください',
       ],
       totalPaidLeaveDaysRules: [
-        v => v.trim().length > 0 || '有給日数は必須です',
-        v => v.trim().length <= 32 || '有給日数は2文字以内で入力してください',
+        v => v > 0 || '有給日数は必須です',
+        v => v <= 40 || '有給日数は40日以内で入力してください',
       ],
     }
   },
